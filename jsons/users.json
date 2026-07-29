@@ -1,0 +1,21 @@
+{
+  "350614938722500608": {
+    "characters": {
+      "Ruyi": {
+        "name": "Ruyi",
+        "house": "Jirachi",
+        "badges": [],
+        "registeredOn": "2026-07-28T23:41:02.673Z",
+        "destination": "aurorus",
+        "partner": {
+          "shiny": true,
+          "species": "amaura",
+          "specialMoves": {}
+        }
+      }
+    }
+  },
+  "1074503972037075054": {
+    "characters": {}
+  }
+}

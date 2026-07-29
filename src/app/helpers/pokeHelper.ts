@@ -1,0 +1,186 @@
+import Pokedex from "pokedex-promise-v2";
+import { EmbedBuilder } from "discord.js";
+
+const P = new Pokedex();
+
+interface ColorData {
+  hexcode: string;
+  bannerLink: string;
+  bannerCreds: string;
+}
+
+const colors: Record<string, ColorData> = {
+  red: {
+    hexcode: "#ce1b1b",
+    bannerLink:
+      "https://i.pinimg.com/originals/a6/17/32/a61732f43791d44d5d1ca18057d59574.gif",
+    bannerCreds: "",
+  },
+
+  blue: {
+    hexcode: "#3473fa",
+    bannerLink: "https://i.redd.it/dt799bhjhhoc1.gif",
+    bannerCreds: "",
+  },
+
+  yellow: {
+    hexcode: "#fadb2c",
+    bannerLink:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJUTCgh7DOFcRBLXGvGAMPu3QRf82B8TCToexws_K6FA&s=10",
+    bannerCreds: "",
+  },
+
+  green: {
+    hexcode: "#15c048",
+    bannerLink:
+      "https://i.pinimg.com/originals/0a/12/e1/0a12e130650543cf5b165a008d1604e3.gif",
+    bannerCreds: "",
+  },
+
+  black: {
+    hexcode: "#221e1e",
+    bannerLink:
+      "https://64.media.tumblr.com/fd970fa64ea36db438022444d9e1ba43/tumblr_p4x6ed3lQP1u7gnm9o1_500.gif",
+    bannerCreds: "",
+  },
+
+  brown: {
+    hexcode: "#ad7250",
+    bannerLink:
+      "https://i.pinimg.com/originals/cf/65/a7/cf65a7b41594a1794d07e1f2041f4b6e.gif",
+    bannerCreds: "",
+  },
+
+  purple: {
+    hexcode: "#801d8d",
+    bannerLink:
+      "https://i.pinimg.com/originals/b9/01/85/b9018579aebd5c161b0eac79ca04f17a.gif",
+    bannerCreds: "",
+  },
+
+  gray: {
+    hexcode: "#746f6f",
+    bannerLink:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTP-CfFBubLCM6YsrtjRSiRn7GNNpqCpojl-keCVBwqOg&s=10",
+    bannerCreds: "",
+  },
+
+  white: {
+    hexcode: "#eee6e6",
+    bannerLink:
+      "https://i.pinimg.com/originals/20/e9/22/20e92227c9b739044e377b3567cfdac0.gif",
+    bannerCreds: "",
+  },
+
+  pink: {
+    hexcode: "#db7a89",
+    bannerLink:
+      "https://i.pinimg.com/originals/a4/94/3d/a4943d26744e1f14630dd9ddb4f499d8.gif",
+    bannerCreds: "",
+  },
+};
+
+export async function findPokemon(name: string) {
+  try {
+    return await P.getPokemonByName(name);
+  } catch {
+    return undefined;
+  }
+}
+
+export async function findBaseMon(pokemon: any) {
+  try {
+    const pokemonSpecies = await P.getResource(pokemon.species.url);
+
+    let formIndex = 0;
+
+    if (pokemon.forms && pokemon.forms[0].name !== pokemon.species.name) {
+      let count = 0;
+
+      for (const form of pokemonSpecies.varieties) {
+        if (form.pokemon.name === pokemon.name) {
+          formIndex = count;
+        }
+
+        count++;
+      }
+    }
+
+    const evoChain = await P.getResource(pokemonSpecies.evolution_chain.url);
+
+    const baseSpecies = await P.getResource(evoChain.chain.species.url);
+
+    if (!baseSpecies.varieties[formIndex]) {
+      formIndex = 0;
+    }
+
+    return await P.getResource(baseSpecies.varieties[formIndex].pokemon.url);
+  } catch {
+    return undefined;
+  }
+}
+
+export async function findRandomMon() {
+  let random = Math.floor(Math.random() * 1352);
+
+  // Include mega versions
+  if (random > 1025) {
+    random += 10000;
+    random -= 1025;
+  }
+
+  return await P.getPokemonByName(`${random}`);
+}
+
+export async function getRandDexEntry(pokemonName: string): Promise<string> {
+  const pokemon = await P.getPokemonByName(pokemonName);
+
+  const species = await P.getResource(pokemon.species.url);
+
+  const entries = species.flavor_text_entries.filter(
+    (entry) => entry.language.name === "en",
+  );
+
+  const random = Math.floor(Math.random() * entries.length);
+
+  return entries[random].flavor_text.replace(/\f/g, " ").replace(/\n/g, " ");
+}
+
+export async function getGenera(pokemonName: string): Promise<string> {
+  const pokemon = await P.getPokemonByName(pokemonName);
+
+  const species = await P.getResource(pokemon.species.url);
+
+  const entry = species.genera.find((item) => item.language.name === "en");
+
+  return entry?.genus ?? "Pokémon";
+}
+
+export async function isLegendOrMyth(pokemonName: string): Promise<boolean> {
+  const pokemon = await P.getPokemonSpeciesByName(pokemonName);
+
+  return pokemon.is_legendary || pokemon.is_mythical;
+}
+
+export async function pokeEmbedCreate(pokemon: any): Promise<EmbedBuilder> {
+  const dexEntry = await getRandDexEntry(pokemon.name);
+
+  const species = await P.getResource(pokemon.species.url);
+
+  const color = colors[species.color.name] ?? colors.gray;
+
+  const embed = new EmbedBuilder()
+    .setTitle(
+      `${
+        pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)
+      } | The ${await getGenera(pokemon.name)}`,
+    )
+    .setThumbnail(
+      `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
+    )
+    .setColor(color.hexcode)
+    .setDescription(dexEntry)
+    .setImage(color.bannerLink);
+
+  return embed;
+}
