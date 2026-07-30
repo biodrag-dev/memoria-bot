@@ -1,14 +1,8 @@
-import type {
-  ChatInputCommand,
-  CommandData,
-} from "commandkit";
+import type { ChatInputCommand, CommandData } from "commandkit";
 
-import {
-  ApplicationCommandOptionType,
-} from "discord.js";
+import { ApplicationCommandOptionType } from "discord.js";
 
 import * as pokehelper from "../helpers/pokeHelper";
-
 
 export const command: CommandData = {
   name: "pokedex",
@@ -32,10 +26,8 @@ export const command: CommandData = {
 
     {
       name: "basemon-finder",
-      description:
-        "Find the base Pokémon of an evolutionary tree!",
+      description: "Find the base Pokémon of an evolutionary tree!",
       type: ApplicationCommandOptionType.Subcommand,
-
       options: [
         {
           name: "name",
@@ -54,7 +46,6 @@ export const command: CommandData = {
   ],
 };
 
-
 export const chatInput: ChatInputCommand = async (ctx) => {
   const interaction = ctx.interaction;
 
@@ -62,14 +53,10 @@ export const chatInput: ChatInputCommand = async (ctx) => {
 
   const sub = interaction.options.getSubcommand();
 
-
   if (sub === "find") {
-    const name =
-      interaction.options.getString("name")!;
+    const name = interaction.options.getString("name")!;
 
-    const pokemon =
-      await pokehelper.findPokemon(name);
-
+    const pokemon = await pokehelper.findPokemon(name);
 
     if (!pokemon) {
       return interaction.editReply(
@@ -77,30 +64,19 @@ export const chatInput: ChatInputCommand = async (ctx) => {
       );
     }
 
-
-    const embed =
-      await pokehelper.pokeEmbedCreate(
-        pokemon,
-        pokehelper.getRandDexEntry(
-          pokemon.name,
-        ),
-      );
-
+    const embed = await pokehelper.pokeEmbedCreate(
+      pokemon,
+      pokehelper.getRandDexEntry(pokemon.name),
+    );
 
     return interaction.editReply({
       embeds: [embed],
     });
   }
-
 
   if (sub === "basemon-finder") {
-    const name =
-      interaction.options.getString("name")!;
-
-
-    const pokemon =
-      await pokehelper.findPokemon(name);
-
+    const name = interaction.options.getString("name")!;
+    const pokemon = await pokehelper.findPokemon(name);
 
     if (!pokemon) {
       return interaction.editReply(
@@ -108,38 +84,21 @@ export const chatInput: ChatInputCommand = async (ctx) => {
       );
     }
 
+    const basemon = await pokehelper.findBaseMon(
+      pokemon,
+      pokehelper.getRandDexEntry(pokemon.name),
+    );
 
-    const basemon =
-      await pokehelper.findBaseMon(
-        pokemon,
-        pokehelper.getRandDexEntry(
-          pokemon.name,
-        ),
-      );
-
-
-    const embed =
-      await pokehelper.pokeEmbedCreate(
-        basemon,
-      );
-
+    const embed = await pokehelper.pokeEmbedCreate(basemon);
 
     return interaction.editReply({
       embeds: [embed],
     });
   }
 
-
   if (sub === "random-mon") {
-    const pokemon =
-      await pokehelper.findRandomMon();
-
-
-    const embed =
-      await pokehelper.pokeEmbedCreate(
-        pokemon,
-      );
-
+    const pokemon = await pokehelper.findRandomMon();
+    const embed = await pokehelper.pokeEmbedCreate(pokemon);
 
     return interaction.editReply({
       embeds: [embed],

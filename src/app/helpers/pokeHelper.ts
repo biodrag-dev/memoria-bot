@@ -148,18 +148,16 @@ export async function getRandDexEntry(pokemonName: string): Promise<string> {
 
 export async function getGenera(pokemonName: string): Promise<string> {
   const pokemon = await P.getPokemonByName(pokemonName);
-
   const species = await P.getResource(pokemon.species.url);
-
   const entry = species.genera.find((item) => item.language.name === "en");
 
   return entry?.genus ?? "Pokémon";
 }
 
 export async function isLegendOrMyth(pokemonName: string): Promise<boolean> {
-  const pokemon = await P.getPokemonSpeciesByName(pokemonName);
-
-  return pokemon.is_legendary || pokemon.is_mythical;
+  const pokemon = await P.getPokemonByName(pokemonName);
+  const species = await P.getResource(pokemon.species.url);
+  return species.is_legendary || species.is_mythical;
 }
 
 export async function pokeEmbedCreate(pokemon: any): Promise<EmbedBuilder> {

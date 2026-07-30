@@ -33,6 +33,7 @@ async function partnerView(character) {
   return embed;
 }
 
+
 module.exports = {
   pokeEmbedCreate,
 };

@@ -1,21 +1,32 @@
 {
-  "350614938722500608": {
+  "1074503972037075054": {
     "characters": {
-      "Ruyi": {
-        "name": "Ruyi",
-        "house": "Jirachi",
+      "Anrui": {
+        "name": "Anrui",
+        "house": "Victini",
         "badges": [],
-        "registeredOn": "2026-07-28T23:41:02.673Z",
-        "destination": "aurorus",
+        "registeredOn": "2026-07-30T01:13:50.474Z",
+        "destination": "volcarona",
         "partner": {
           "shiny": true,
-          "species": "amaura",
+          "species": "larvesta",
           "specialMoves": {}
-        }
+        },
+        "sizeMult": 0.6400867600087314
+      },
+      "bro": {
+        "name": "bro",
+        "house": "Victini",
+        "badges": [],
+        "registeredOn": "2026-07-30T01:15:36.012Z",
+        "destination": "larvesta",
+        "partner": {
+          "shiny": true,
+          "species": "larvesta",
+          "specialMoves": {}
+        },
+        "sizeMult": 0.877756467438406
       }
     }
-  },
-  "1074503972037075054": {
-    "characters": {}
   }
 }

@@ -8,6 +8,7 @@ import {
 } from "discord.js";
 
 import * as userHelper from "../helpers/characterHelper";
+import { EmbedBuilder } from "discord.js";
 
 const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
   new ButtonBuilder()
@@ -25,7 +26,7 @@ export const command: CommandData = {
   name: "admin",
   description: "Admin only commands!",
   defaultMemberPermissions: "0",
-
+  dmPermission: false,
   options: [
     {
       name: "register-character",
@@ -211,19 +212,15 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   }
 
   if (group === "delete") {
+    let embed = new EmbedBuilder();
     if (sub === "all") {
-      const embed = await userHelper.deleteCharacter(
-        interaction.options.getUser("roleplayer")!.id,
-      );
-
-      return interaction.reply({
-        embeds: [embed],
-      });
-    }
-
-    if (sub === "character") {
+      embed
+        .setDescription(
+          `Are you sure you want to delete all of <@${interaction.options.getUser("roleplayer")!.id}>'s data? This decision cannot be reversed.`,
+        )
+        .setColor("Red");
       await interaction.reply({
-        content: `Are you sure you want to delete ${interaction.options.getString("character")}?`,
+        embeds: [embed],
         components: [row],
       });
       const message = await interaction.fetchReply();
@@ -233,24 +230,85 @@ export const chatInput: ChatInputCommand = async (ctx) => {
 
       collector.on("collect", async (button) => {
         if (button.user.id !== interaction.user.id) {
-          return button.reply({
-            content: "This confirmation isn't for you.",
+          embed.setDescription(`This confirmation isn't for you.`);
+          button.reply({
+            embeds: [embed],
             ephemeral: true,
           });
         }
 
         if (button.customId === "admin-delete-accept") {
+          embed.setDescription(`All of <@${interaction.options.getUser("roleplayer")!.id}>'s server data has been deleted.`);
           await button.update({
-            content: `${interaction.options.getString("character")} has been deleted!`,
+            embeds: [embed],
             components: [],
           });
-          await userHelper.deleteCharacter(interaction.options.getUser("roleplayer").id, interaction.options.getString("character"));
+          await userHelper.deleteAll(
+            interaction.options.getUser("roleplayer").id,
+          );
           collector.stop();
         }
 
         if (button.customId === "admin-delete-decline") {
+          embed.setDescription(`Deletion of <@${interaction.options.getUser("roleplayer")!.id}>'s characters cancelled.`);
+          embed.setColor("Green");
           await button.update({
-            content: "Cancelled.",
+            embeds: [embed],
+            components: [],
+          });
+
+          collector.stop();
+        }
+      });
+
+      return;
+    }
+
+    if (sub === "character") {
+      embed
+        .setDescription(
+          `Are you sure you want to delete ${interaction.options.getString("character")}?`,
+        )
+        .setColor("Red");
+      await interaction.reply({
+        embeds: [embed],
+        components: [row],
+      });
+      const message = await interaction.fetchReply();
+      const collector = message.createMessageComponentCollector({
+        time: 30_000,
+      });
+
+      collector.on("collect", async (button) => {
+        if (button.user.id !== interaction.user.id) {
+          embed.setDescription(`This confirmation isn't for you.`);
+          button.reply({
+            embeds: [embed],
+            ephemeral: true,
+          });
+        }
+
+        if (button.customId === "admin-delete-accept") {
+          embed.setDescription(
+            `${interaction.options.getString("character")} has been deleted!`,
+          );
+
+          await button.update({
+            embeds: [embed],
+            components: [],
+          });
+          await userHelper.deleteCharacter(
+            interaction.options.getUser("roleplayer").id,
+            interaction.options.getString("character"),
+          );
+          collector.stop();
+        }
+
+        if (button.customId === "admin-delete-decline") {
+          embed.setDescription(`Deletion cancelled.`);
+          embede.setColor("Green");
+          await button.update({
+            embeds: [embed],
             components: [],
           });
 

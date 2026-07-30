@@ -1,19 +1,13 @@
-import type {
-  ChatInputCommand,
-  CommandData,
-} from "commandkit";
+import type { ChatInputCommand, CommandData } from "commandkit";
 
-import {
-  ApplicationCommandOptionType,
-} from "discord.js";
+import { ApplicationCommandOptionType } from "discord.js";
 
 import * as userHelper from "../helpers/characterHelper";
-
 
 export const command: CommandData = {
   name: "character",
   description: "Character commands",
-
+  dmPermission: false,
   options: [
     {
       name: "partner",
@@ -29,8 +23,7 @@ export const command: CommandData = {
           options: [
             {
               name: "character",
-              description:
-                "Whose partner are you viewing?",
+              description: "Whose partner are you viewing?",
               type: ApplicationCommandOptionType.String,
               required: true,
               autocomplete: true,
@@ -38,18 +31,15 @@ export const command: CommandData = {
           ],
         },
 
-
         {
           name: "nickname",
-          description:
-            "Edit your partner's nickname",
+          description: "Edit your partner's nickname",
           type: ApplicationCommandOptionType.Subcommand,
 
           options: [
             {
               name: "character",
-              description:
-                "Whose partner are you nicknaming?",
+              description: "Whose partner are you nicknaming?",
               type: ApplicationCommandOptionType.String,
               required: true,
               autocomplete: true,
@@ -57,26 +47,22 @@ export const command: CommandData = {
 
             {
               name: "nickname",
-              description:
-                "What is the new nickname?",
+              description: "What is the new nickname?",
               type: ApplicationCommandOptionType.String,
               required: true,
             },
           ],
         },
 
-
         {
           name: "dex-entry",
-          description:
-            "View your partner Pokémon's dex entry",
+          description: "View your partner Pokémon's dex entry",
           type: ApplicationCommandOptionType.Subcommand,
 
           options: [
             {
               name: "character",
-              description:
-                "Whose partner are you viewing?",
+              description: "Whose partner are you viewing?",
               type: ApplicationCommandOptionType.String,
               required: true,
               autocomplete: true,
@@ -84,18 +70,15 @@ export const command: CommandData = {
           ],
         },
 
-
         {
           name: "evolve",
-          description:
-            "Evolve your partner Pokémon",
+          description: "Evolve your partner Pokémon",
           type: ApplicationCommandOptionType.Subcommand,
 
           options: [
             {
               name: "character",
-              description:
-                "Whose partner are you evolving?",
+              description: "Whose partner are you evolving?",
               type: ApplicationCommandOptionType.String,
               required: true,
               autocomplete: true,
@@ -107,31 +90,18 @@ export const command: CommandData = {
   ],
 };
 
-
 export const autocomplete = async (ctx: any) => {
   const interaction = ctx.interaction;
 
-  const focused =
-    interaction.options.getFocused();
+  const focused = interaction.options.getFocused();
 
+  const names = await userHelper.getCharacterNames(interaction.user.id);
 
-  const names =
-    await userHelper.getCharacterNames(
-      interaction.user.id,
-    );
-
-
-  const filtered =
-    names
-      .filter((name: string) =>
-        name
-          .toLowerCase()
-          .startsWith(
-            focused.toLowerCase(),
-          ),
-      )
-      .slice(0, 25);
-
+  const filtered = names
+    .filter((name: string) =>
+      name.toLowerCase().startsWith(focused.toLowerCase()),
+    )
+    .slice(0, 25);
 
   return interaction.respond(
     filtered.map((name: string) => ({
@@ -141,30 +111,20 @@ export const autocomplete = async (ctx: any) => {
   );
 };
 
-
 export const chatInput: ChatInputCommand = async (ctx) => {
   const interaction = ctx.interaction;
 
-  const group =
-    interaction.options.getSubcommandGroup();
+  const group = interaction.options.getSubcommandGroup();
 
-  const sub =
-    interaction.options.getSubcommand();
-
+  const sub = interaction.options.getSubcommand();
 
   if (group !== "partner") {
     return;
   }
 
-
   switch (sub) {
-
     case "view": {
-      const character =
-        interaction.options.getString(
-          "character",
-        )!;
-
+      const character = interaction.options.getString("character")!;
 
       /*
         Replace with your helper:
@@ -180,24 +140,15 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         });
       */
 
-
       return interaction.reply(
         `Viewing partner for ${character} (not implemented yet).`,
       );
     }
 
-
     case "nickname": {
-      const character =
-        interaction.options.getString(
-          "character",
-        )!;
+      const character = interaction.options.getString("character")!;
 
-      const nickname =
-        interaction.options.getString(
-          "nickname",
-        )!;
-
+      const nickname = interaction.options.getString("nickname")!;
 
       /*
         Replace with:
@@ -210,42 +161,29 @@ export const chatInput: ChatInputCommand = async (ctx) => {
           );
       */
 
-
       return interaction.reply(
         `Changing ${character}'s nickname to ${nickname} (not implemented yet).`,
       );
     }
 
-
     case "dex-entry": {
-      const character =
-        interaction.options.getString(
-          "character",
-        )!;
-
+      const character = interaction.options.getString("character")!;
 
       /*
         Replace with your dex entry helper.
       */
-
 
       return interaction.reply(
         `Dex entry for ${character} (not implemented yet).`,
       );
     }
 
-
     case "evolve": {
-      const character =
-        interaction.options.getString(
-          "character",
-        )!;
-
+      const character = interaction.options.getString("character")!;
 
       /*
         Replace with your evolution helper.
       */
-
 
       return interaction.reply(
         `Evolution for ${character} (not implemented yet).`,

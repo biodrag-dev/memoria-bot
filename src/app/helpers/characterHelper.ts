@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 import { EmbedBuilder } from "discord.js";
 
 import * as pokehelper from "./pokeHelper";
+import * as submitHelper from "./submitHelper";
 
 interface Partner {
   shiny: boolean;
@@ -18,6 +19,7 @@ interface Character {
   registeredOn: Date;
   destination: string;
   partner: Partner;
+  sizeMult: number;
 }
 
 interface UserData {
@@ -25,14 +27,11 @@ interface UserData {
 }
 
 type CharacterDex = Record<string, UserData>;
-type EvoDex = Record<string, string>;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-console.log(__dirname);
 const jsonsPath = path.resolve(__dirname, "../../../jsons");
 
 let charaDex: CharacterDex | null = null;
-let evoDex: EvoDex | null = null;
 
 async function loadUsers() {
   if (!charaDex) {
@@ -42,26 +41,10 @@ async function loadUsers() {
   }
 }
 
-async function loadEvos() {
-  if (!evoDex) {
-    const data = await fs.readFile(`${jsonsPath}/evoDestinations.json`, "utf8");
-
-    evoDex = JSON.parse(data) as EvoDex;
-  }
-}
-
 async function saveUsers() {
   await fs.writeFile(
     `${jsonsPath}/users.json`,
     JSON.stringify(charaDex, null, 2),
-    "utf8",
-  );
-}
-
-async function saveEvos() {
-  await fs.writeFile(
-    `${jsonsPath}/evoDestinations.json`,
-    JSON.stringify(evoDex, null, 2),
     "utf8",
   );
 }
@@ -106,68 +89,71 @@ export async function registerCharacter(
   shiny: boolean,
 ): Promise<EmbedBuilder> {
   await loadUsers();
-  await loadEvos();
+  const embed = new EmbedBuilder().setColor("Red");
 
   const destinationName =
     destination.charAt(0).toUpperCase() + destination.slice(1).toLowerCase();
 
   if (!charaDex![user]) {
-    charaDex![user] = {
+    charaDex[user] = {
       characters: {},
     };
+  } else if (charaDex[user].characters[name]) {
+    embed.setDescription(
+      `Character with name ${name} already exists under <@${user}>'s account!`,
+    );
+    return embed;
   }
 
-  if (pokehelper.isLegendOrMyth(destination) == true) {
-    return new EmbedBuilder()
-      .setDescription(
-        `Pokemon Species ${destinationName} is legendary or mythical!`,
-      )
-      .setColor("Red");
+  if ((await pokehelper.isLegendOrMyth(destination)) == true) {
+    embed.setDescription(
+      `Pokemon Species ${destinationName} is legendary or mythical!`,
+    );
+    return embed;
   }
 
-  if (!evoDex[destination.toLowerCase()]) {
-    return new EmbedBuilder()
-      .setDescription(
-        `Pokemon Species ${destinationName} has already been claimed!`,
-      )
-      .setColor("Red");
+  if (await submitHelper.checkDestination(destination, user)) {
+    embed.setDescription(
+      `Pokemon Species ${destinationName} has already been claimed!`,
+    );
+    return embed;
   }
 
   const pokemon = await pokehelper.findPokemon(destination);
 
   if (!pokemon) {
-    return new EmbedBuilder()
-      .setDescription(`Pokemon Species ${destinationName} could not be found!`)
-      .setColor("Red");
+    embed.setDescription(
+      `Pokemon Species ${destinationName} could not be found!`,
+    );
+    return embed;
   }
 
   const basemon = await pokehelper.findBaseMon(pokemon);
 
+  const sizeMult = Math.random() / 2 + 0.75;
   const character: Character = {
     name,
     house,
     badges: [],
     registeredOn: new Date(),
-
     destination: destination.toLowerCase(),
-
     partner: {
       shiny,
       species: basemon.name,
       specialMoves: {},
     },
+    sizeMult,
   };
 
-  evoDex![destination.toLowerCase()] = user;
-
+  await submitHelper.approveDestination(destination.toLowerCase());
   charaDex![user].characters[name] = character;
 
   await saveUsers();
-  await saveEvos();
 
-  return new EmbedBuilder()
+  embed
     .setDescription(`${name} was registered successfully!`)
     .setColor("Green");
+  return embed;
 }
 
 export async function deleteCharacter(
@@ -175,7 +161,6 @@ export async function deleteCharacter(
   name: string,
 ): Promise<EmbedBuilder> {
   await loadUsers();
-  await loadEvos();
 
   const user = charaDex?.[id];
 
@@ -188,12 +173,10 @@ export async function deleteCharacter(
   }
 
   const evoDestination = character.destination;
-
-  delete evoDex![evoDestination];
+  await submitHelper.deleteDestination(evoDestination);
 
   delete user.characters[name];
 
-  await saveEvos();
   await saveUsers();
 
   const displayDestination =
@@ -209,7 +192,6 @@ export async function deleteCharacter(
 
 export async function deleteAll(id: string): Promise<EmbedBuilder> {
   await loadUsers();
-  await loadEvos();
 
   if (!charaDex?.[id]) {
     return new EmbedBuilder()
@@ -218,13 +200,12 @@ export async function deleteAll(id: string): Promise<EmbedBuilder> {
   }
 
   for (const character of Object.values(charaDex[id].characters)) {
-    delete evoDex![character.destination];
+    await submitHelper.deleteDestination(evoDestination);
   }
 
   delete charaDex[id];
 
   await saveUsers();
-  await saveEvos();
 
   return new EmbedBuilder()
     .setDescription("All characters were deleted!")
