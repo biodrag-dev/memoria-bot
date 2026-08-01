@@ -43,6 +43,19 @@ export const command: CommandData = {
       description: "Find a random Pokémon!",
       type: ApplicationCommandOptionType.Subcommand,
     },
+    {
+      name: "evo-path",
+      description: "Find a random Pokémon!",
+      type: ApplicationCommandOptionType.Subcommand,
+      options: [
+        {
+          name: "name",
+          description: "The name of the Pokémon",
+          type: ApplicationCommandOptionType.String,
+          required: true,
+        },
+      ],
+    },
   ],
 };
 
@@ -102,6 +115,32 @@ export const chatInput: ChatInputCommand = async (ctx) => {
 
     return interaction.editReply({
       embeds: [embed],
+    });
+  }
+
+  if (sub === "evo-path") {
+    const name = interaction.options.getString("name")!;
+    const pokemon = await pokehelper.findPokemon(name);
+
+    if (!pokemon) {
+      return interaction.editReply(
+        `Pokémon species "${name}" could not be found!`,
+      );
+    }
+
+    const evoPath = await pokehelper.getEvolutionPath(
+      interaction.options.getString("name"),
+    );
+
+    const evoEmbeds = [];
+    for (const evoName of evoPath) {
+      const pokemon = await pokehelper.findPokemon(evoName);
+      evoEmbeds.push(await pokehelper.pokeEmbedCreate(pokemon));
+    }
+
+    return interaction.editReply({
+      embeds: evoEmbeds,
+      ephemeral: true,
     });
   }
 };

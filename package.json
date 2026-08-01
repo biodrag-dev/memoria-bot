@@ -18,6 +18,7 @@
     "commandkit": "^1.2.1",
     "discord.js": "^14.27.0",
     "dotenv": "^17.4.2",
+    "node-cron": "^4.6.0",
     "pokedex-promise-v2": "^4.2.3"
   }
 }

@@ -10,6 +10,7 @@ interface Partner {
   shiny: boolean;
   species: string;
   specialMoves: Record<string, unknown>;
+  sizeMult: number;
 }
 
 interface Character {
@@ -19,7 +20,6 @@ interface Character {
   registeredOn: Date;
   destination: string;
   partner: Partner;
-  sizeMult: number;
 }
 
 interface UserData {
@@ -81,79 +81,37 @@ export async function getCharacterNames(id: string): Promise<string[]> {
   return names;
 }
 
-export async function registerCharacter(
-  user: string,
-  name: string,
-  house: string,
-  destination: string,
-  shiny: boolean,
-): Promise<EmbedBuilder> {
+export async function registerCharacter(user: string): Promise<EmbedBuilder> {
   await loadUsers();
-  const embed = new EmbedBuilder().setColor("Red");
-
-  const destinationName =
-    destination.charAt(0).toUpperCase() + destination.slice(1).toLowerCase();
-
-  if (!charaDex![user]) {
-    charaDex[user] = {
-      characters: {},
-    };
-  } else if (charaDex[user].characters[name]) {
-    embed.setDescription(
-      `Character with name ${name} already exists under <@${user}>'s account!`,
-    );
-    return embed;
-  }
-
-  if ((await pokehelper.isLegendOrMyth(destination)) == true) {
-    embed.setDescription(
-      `Pokemon Species ${destinationName} is legendary or mythical!`,
-    );
-    return embed;
-  }
-
-  if (await submitHelper.checkDestination(destination, user)) {
-    embed.setDescription(
-      `Pokemon Species ${destinationName} has already been claimed!`,
-    );
-    return embed;
-  }
-
-  const pokemon = await pokehelper.findPokemon(destination);
-
-  if (!pokemon) {
-    embed.setDescription(
-      `Pokemon Species ${destinationName} could not be found!`,
-    );
-    return embed;
-  }
+  const submission = await submitHelper.getSubmit(user);
+  const pokemon = await pokehelper.findPokemon(submission.partner);
 
   const basemon = await pokehelper.findBaseMon(pokemon);
 
   const sizeMult = Math.random() / 2 + 0.75;
   const character: Character = {
-    name,
-    house,
+    name: submission.name,
+    house: submission.house,
     badges: [],
     registeredOn: new Date(),
-    destination: destination.toLowerCase(),
+    destination: submission.partner.toLowerCase(),
     partner: {
-      shiny,
+      shiny: false,
       species: basemon.name,
       specialMoves: {},
+      sizeMult: sizeMult,
     },
-    sizeMult,
   };
+  await submitHelper.approveDestination(submission.partner.toLowerCase());
 
-  await submitHelper.approveDestination(destination.toLowerCase());
-  charaDex![user].characters[name] = character;
+  if (!charaDex![user]) {
+    charaDex[user] = {
+      characters: {},
+    };
+  }
+  charaDex![user].characters[submission.name] = character;
 
   await saveUsers();
-
-  embed
-    .setDescription(`${name} was registered successfully!`)
-    .setColor("Green");
-  return embed;
 }
 
 export async function deleteCharacter(

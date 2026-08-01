@@ -1,32 +1,35 @@
 {
   "1074503972037075054": {
     "characters": {
-      "Anrui": {
-        "name": "Anrui",
+      "test": {
+        "name": "test",
         "house": "Victini",
         "badges": [],
-        "registeredOn": "2026-07-30T01:13:50.474Z",
-        "destination": "volcarona",
+        "registeredOn": "2026-07-30T06:50:52.921Z",
+        "destination": "lucario",
         "partner": {
-          "shiny": true,
-          "species": "larvesta",
-          "specialMoves": {}
-        },
-        "sizeMult": 0.6400867600087314
+          "shiny": false,
+          "species": "riolu",
+          "specialMoves": {},
+          "sizeMult": 1.0295772377550443
+        }
       },
-      "bro": {
-        "name": "bro",
+      "Hatsune Miku": {
+        "name": "Hatsune Miku",
         "house": "Victini",
         "badges": [],
-        "registeredOn": "2026-07-30T01:15:36.012Z",
-        "destination": "larvesta",
+        "registeredOn": "2026-07-30T06:52:48.535Z",
+        "destination": "eevee",
         "partner": {
-          "shiny": true,
-          "species": "larvesta",
-          "specialMoves": {}
-        },
-        "sizeMult": 0.877756467438406
+          "shiny": false,
+          "species": "eevee",
+          "specialMoves": {},
+          "sizeMult": 0.8646070393675189
+        }
       }
     }
+  },
+  "723291117302448169": {
+    "characters": {}
   }
 }

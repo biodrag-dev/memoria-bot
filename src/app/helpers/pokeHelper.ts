@@ -88,36 +88,70 @@ export async function findPokemon(name: string) {
   }
 }
 
-export async function findBaseMon(pokemon: any) {
+export async function getEvolutionPath(dest: string) {
+  if (dest === "basculin-white-striped") return ["basculin-white-striped"];
+  if (dest === "basculegion-female")
+    return ["basculin-white-striped", "basculegion-female"];
+  if (dest === "basculegion-male")
+    return ["basculin-white-striped", "basculegion-male"];
+  if (dest === "frillish-male") return ["frillish-male"];
+  if (dest === "jellicent-male") return ["frillish-male", "jellicent-male"];
+
   try {
+    const pokemon = await P.getPokemonByName(dest.toLowerCase());
     const pokemonSpecies = await P.getResource(pokemon.species.url);
-
-    let formIndex = 0;
-
-    if (pokemon.forms && pokemon.forms[0].name !== pokemon.species.name) {
-      let count = 0;
-
-      for (const form of pokemonSpecies.varieties) {
-        if (form.pokemon.name === pokemon.name) {
-          formIndex = count;
-        }
-
-        count++;
-      }
-    }
-
     const evoChain = await P.getResource(pokemonSpecies.evolution_chain.url);
 
-    const baseSpecies = await P.getResource(evoChain.chain.species.url);
+    const paths = await getEvolutionPathHelper(evoChain.chain, pokemon.name);
+    if(paths) return paths;
 
-    if (!baseSpecies.varieties[formIndex]) {
-      formIndex = 0;
-    }
-
-    return await P.getResource(baseSpecies.varieties[formIndex].pokemon.url);
+    return [pokemon.name];
+    console.log("paths", paths);
+    return paths;
   } catch {
     return undefined;
   }
+}
+
+function getEvolutionPathHelper(
+  chainLink: any,
+  target: string,
+  path: string[] = [],
+  currentName?: string,
+): string[] | null {
+  if (currentName === target) {
+    return [...path, currentName];
+  }
+
+  //each evolution that they can get
+  for (const evolution of chainLink.evolves_to) {
+    // iterates over each evolution (regional forms included)
+    for (const detail of evolution.evolution_details) {
+      // goes over the detail of each evolution (which form is required? which form is base?)
+      //checks if it evolves into a regional form
+      var evolvedForm = detail.evolved_form?.name ?? evolution.species.name;
+      //check if the base form requires a regional form
+      var baseForm = detail.base_form?.name ?? chainLink.species.name;
+
+      var result;
+      result = getEvolutionPathHelper(
+        evolution,
+        target,
+        [...path, baseForm],
+        evolvedForm,
+      );
+      if (result) {
+        return result;
+      }
+    }
+  }
+
+  return null;
+}
+
+export async function findBaseMon(pokemon: any) {
+  const evoTree = await getEvolutionPath(pokemon.name)
+  return await P.getPokemonByName(evoTree[0]);
 }
 
 export async function findRandomMon() {
@@ -169,9 +203,7 @@ export async function pokeEmbedCreate(pokemon: any): Promise<EmbedBuilder> {
 
   const embed = new EmbedBuilder()
     .setTitle(
-      `${
-        pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)
-      } | The ${await getGenera(pokemon.name)}`,
+      `${displayName(pokemon.name)} | The ${await getGenera(pokemon.name)}`,
     )
     .setThumbnail(
       `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
@@ -181,4 +213,91 @@ export async function pokeEmbedCreate(pokemon: any): Promise<EmbedBuilder> {
     .setImage(color.bannerLink);
 
   return embed;
+}
+
+export function displayName(pokemonName: string) {
+  var form = "";
+  var name = pokemonName;
+  if (name.includes("-paldea")) {
+    form = "Paldean ";
+    name = name.replace("-paldea", "");
+  }
+
+  if (name.includes("-galar")) {
+    form = "Galarian ";
+    name = name.replace("-galar", "");
+  }
+
+  if (name.includes("-hisui")) {
+    form = "Hisuian ";
+    name = name.replace("-hisui", "");
+  }
+  if (name.includes("-alola")) {
+    form = "Alolan ";
+    name = name.replace("-alola", "");
+  }
+
+  if (name.includes("-mega")) {
+    form = "Mega ";
+    name = name.replace("-mega", "");
+  }
+
+  switch (name) {
+    case "mime-jr":
+      name = "Mime Jr.";
+      break;
+    case "mr-mime":
+      name = "Mr. Mime";
+      break;
+    case "mr-rime":
+      name = "Mr. Rime";
+      break;
+    case "porygon-z":
+      name = "Porygon-Z";
+      break;
+    case "ho-oh":
+      name = "Ho-oh";
+      break;
+    case "type-null":
+      name = "Type: Null";
+      break;
+    case "wo-chien":
+      name = "Wo-Chien";
+      break;
+    case "chi-yu":
+      name = "Chi-Yu";
+      break;
+    case "chien-pao":
+      name = "Chien-Pao";
+      break;
+    case "ting-lu":
+      name = "Ting-Lu";
+      break;
+    case "sirfetchd":
+      name = "Sirfetch'd";
+      break;
+    case "farfetchd":
+      name = "Farfetch'd";
+      break;
+    case "jangmo-o":
+      name = "Jangmo-o";
+      break;
+    case "hakamo-o":
+      name = "Hakamo-o";
+      break;
+    case "kommo-o":
+      name = "Kommo-o";
+      break;
+    case "flabebe":
+      name = "Flabébé";
+      break;
+    default:
+      name = name
+        .replaceAll("-", " ")
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+      break;
+  }
+  return form + name;
 }

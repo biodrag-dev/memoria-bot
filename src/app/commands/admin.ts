@@ -8,6 +8,8 @@ import {
 } from "discord.js";
 
 import * as userHelper from "../helpers/characterHelper";
+import * as submitHelper from "../../helpers/submitHelper";
+
 import { EmbedBuilder } from "discord.js";
 
 const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -28,58 +30,6 @@ export const command: CommandData = {
   defaultMemberPermissions: "0",
   dmPermission: false,
   options: [
-    {
-      name: "register-character",
-      description: "Register a character",
-      type: ApplicationCommandOptionType.Subcommand,
-      options: [
-        {
-          name: "user",
-          description: "Who is this character being registered for?",
-          type: ApplicationCommandOptionType.User,
-          required: true,
-        },
-        {
-          name: "character-name",
-          description: "What is the character's name?",
-          type: ApplicationCommandOptionType.String,
-          required: true,
-        },
-        {
-          name: "house",
-          description: "Which house is the character in?",
-          type: ApplicationCommandOptionType.String,
-          required: true,
-          choices: [
-            {
-              name: "Victini",
-              value: "Victini",
-            },
-            {
-              name: "Jirachi",
-              value: "Jirachi",
-            },
-            {
-              name: "Mew",
-              value: "Mew",
-            },
-          ],
-        },
-        {
-          name: "evolutionary-destination",
-          description: "Evolutionary destination",
-          type: ApplicationCommandOptionType.String,
-          required: true,
-        },
-        {
-          name: "shiny",
-          description: "Is their partner shiny?",
-          type: ApplicationCommandOptionType.Boolean,
-          required: true,
-        },
-      ],
-    },
-
     {
       name: "edit",
       description: "Edit a character",
@@ -185,20 +135,6 @@ export const chatInput: ChatInputCommand = async (ctx) => {
 
   const group = interaction.options.getSubcommandGroup(false);
   const sub = interaction.options.getSubcommand();
-
-  if (sub === "register-character") {
-    const embed = await userHelper.registerCharacter(
-      interaction.options.getUser("user")!.id,
-      interaction.options.getString("character-name")!,
-      interaction.options.getString("house")!,
-      interaction.options.getString("evolutionary-destination")!,
-      interaction.options.getBoolean("shiny")!,
-    );
-
-    return interaction.reply({
-      embeds: [embed],
-    });
-  }
 
   if (sub === "edit") {
     const embed = await userHelper.editCharacter(

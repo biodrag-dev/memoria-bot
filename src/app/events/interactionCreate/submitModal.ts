@@ -26,10 +26,9 @@ export default async function (interaction: Interaction) {
   if (!interaction.isModalSubmit()) return;
 
   if (interaction.customId == "character-submit") {
-    console.log(interaction.fields);
     const name = interaction.fields.getTextInputValue("chara-name");
     const house = interaction.fields.fields.get("chara-house").values[0];
-    const dest = interaction.fields.getTextInputValue("chara-dest");
+    const dest = interaction.fields.getTextInputValue("chara-dest").toLowerCase();
     const doc = interaction.fields.getTextInputValue("chara-doc");
 
     //checks if pokemon exists
@@ -51,7 +50,7 @@ export default async function (interaction: Interaction) {
     //checks if an existing claim is on the destination
     const evoCheck = await submitHelper.checkDestination(
       interaction.user.id,
-      dest.toLowerCase(),
+      dest,
     );
     if (evoCheck == false) {
       const failEmbed = new EmbedBuilder()
@@ -68,9 +67,8 @@ export default async function (interaction: Interaction) {
     }
 
     //checks if user has any other existing reservations
-    const reserveCheck = await submitHelper.getReserve(interaction.user.id);
-    console.log(reserveCheck.length);
-    if (reserveCheck.length != 0 && reserveCheck[0] != dest.toLowerCase()) {
+    const reserveCheck = await submitHelper.getReserveOfUser(interaction.user.id);
+    if (reserveCheck.length != 0 && reserveCheck[0] != dest) {
       const failEmbed = new EmbedBuilder()
         .setColor("#ce1b1b")
         .setDescription(
@@ -87,13 +85,13 @@ export default async function (interaction: Interaction) {
     const color = houseColors[house] ?? "#221e1e";
 
     const embed = new EmbedBuilder()
-      .setTitle(`Character Registration | ${name}`)
+      .setTitle(`Application | ${name}`)
       .setThumbnail(
         `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
       )
       .setColor(color)
       .setDescription(
-        `**House** | ${house}\n**Evolutionary Destination** | ${dest}\n**Document Link**\n${doc}`,
+        `**House** | ${house}\n**Evolutionary Destination** | ${await submitHelper.toProperCase(dest)}\n**Document Link**\n${doc}`,
       );
 
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -108,16 +106,7 @@ export default async function (interaction: Interaction) {
         .setStyle(ButtonStyle.Secondary),
     );
 
-    const channel = await interaction.client.channels.fetch(
-      process.env.SUBMIT_LOG,
-    );
-
-    channel.send({
-      content: `<@${interaction.user.id}> has submitted a character!`,
-      embeds: [embed],
-      ephemeral: true,
-    });
-
+    await submitHelper.createSubmit(interaction.user.id, name, house, doc, dest);
     await interaction.reply({
       content: `Please confirm your registration details. This cannot be changed after clicking 'Submit'!`,
       embeds: [embed],

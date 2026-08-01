@@ -10,22 +10,11 @@ import {
   StringSelectMenuBuilder,
   StringSelectMenuOptionBuilder,
   MessageFlags,
+  EmbedBuilder,
 } from "discord.js";
 import type { ChatInputCommand, OnModalKitSubmit, Modal } from "commandkit";
 import * as pokehelper from "../helpers/pokeHelper";
 import * as submitHelper from "../helpers/submitHelper";
-
-const buttons = new ActionRowBuilder<ButtonBuilder>().addComponents(
-  new ButtonBuilder()
-    .setCustomId("admin-delete-accept")
-    .setLabel("Accept")
-    .setStyle(ButtonStyle.Success),
-
-  new ButtonBuilder()
-    .setCustomId("admin-delete-decline")
-    .setLabel("Decline")
-    .setStyle(ButtonStyle.Danger),
-);
 
 const favoriteStarterSelect = new StringSelectMenuBuilder()
   .setCustomId("chara-house")
@@ -50,6 +39,19 @@ const favoriteStarterSelect = new StringSelectMenuBuilder()
       .setDescription("The embodiment of heart.")
       .setValue("Jirachi"),
   );
+
+const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+  new ButtonBuilder()
+    .setCustomId("reserve-accept")
+    .setLabel("Accept")
+    .setStyle(ButtonStyle.Success),
+
+  new ButtonBuilder()
+    .setCustomId("reserve-decline")
+    .setLabel("Decline")
+    .setStyle(ButtonStyle.Danger),
+);
+
 
 const houseLabel = new LabelBuilder()
   .setLabel("Character House")
@@ -87,12 +89,77 @@ charaModal.addComponents(
 export const command: CommandData = {
   name: "submit",
   description: "Submits a character for review!",
+  options: [
+    {
+      name: "character",
+      description: "Submits a character for review",
+      type: ApplicationCommandOptionType.Subcommand,
+    },
+    {
+      name: "reserve-species",
+      description: "Reserves a pokemon species",
+      type: ApplicationCommandOptionType.Subcommand,
+    },
+  ],
 };
 
 export const chatInput: ChatInputCommand = async (ctx) => {
+  const interaction = ctx.interaction;
 
-  if(await submitHelper.hasSubmit(ctx.interaction.user.id) === true){
-    return;
+  const sub = interaction.options.getSubcommand();
+  if (sub === "character") {
+    if ((await submitHelper.hasSubmit(ctx.interaction.user.id)) === true) {
+      const failEmbed = new EmbedBuilder()
+        .setColor("#ce1b1b")
+        .setDescription(
+          `You already have an ongoing submission! Ask an admin to deny your previous submission if you really need to create a new one.`,
+        );
+
+      await ctx.interaction.reply({
+        embeds: [failEmbed],
+        ephemeral: true,
+      });
+      return;
+    }
+    await ctx.interaction.showModal(charaModal);
+  }else if (sub === "reserve-species"){
+
+
+    
+    //   collector.on("collect", async (button) => {
+    //     if (button.user.id !== interaction.user.id) {
+    //       embed.setDescription(`This confirmation isn't for you.`);
+    //       button.reply({
+    //         embeds: [embed],
+    //         ephemeral: true,
+    //       });
+    //     }
+
+    //     if (button.customId === "reserve-accept") {
+    //       embed.setDescription(`All of <@${interaction.options.getUser("roleplayer")!.id}>'s server data has been deleted.`);
+    //       await button.update({
+    //         embeds: [embed],
+    //         components: [],
+    //       });
+    //       await userHelper.deleteAll(
+    //         interaction.options.getUser("roleplayer").id,
+    //       );
+    //       collector.stop();
+    //     }
+
+    //     if (button.customId === "reserve-decline") {
+    //       embed.setDescription(`Deletion of <@${interaction.options.getUser("roleplayer")!.id}>'s characters cancelled.`);
+    //       embed.setColor("Green");
+    //       await button.update({
+    //         embeds: [embed],
+    //         components: [],
+    //       });
+
+    //       collector.stop();
+    //     }
+    //   });
+
   }
-  await ctx.interaction.showModal(charaModal);
+
+
 };
