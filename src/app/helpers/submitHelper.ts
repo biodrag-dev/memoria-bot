@@ -11,6 +11,8 @@ interface Character {
   docLink: string;
   partner: string;
   status: string;
+  shiny: number;
+  alpha: number;
 }
 
 interface EvoData {
@@ -152,6 +154,8 @@ export async function createSubmit(
 ) {
   await loadSubmissions();
   await loadEvos();
+  const shinyRoll = Math.floor(Math.random() * 20);
+  const alphaRoll = Math.floor(Math.random() * 20);
 
   const submitData: Character = {
     name,
@@ -159,6 +163,8 @@ export async function createSubmit(
     docLink,
     partner,
     status: "Temporary",
+    shinyRoll,
+    alphaRoll,
   };
 
   submitDex[`${id}`] = submitData;
@@ -258,4 +264,32 @@ export async function reviewEmbed(id: string, status: string) {
   }
 
   return embed;
+}
+
+export async function getAllApprovedPartnerEntries() {
+  await loadEvos();
+  let array = [];
+  for (const [destination, evo] of Object.entries(evoDex)) {
+    if (evo.status == "Approved") {
+      array.push(`${pokehelper.displayName(destination)} | <@${evo.user}>`);
+    }
+  }
+  array.join("\n");
+}
+
+export async function getAllReservedPartnerEntries() {
+  await loadEvos();
+  const now = new Date();
+
+  for (const [destination, evo] of Object.entries(evoDex)) {
+    if (evo.status !== "Approved") {
+      const expirationDate = new Date(evo.dateMade);
+      expirationDate.setMonth(expirationDate.getMonth() + 1);
+
+      array.push(
+        `${pokehelper.displayName(destination)} | <@${evo.user}> | <t:${Math.floor(expirationDate.getTime() / 1000)}:D>`,
+      );
+    }
+  }
+  array.join("\n");
 }

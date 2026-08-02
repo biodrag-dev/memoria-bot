@@ -21,10 +21,13 @@ export default async function (interaction: Interaction) {
     var embed;
     switch (action) {
       case "submit-confirm":
-        if (!(await submitHelper.getSubmit(interaction.user.id))) {
+        const submission = await submitHelper.getSubmit(interaction.user.id);
+        if (!submission) {
           embed = new EmbedBuilder()
             .setColor("#ce1b1b")
-            .setDescription(`Registration Error: Submission could not be found! Temporary submissions are cleared every 30 minutes. Try again, if the issue persists ping <@1074503972037075054> for help.`);
+            .setDescription(
+              `Registration Error: Submission could not be found! Temporary submissions are cleared every 30 minutes. Try again, if the issue persists ping <@1074503972037075054> for help.`,
+            );
           await interaction.update({
             content: "",
             embeds: [embed],
@@ -62,9 +65,36 @@ export default async function (interaction: Interaction) {
         });
 
         const thread = await msg.startThread({
-          name: `Review Thread`,
+          name: `Review Thread | ${submission.name}`,
         });
-        await thread.send(`<@${interaction.user.id}>`);
+        const shinyRoll = new EmbedBuilder()
+
+          .setDescription(`🎲 **Result** | ${submission.shinyRoll}`)
+          .setTitle(`Rolling for Shiny Status (1d20)...`);
+
+        if (submission.shinyRoll == 20) {
+          shinyRoll
+            .setColor("#f0ed4c")
+            .setFooter({ text: `Oh? Congratulations! It's a shiny!` });
+        } else {
+          shinyRoll
+            .setColor("#3c3d3c")
+            .setFooter({ text: "Better luck next time..." });
+        }
+        const alphaRoll = new EmbedBuilder()
+          .setDescription(`🎲 **Result** | ${submission.alphaRoll}`)
+          .setTitle(`Rolling for Alpha Status (1d20)...`);
+        if (submission.alphaRoll == 20) {
+          alphaRoll
+            .setColor("#f81a1a")
+            .setFooter({ text: `Oh? Congratulations! It's an alpha!` });
+        } else {
+          alphaRoll
+            .setColor("#3c3d3c")
+            .setFooter({ text: "Better luck next time..." });
+        }
+
+        await thread.send({content: `<@${interaction.user.id}>`, embeds: [shinyRoll, alphaRoll]});
 
         embed = new EmbedBuilder()
           .setColor("#27d121")

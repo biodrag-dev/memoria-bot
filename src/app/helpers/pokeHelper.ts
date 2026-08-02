@@ -103,7 +103,7 @@ export async function getEvolutionPath(dest: string) {
     const evoChain = await P.getResource(pokemonSpecies.evolution_chain.url);
 
     const paths = await getEvolutionPathHelper(evoChain.chain, pokemon.name);
-    if(paths) return paths;
+    if (paths) return paths;
 
     return [pokemon.name];
     console.log("paths", paths);
@@ -150,7 +150,7 @@ function getEvolutionPathHelper(
 }
 
 export async function findBaseMon(pokemon: any) {
-  const evoTree = await getEvolutionPath(pokemon.name)
+  const evoTree = await getEvolutionPath(pokemon.name);
   return await P.getPokemonByName(evoTree[0]);
 }
 
@@ -210,9 +210,23 @@ export async function pokeEmbedCreate(pokemon: any): Promise<EmbedBuilder> {
     )
     .setColor(color.hexcode)
     .setDescription(dexEntry)
-    .setImage(color.bannerLink);
+    .setImage(color.bannerLink)
+    .addFields(
+      { name: `Average Height`, value: `${(pokemon.height * .1).toFixed(1)} m | ${cmToFeetConversion(pokemon.height * 10)}`, inline: true },
+      { name: `Average Weight`, value: `${(pokemon.weight * .1).toFixed(1)} kg | ${kgToPounds(pokemon.weight * .1)} lbs`, inline: true },
+    );
 
   return embed;
+}
+
+function cmToFeetConversion(cm: number){
+  var realFeet = (cm / 30.48);
+  var feet = Math.floor(realFeet);
+  var inches = ((realFeet - feet) * 12).toFixed(0);
+  return feet + "'" + inches + '"';
+}
+function kgToPounds(kg: number){
+  return (kg * 2.20452262).toFixed(1)
 }
 
 export function displayName(pokemonName: string) {

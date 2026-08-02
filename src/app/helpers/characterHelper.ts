@@ -12,6 +12,15 @@ interface Partner {
   specialMoves: Record<string, unknown>;
   sizeMult: number;
 }
+interface CharacterData{
+  message_id: number | null;
+  age: number | null;
+  gender: string | null;
+  bio: string | null;
+  pronouns: string | null;
+  img_link: string | null;
+  artist_credits: string | null;
+}
 
 interface Character {
   name: string;
@@ -20,6 +29,7 @@ interface Character {
   registeredOn: Date;
   destination: string;
   partner: Partner;
+  optional: CharacterData;
 }
 
 interface UserData {
@@ -88,7 +98,12 @@ export async function registerCharacter(user: string): Promise<EmbedBuilder> {
 
   const basemon = await pokehelper.findBaseMon(pokemon);
 
-  const sizeMult = Math.random() / 2 + 0.75;
+  var sizeMult;
+  if (submission.alphaRoll == 20){
+    sizeMult = 2
+  }else{
+    sizeMult = Math.random() / 2 + 0.75;
+  }
   const character: Character = {
     name: submission.name,
     house: submission.house,
@@ -96,7 +111,7 @@ export async function registerCharacter(user: string): Promise<EmbedBuilder> {
     registeredOn: new Date(),
     destination: submission.partner.toLowerCase(),
     partner: {
-      shiny: false,
+      shiny: submission.shinyRoll == 20,
       species: basemon.name,
       specialMoves: {},
       sizeMult: sizeMult,
@@ -169,6 +184,8 @@ export async function deleteAll(id: string): Promise<EmbedBuilder> {
     .setDescription("All characters were deleted!")
     .setColor("Green");
 }
+
+
 
 export async function editCharacter(
   id: string,

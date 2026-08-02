@@ -26,6 +26,45 @@
           "specialMoves": {},
           "sizeMult": 0.8646070393675189
         }
+      },
+      "Anrui": {
+        "name": "Anrui",
+        "house": "Victini",
+        "badges": [],
+        "registeredOn": "2026-08-01T10:07:26.639Z",
+        "destination": "milotic",
+        "partner": {
+          "shiny": false,
+          "species": "feebas",
+          "specialMoves": {},
+          "sizeMult": 0.8787367767128534
+        }
+      },
+      "Tyranitar": {
+        "name": "Tyranitar",
+        "house": "Mew",
+        "badges": [],
+        "registeredOn": "2026-08-01T10:10:06.197Z",
+        "destination": "tyranitar",
+        "partner": {
+          "shiny": false,
+          "species": "larvitar",
+          "specialMoves": {},
+          "sizeMult": 2
+        }
+      },
+      "Ninetales-Alola": {
+        "name": "Ninetales-Alola",
+        "house": "Victini",
+        "badges": [],
+        "registeredOn": "2026-08-01T10:11:23.507Z",
+        "destination": "ninetales-alola",
+        "partner": {
+          "shiny": true,
+          "species": "vulpix-alola",
+          "specialMoves": {},
+          "sizeMult": 0.9220217352717951
+        }
       }
     }
   },

@@ -4,7 +4,7 @@ import { startScheduler } from "../../../scheduler.js";
 
 const handler: EventHandler<'clientReady'> = async (client) => {
   Logger.info(`Logged in as ${client.user.username}!`);
-  startScheduler();
+  startScheduler(client);
 
 };
 

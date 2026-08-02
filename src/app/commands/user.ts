@@ -13,7 +13,6 @@ export const command: CommandData = {
       name: "partner",
       description: "Partner Pokémon commands",
       type: ApplicationCommandOptionType.SubcommandGroup,
-
       options: [
         {
           name: "view",

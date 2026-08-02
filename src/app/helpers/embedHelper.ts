@@ -8,6 +8,18 @@ import * as pokehelper from "./pokeHelper";
 import * as submitHelper from "./submitHelper";
 import * as characterHelper from "./characterHelper";
 
+export async function updateEmbed(
+  channel: any,
+  message_id: string,
+  embed: EmbedBuilder,
+) {
+  //const channel = await interaction.client.channels.fetch(`${channel_id}`);
+  const msg = await channel.messages.fetch(`${message_id}`);
+  await msg.edit({
+    embeds: [embed]
+  });
+}
+
 export async function getReservesEmbed() {
   await loadUsers();
 
@@ -18,14 +30,13 @@ export async function getReservesEmbed() {
   }
 
   const embed = new EmbedBuilder()
-    .setTitle(
-      `Evolutionary Destination`,
-    )
+    .setTitle(`Evolutionary Destination`)
     .setThumbnail(
       `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
     )
     .setColor(color.hexcode)
-    .setDescription(`An 'Evolutionary Destination' describes the species that your pokemon partner will eventually evolve into. 
+    .setDescription(
+      `An 'Evolutionary Destination' describes the species that your pokemon partner will eventually evolve into. 
         
         Each 'Evolution Destination' can only be claimed once.
         Different forms are considered their own evolutionary destination, such as Ninetales and Alolan Ninetales.
@@ -38,8 +49,10 @@ export async function getReservesEmbed() {
 
         Only fully evolved evolution destinations will get a chance to roll for Alpha.
         Be aware that these destinations cannot be changed once a character is approved.
-        `)
-    .setImage("https://klipy.com/gifs/pixel-fireflies").setAuthor("Banner by AnasAbdin on Twitter");
+        `,
+    )
+    .setImage("https://klipy.com/gifs/pixel-fireflies")
+    .setAuthor("Banner by AnasAbdin on Twitter");
 
   return embed;
 }
