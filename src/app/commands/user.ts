@@ -1,13 +1,13 @@
 import type { ChatInputCommand, CommandData } from "commandkit";
 
-import { ApplicationCommandOptionType } from "discord.js";
+import { ApplicationCommandOptionType, InteractionContextType } from "discord.js";
 
 import * as userHelper from "../helpers/characterHelper";
 
 export const command: CommandData = {
   name: "character",
   description: "Character commands",
-  dmPermission: false,
+  contexts: [InteractionContextType.Guild], 
   options: [
     {
       name: "partner",

@@ -5,6 +5,7 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  InteractionContextType,
 } from "discord.js";
 
 import * as userHelper from "../helpers/characterHelper";
@@ -28,7 +29,7 @@ export const command: CommandData = {
   name: "admin",
   description: "Admin only commands!",
   defaultMemberPermissions: "0",
-  dmPermission: false,
+  contexts: [InteractionContextType.Guild],
   options: [
     {
       name: "edit",
@@ -61,7 +62,7 @@ export const command: CommandData = {
           name: "character",
           description: "Delete a character",
           type: ApplicationCommandOptionType.Subcommand,
-
+          dmPermission: false,
           options: [
             {
               name: "roleplayer",
@@ -83,7 +84,7 @@ export const command: CommandData = {
           name: "all",
           description: "Delete all characters",
           type: ApplicationCommandOptionType.Subcommand,
-
+          dmPermission: false,
           options: [
             {
               name: "roleplayer",
@@ -100,6 +101,13 @@ export const command: CommandData = {
 
 export const autocomplete = async (ctx: any) => {
   const interaction = ctx.interaction;
+
+  if (!interaction.inGuild()) {
+    return interaction.reply({
+      content: "This command can only be used in a server.",
+      ephemeral: true,
+    });
+  }
 
   const focused = interaction.options.getFocused();
   const sub = interaction.options.getSubcommand();
@@ -174,7 +182,12 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         }
 
         if (button.customId === "admin-delete-accept") {
-          embed.setDescription(`All of <@${interaction.options.getUser("roleplayer")!.id}>'s server data has been deleted.`);
+          embed.setDescription(
+            `All of <@${interaction.options.getUser("roleplayer")!.id}>'s server data has been deleted.`,
+          );
+          const member = await interaction.guild.members.fetch(interaction.options.getUser("roleplayer")!.id);
+          await member.roles.remove(process.env.ROLEPLAYER_ROLE); //roleplayer role
+
           await button.update({
             embeds: [embed],
             components: [],
@@ -186,7 +199,9 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         }
 
         if (button.customId === "admin-delete-decline") {
-          embed.setDescription(`Deletion of <@${interaction.options.getUser("roleplayer")!.id}>'s characters cancelled.`);
+          embed.setDescription(
+            `Deletion of <@${interaction.options.getUser("roleplayer")!.id}>'s characters cancelled.`,
+          );
           embed.setColor("Green");
           await button.update({
             embeds: [embed],

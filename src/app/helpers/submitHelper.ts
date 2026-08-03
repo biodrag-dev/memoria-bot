@@ -105,14 +105,14 @@ export async function reserveDays(name: string) {
   console.log(difference); // milliseconds
 }
 
-export async function reserveExpireDate(name: string) {
+export function reserveExpireDate(name: string) {
   const expirationDate = new Date(evoDex[`${name.toLowerCase()}`].dateMade);
   expirationDate.setMonth(expirationDate.getMonth() + 1);
   return expirationDate;
 }
 
-export async function getReserveOfUser(id: string) {
-  await loadEvos();
+export function getReserveOfUser(id: string) {
+  loadEvos();
   return Object.entries(evoDex)
     .filter(([_, data]) => data.user === id && data.status === "Reserved")
     .map(([name]) => name);
@@ -120,14 +120,14 @@ export async function getReserveOfUser(id: string) {
 
 //creates a destination entry with reserved status. will override existing ones
 async function createDestination(id: string, name: string) {
-  await loadEvos();
+  loadEvos();
   const evoData: EvoData = {
     user: id,
     status: "Reserved",
     dateMade: new Date(),
   };
   evoDex[`${name}`] = evoData;
-  await saveEvos();
+  saveEvos();
 }
 
 export async function hasSubmit(id: string) {
@@ -154,8 +154,8 @@ export async function createSubmit(
 ) {
   await loadSubmissions();
   await loadEvos();
-  const shinyRoll = Math.floor(Math.random() * 20);
-  const alphaRoll = Math.floor(Math.random() * 20);
+  const shinyRoll = Math.floor(Math.random() * 20) + 1;
+  const alphaRoll = Math.floor(Math.random() * 20) + 1;
 
   const submitData: Character = {
     name,
@@ -274,12 +274,14 @@ export async function getAllApprovedPartnerEntries() {
       array.push(`${pokehelper.displayName(destination)} | <@${evo.user}>`);
     }
   }
-  array.join("\n");
+  array.sort();
+  return array.join("\n");
 }
 
 export async function getAllReservedPartnerEntries() {
   await loadEvos();
   const now = new Date();
+  let array = [];
 
   for (const [destination, evo] of Object.entries(evoDex)) {
     if (evo.status !== "Approved") {
@@ -287,9 +289,54 @@ export async function getAllReservedPartnerEntries() {
       expirationDate.setMonth(expirationDate.getMonth() + 1);
 
       array.push(
-        `${pokehelper.displayName(destination)} | <@${evo.user}> | <t:${Math.floor(expirationDate.getTime() / 1000)}:D>`,
+        `${pokehelper.displayName(destination)} | <@${evo.user}> | Expires <t:${Math.floor(expirationDate.getTime() / 1000)}:D>`,
       );
     }
   }
-  array.join("\n");
+  if (array.length == 0) {
+    return "No reservations are ongoing right now. Why don't you change that?";
+  }
+  return array.join("\n");
+}
+
+export function verifyCanReserve(userId: string, speciesName: string) {
+  loadEvos();
+  const existingReserve = evoDex[`${speciesName}`];
+  //if they cannot reserve (-1)
+  if (existingReserve) {
+    return -1;
+  }
+
+  const userReserve = getReserveOfUser(userId);
+  var userReserveName;
+  if (userReserve.length != 0) {
+    userReserveName = userReserve[0];
+  }
+
+  //if user has an existing reserve
+  if (userReserveName) {
+    const changeDate = new Date(evoDex[`${userReserveName}`].dateMade);
+    changeDate.setDate(changeDate.getDate() + 7);
+
+    const now = new Date();
+    const difference = now.getTime() - changeDate.getTime();
+    //if they have an existing reserve but it can be swapped (-2)
+    if (difference > 0) {
+      return -2;
+    } else {
+      return Math.floor(changeDate.getTime() / 1000);
+    }
+  }
+
+  //if species doesn't have an existing reserve & no problems with taking it (0)
+  return 0;
+}
+
+export function createProperReserve(userId: string, speciesName: string){
+  const userReserve = getReserveOfUser(userId);
+  if (userReserve.length != 0) {
+    delete evoDex[`${userReserve[0]}`];
+  }
+  
+  createDestination(userId, speciesName);
 }

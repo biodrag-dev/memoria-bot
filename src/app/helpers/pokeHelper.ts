@@ -231,7 +231,7 @@ function kgToPounds(kg: number){
 
 export function displayName(pokemonName: string) {
   var form = "";
-  var name = pokemonName;
+  var name = pokemonName.toLowerCase();
   if (name.includes("-paldea")) {
     form = "Paldean ";
     name = name.replace("-paldea", "");

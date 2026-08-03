@@ -37,7 +37,7 @@ export default async function (interaction: Interaction) {
       const failEmbed = new EmbedBuilder()
         .setColor("#ce1b1b")
         .setDescription(
-          `Registration Error: Pokemon Species "${await submitHelper.toProperCase(dest)}" could not be found! Try looking the species up with **/pokedex find** first. Some regional species use different syntax, such as "Ninetales-alola" or "Ponyta-galar"! If you need further assistance, you can ask for help in ${process.env.QUESTIONS_CHANNEL}!`,
+          `Registration Error: Pokemon Species "${await submitHelper.toProperCase(dest)}" could not be found! Try looking the species up with **/pokedex find** first. Some regional species use different syntax, such as "Ninetales-alola" or "Ponyta-galar"! If you need further assistance, you can ask for help in <#${process.env.QUESTIONS_CHANNEL}>!`,
         );
 
       await interaction.reply({

@@ -1,8 +1,13 @@
-import { ApplicationCommandOptionType, ChannelType } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  ChannelType,
+  InteractionContextType,
+} from "discord.js";
 
 export const command: CommandData = {
   name: "send",
   description: "send a msg",
+  contexts: [InteractionContextType.Guild],
   options: [
     {
       name: "message",

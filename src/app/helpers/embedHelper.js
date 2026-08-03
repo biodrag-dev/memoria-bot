@@ -1,15 +1,3 @@
-const { EmbedBuilder } = require("discord.js");
-
-async function pokeEmbedCreate(pokemon, dexEntry) {
-  const embed = new EmbedBuilder()
-    .setTitle(`${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}`)
-    .setThumbnail(
-      `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
-    )
-    .setColor("Random").setDescription(`${dexEntry}`);
-
-  return embed;
-}
 
 async function partnerView(character) {
   let partnerNick = character.partner.nickname

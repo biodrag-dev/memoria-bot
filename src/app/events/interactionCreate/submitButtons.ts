@@ -49,12 +49,12 @@ export default async function (interaction: Interaction) {
         const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
           new ButtonBuilder()
             .setCustomId(`admin-approve:${interaction.user.id}:${msg.id}`)
-            .setLabel("Accept")
+            .setLabel("Approve")
             .setStyle(ButtonStyle.Success),
 
           new ButtonBuilder()
             .setCustomId(`admin-decline:${interaction.user.id}:${msg.id}`)
-            .setLabel("Decline")
+            .setLabel("Deny")
             .setStyle(ButtonStyle.Danger),
         );
 
@@ -87,7 +87,7 @@ export default async function (interaction: Interaction) {
         if (submission.alphaRoll == 20) {
           alphaRoll
             .setColor("#f81a1a")
-            .setFooter({ text: `Oh? Congratulations! It's an alpha!` });
+            .setFooter({ text: `<:ea_alphaicon:1533355784769896459> Oh? Congratulations! It's an alpha!` });
         } else {
           alphaRoll
             .setColor("#3c3d3c")
@@ -98,7 +98,10 @@ export default async function (interaction: Interaction) {
 
         embed = new EmbedBuilder()
           .setColor("#27d121")
-          .setDescription(`✅ Character submitted successfully!`);
+          .setDescription(`✅ Character submitted successfully! 
+            
+            A small note: Do not ping staff for submissions. We’d love to get to your submission as soon as possible, but staff have busy lives too! We’ll do our best to get to every submission within a week of submission, but please be patient with us as real life responsibilities come first. 
+`);
         await interaction.update({
           content: "",
           embeds: [embed],
@@ -128,6 +131,8 @@ export default async function (interaction: Interaction) {
           });
           return;
         }
+        const member = await interaction.guild.members.fetch(userId);
+        await member.roles.add(process.env.ROLEPLAYER_ROLE); //roleplayer role 
         reviewMsg = await channel.messages.fetch(`${msgId}`);
         embed = await submitHelper.reviewEmbed(`${userId}`, "Approved");
         await reviewMsg.edit({
