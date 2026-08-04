@@ -7,12 +7,13 @@ import * as pokehelper from "./pokeHelper";
 import * as submitHelper from "./submitHelper";
 
 interface Partner {
+  nickname: string | null;
   shiny: boolean;
   species: string;
   specialMoves: Record<string, unknown>;
   sizeMult: number;
 }
-interface CharacterData{
+interface CharacterData {
   message_id: number | null;
   age: number | null;
   gender: string | null;
@@ -26,6 +27,7 @@ interface Character {
   name: string;
   house: string;
   badges: string[];
+  docLink: string;
   registeredOn: Date;
   destination: string;
   partner: Partner;
@@ -42,6 +44,29 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const jsonsPath = path.resolve(__dirname, "../../../jsons");
 
 let charaDex: CharacterDex | null = null;
+
+
+interface houseData {
+  hexcode: string;
+  iconLink: string;
+}
+
+const houseData: Record<string, houseData> = {
+  Victini: {
+    hexcode: "#ce1b1b",
+    iconLink: "https://play.pokemonshowdown.com/sprites/bwicons/494.png",
+  },
+
+  Mew: {
+    hexcode: "#3473fa",
+    iconLink: "https://play.pokemonshowdown.com/sprites/bwicons/151.png",
+  },
+
+  Jirachi: {
+    hexcode: "#fadb2c",
+    iconLink: "https://play.pokemonshowdown.com/sprites/bwicons/385.png",
+  },
+};
 
 async function loadUsers() {
   if (!charaDex) {
@@ -99,11 +124,13 @@ export async function registerCharacter(user: string): Promise<EmbedBuilder> {
   const basemon = await pokehelper.findBaseMon(pokemon);
 
   var sizeMult;
-  if (submission.alphaRoll == 20){
-    sizeMult = 2
-  }else{
+  if (submission.alphaRoll == 20) {
+    sizeMult = 2;
+  } else {
     sizeMult = Math.random() / 2 + 0.75;
   }
+
+  const charaData: CharacterData = {};
   const character: Character = {
     name: submission.name,
     house: submission.house,
@@ -111,11 +138,14 @@ export async function registerCharacter(user: string): Promise<EmbedBuilder> {
     registeredOn: new Date(),
     destination: submission.partner.toLowerCase(),
     partner: {
+      nickname: undefined,
       shiny: submission.shinyRoll == 20,
       species: basemon.name,
       specialMoves: {},
       sizeMult: sizeMult,
     },
+    docLink: submission.docLink,
+    optional: charaData,
   };
   await submitHelper.approveDestination(submission.partner.toLowerCase());
 
@@ -123,6 +153,7 @@ export async function registerCharacter(user: string): Promise<EmbedBuilder> {
     charaDex[user] = {
       characters: {},
     };
+    console.log("New character set created")
   }
   charaDex![user].characters[submission.name] = character;
 
@@ -173,7 +204,7 @@ export async function deleteAll(id: string): Promise<EmbedBuilder> {
   }
 
   for (const character of Object.values(charaDex[id].characters)) {
-    await submitHelper.deleteDestination(evoDestination);
+    await submitHelper.deleteDestination(character.destination);
   }
 
   delete charaDex[id];
@@ -185,19 +216,68 @@ export async function deleteAll(id: string): Promise<EmbedBuilder> {
     .setColor("Green");
 }
 
+export function getCharacterEmbed(id: string, name: string) {
+  loadUsers();
+  console.log(charaDex[id]);
+  if (!charaDex?.[id].characters || !charaDex[id].characters[name]) {
+    return new EmbedBuilder()
+      .setDescription("User or character could not be found!")
+      .setColor("Red");
+  }
 
+  const character = charaDex[id].characters[name];
+  const charaData = character.optional;
+  const houseData = houseData[character.house];
 
-export async function editCharacter(
+  const house = `**House** | ${character.house}\n`;
+  const docuLink = `**Doc** | [Link](${character.docLink})`;
+  const partnerDestination = `**Partner Destination** | ${pokehelper.displayName(character.destination)}\n`;
+
+  const age = charaData.age ? `**Age** | ${charaData.age}\n` : ``;
+  const gender = charaData.gender ? `**Gender** | ${charaData.gender}\n` : ``;
+  const pronouns = charaData.pronouns
+    ? `**Pronouns** | ${charaData.pronouns}\n`
+    : ``;
+  const img_link = charaData.img_link ?? undefined;
+  const artist_credits = charaData.gender ? `**Artist Credits** | ${charaData.artist_credits}\n` : ``;
+  const bio = charaData.bio ? `\n${charaData.bio}` : ``;
+
+  const embed = new EmbedBuilder()
+    .setTitle(`${name}`)
+    .setColor(houseData.hexcode)
+    .setDescription(
+      `${house}${age}${gender}${pronouns}${partnerDestination}${docuLink}${artist_credits}${bio}`,
+    )
+    .setThumbnail(
+      `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/494.png?format=webp&quality=lossless`,
+    ).setFooter({text: `Want to add more to your profile? Try /character edit!`});
+
+  if (img_link) {
+    embed.setImage(img_link);
+  }
+  if (artist_credits) {
+    embed.setFooter({
+      text: `${artist_credits}`,
+      iconURL: houseData.iconLink,
+    });
+  }
+
+  return embed;
+}
+
+export function editCharacter(
   id: string,
   name: string,
+  field: string,
+  info: string,
 ): Promise<string[]> {
-  await loadUsers();
+  loadUsers();
 
   if (!charaDex?.[id]) {
     return [];
+  }else{
+    const character = charaDex[id].characters[name];
+    character.optional[field] = info;
   }
-
-  return Object.values(charaDex[id].characters).map(
-    (character) => character.name,
-  );
+  saveUsers();
 }

@@ -1,42 +1,17 @@
 {
-  "lucario": {
+  "starmie": {
     "user": "1074503972037075054",
     "status": "Approved",
-    "dateMade": "2026-07-30T06:50:52.921Z"
+    "dateMade": "2026-08-03T23:13:24.306Z"
   },
-  "ninetales-alola": {
+  "aggron": {
     "user": "1074503972037075054",
     "status": "Approved",
-    "dateMade": "2026-08-01T10:11:23.507Z"
+    "dateMade": "2026-08-03T23:13:50.323Z"
   },
-  "alakazam": {
-    "user": "723291117302448169",
-    "status": "Reserved",
-    "dateMade": "2026-08-02T06:06:12.225Z"
-  },
-  "orthworm": {
-    "user": "350614938722500608",
-    "status": "Reserved",
-    "dateMade": "2026-08-02T06:04:25.096Z"
-  },
-  "zoroark": {
+  "dragonite": {
     "user": "1074503972037075054",
     "status": "Approved",
-    "dateMade": "2026-08-02T07:26:33.781Z"
-  },
-  "charizard": {
-    "user": "1074503972037075054",
-    "status": "Approved",
-    "dateMade": "2026-08-02T09:00:41.994Z"
-  },
-  "raichu-alola": {
-    "user": "1074503972037075054",
-    "status": "Reserved",
-    "dateMade": "2026-08-03T08:48:48.888Z"
-  },
-  "golurk": {
-    "user": "1533761918261526623",
-    "status": "Approved",
-    "dateMade": "2026-08-03T09:09:08.752Z"
+    "dateMade": "2026-08-03T23:15:22.876Z"
   }
 }

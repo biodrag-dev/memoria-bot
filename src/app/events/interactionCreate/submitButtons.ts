@@ -12,6 +12,14 @@ import * as characterHelper from "../../helpers/characterHelper";
 
 export default async function (interaction: Interaction) {
   if (interaction.isButton()) {
+    if (
+      interaction.customId === "reserve-accept" ||
+      interaction.customId === "reserve-decline" ||
+      interaction.customId === "admin-delete-accept" ||
+      interaction.customId === "admin-delete-decline"
+    ) {
+      return;
+    }
     const [action, userId, msgId] = interaction.customId.split(":");
     const channel = await interaction.client.channels.fetch(
       process.env.SUBMIT_LOG,
@@ -85,19 +93,21 @@ export default async function (interaction: Interaction) {
           .setDescription(`🎲 **Result** | ${submission.alphaRoll}`)
           .setTitle(`Rolling for Alpha Status (1d20)...`);
         if (submission.alphaRoll == 20) {
-          alphaRoll
-            .setColor("#f81a1a")
-            .setFooter({ text: `<:ea_alphaicon:1533355784769896459> Oh? Congratulations! It's an alpha!` });
+          alphaRoll.setColor("#f81a1a").setFooter({
+            text: `<:ea_alphaicon:1533355784769896459> Oh? Congratulations! It's an alpha!`,
+          });
         } else {
           alphaRoll
             .setColor("#3c3d3c")
             .setFooter({ text: "Better luck next time..." });
         }
 
-        await thread.send({content: `<@${interaction.user.id}>`, embeds: [shinyRoll, alphaRoll]});
+        await thread.send({
+          content: `<@${interaction.user.id}>`,
+          embeds: [shinyRoll, alphaRoll],
+        });
 
-        embed = new EmbedBuilder()
-          .setColor("#27d121")
+        embed = new EmbedBuilder().setColor("#27d121")
           .setDescription(`✅ Character submitted successfully! 
             
             A small note: Do not ping staff for submissions. We’d love to get to your submission as soon as possible, but staff have busy lives too! We’ll do our best to get to every submission within a week of submission, but please be patient with us as real life responsibilities come first. 
@@ -132,7 +142,7 @@ export default async function (interaction: Interaction) {
           return;
         }
         const member = await interaction.guild.members.fetch(userId);
-        await member.roles.add(process.env.ROLEPLAYER_ROLE); //roleplayer role 
+        await member.roles.add(process.env.ROLEPLAYER_ROLE); //roleplayer role
         reviewMsg = await channel.messages.fetch(`${msgId}`);
         embed = await submitHelper.reviewEmbed(`${userId}`, "Approved");
         await reviewMsg.edit({

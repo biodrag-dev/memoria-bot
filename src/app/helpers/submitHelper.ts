@@ -152,6 +152,7 @@ export async function createSubmit(
   docLink: string,
   partner: string,
 ) {
+  console.log("CreateSubmit triggered");
   await loadSubmissions();
   await loadEvos();
   const shinyRoll = Math.floor(Math.random() * 20) + 1;
@@ -275,6 +276,9 @@ export async function getAllApprovedPartnerEntries() {
     }
   }
   array.sort();
+    if (array.length == 0) {
+    return "No approved characters exist right now. Why don't you change that?";
+  }
   return array.join("\n");
 }
 

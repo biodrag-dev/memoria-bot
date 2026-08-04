@@ -102,13 +102,6 @@ export const command: CommandData = {
 export const autocomplete = async (ctx: any) => {
   const interaction = ctx.interaction;
 
-  if (!interaction.inGuild()) {
-    return interaction.reply({
-      content: "This command can only be used in a server.",
-      ephemeral: true,
-    });
-  }
-
   const focused = interaction.options.getFocused();
   const sub = interaction.options.getSubcommand();
 
@@ -140,6 +133,13 @@ export const autocomplete = async (ctx: any) => {
 
 export const chatInput: ChatInputCommand = async (ctx) => {
   const interaction = ctx.interaction;
+
+  if (!interaction.inGuild()) {
+    return interaction.reply({
+      content: "This command can only be used in a server.",
+      ephemeral: true,
+    });
+  }
 
   const group = interaction.options.getSubcommandGroup(false);
   const sub = interaction.options.getSubcommand();
@@ -185,7 +185,9 @@ export const chatInput: ChatInputCommand = async (ctx) => {
           embed.setDescription(
             `All of <@${interaction.options.getUser("roleplayer")!.id}>'s server data has been deleted.`,
           );
-          const member = await interaction.guild.members.fetch(interaction.options.getUser("roleplayer")!.id);
+          const member = await interaction.guild.members.fetch(
+            interaction.options.getUser("roleplayer")!.id,
+          );
           await member.roles.remove(process.env.ROLEPLAYER_ROLE); //roleplayer role
 
           await button.update({

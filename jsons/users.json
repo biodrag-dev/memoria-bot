@@ -1,51 +1,35 @@
 {
   "1074503972037075054": {
     "characters": {
-      "Ninetales-Alola": {
-        "name": "Ninetales-Alola",
-        "house": "Victini",
+      "Frieren": {
+        "name": "Frieren",
+        "house": "Mew",
         "badges": [],
-        "registeredOn": "2026-08-01T10:11:23.507Z",
-        "destination": "ninetales-alola",
+        "registeredOn": "2026-08-03T23:13:24.306Z",
+        "destination": "starmie",
         "partner": {
-          "shiny": true,
-          "species": "vulpix-alola",
+          "shiny": false,
+          "species": "staryu",
           "specialMoves": {},
-          "sizeMult": 0.9220217352717951
-        }
+          "sizeMult": 1.117994606613895
+        },
+        "docLink": "test",
+        "optional": {}
       },
       "test": {
         "name": "test",
-        "house": "Victini",
+        "house": "Mew",
         "badges": [],
-        "registeredOn": "2026-08-02T09:00:41.994Z",
-        "destination": "charizard",
+        "registeredOn": "2026-08-03T23:13:50.323Z",
+        "destination": "aggron",
         "partner": {
           "shiny": false,
-          "species": "charmander",
+          "species": "aron",
           "specialMoves": {},
-          "sizeMult": 1.0085585690877887
-        }
-      }
-    }
-  },
-  "723291117302448169": {
-    "characters": {}
-  },
-  "1533761918261526623": {
-    "characters": {
-      "arktu": {
-        "name": "arktu",
-        "house": "Victini",
-        "badges": [],
-        "registeredOn": "2026-08-03T09:09:08.752Z",
-        "destination": "golurk",
-        "partner": {
-          "shiny": false,
-          "species": "golett",
-          "specialMoves": {},
-          "sizeMult": 1.0060120214844153
-        }
+          "sizeMult": 0.859481314253386
+        },
+        "docLink": "test",
+        "optional": {}
       }
     }
   }

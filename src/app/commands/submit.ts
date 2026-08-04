@@ -203,9 +203,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         break;
     }
 
-
     if (msg) {
-
       const collector = msg.createMessageComponentCollector({
         time: 30_000,
       });

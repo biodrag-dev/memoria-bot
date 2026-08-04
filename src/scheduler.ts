@@ -9,11 +9,11 @@ import { ApplicationCommandOptionType } from "discord.js";
 
 
 
-export function startScheduler(client: Client) {
+export async function startScheduler(client: Client) {
   // Every 5 minutes
-   embedHelper.updateReservesEmbed(client);
-   embedHelper.updateServerRulesEmbed(client);
-   embedHelper.updateCharacterRulesEmbed(client);
+   await embedHelper.updateReservesEmbed(client);
+   await embedHelper.updateServerRulesEmbed(client);
+   await embedHelper.updateCharacterRulesEmbed(client);
 
   cron.schedule("*/30 * * * *", async () => {
     await submitHelper.clearTemporary();

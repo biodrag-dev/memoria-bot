@@ -24,11 +24,14 @@ const houseColors: Record<string, string> = {
 
 export default async function (interaction: Interaction) {
   if (!interaction.isModalSubmit()) return;
+  await interaction.deferReply({ ephemeral: true });
 
   if (interaction.customId == "character-submit") {
     const name = interaction.fields.getTextInputValue("chara-name");
     const house = interaction.fields.fields.get("chara-house").values[0];
-    const dest = interaction.fields.getTextInputValue("chara-dest").toLowerCase();
+    const dest = interaction.fields
+      .getTextInputValue("chara-dest")
+      .toLowerCase();
     const doc = interaction.fields.getTextInputValue("chara-doc");
 
     //checks if pokemon exists
@@ -40,9 +43,8 @@ export default async function (interaction: Interaction) {
           `Registration Error: Pokemon Species "${await submitHelper.toProperCase(dest)}" could not be found! Try looking the species up with **/pokedex find** first. Some regional species use different syntax, such as "Ninetales-alola" or "Ponyta-galar"! If you need further assistance, you can ask for help in <#${process.env.QUESTIONS_CHANNEL}>!`,
         );
 
-      await interaction.reply({
+      await interaction.editReply({
         embeds: [failEmbed],
-        ephemeral: true,
       });
       return;
     }
@@ -59,15 +61,16 @@ export default async function (interaction: Interaction) {
           `Registration Error: Pokemon "${await submitHelper.toProperCase(dest)}" has already been claimed!`,
         );
 
-      await interaction.reply({
+      await interaction.editReply({
         embeds: [failEmbed],
-        ephemeral: true,
       });
       return;
     }
 
     //checks if user has any other existing reservations
-    const reserveCheck = await submitHelper.getReserveOfUser(interaction.user.id);
+    const reserveCheck = await submitHelper.getReserveOfUser(
+      interaction.user.id,
+    );
     if (reserveCheck.length != 0 && reserveCheck[0] != dest) {
       const failEmbed = new EmbedBuilder()
         .setColor("#ce1b1b")
@@ -75,9 +78,8 @@ export default async function (interaction: Interaction) {
           `Registration Error: You already have an existing reservation for ${await submitHelper.toProperCase(reserveCheck[0])}! Reservations last for a month, but can be changed after a week.`,
         );
 
-      await interaction.reply({
+      await interaction.editReply({
         embeds: [failEmbed],
-        ephemeral: true,
       });
       return;
     }
@@ -106,12 +108,17 @@ export default async function (interaction: Interaction) {
         .setStyle(ButtonStyle.Secondary),
     );
 
-    await submitHelper.createSubmit(interaction.user.id, name, house, doc, dest);
-    await interaction.reply({
+    await submitHelper.createSubmit(
+      interaction.user.id,
+      name,
+      house,
+      doc,
+      dest,
+    );
+    await interaction.editReply({
       content: `Please confirm your registration details. This cannot be changed after clicking 'Submit'!`,
       embeds: [embed],
       components: [row],
-      ephemeral: true,
     });
   }
 }

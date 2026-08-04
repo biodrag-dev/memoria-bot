@@ -119,7 +119,7 @@ export async function getReservesTwoEmbed() {
   const embed = new EmbedBuilder()
     .setTitle(`Approved Evolutionary Destinations`)
     .setColor("#ddad10")
-    .setDescription(`${await submitHelper.getAllApprovedPartnerEntries()}`)
+    .setDescription(`${await submitHelper.getAllApprovedPartnerEntries()} `)
     .setThumbnail(
       `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/385.png?format=webp&quality=lossless`,
     )
@@ -138,9 +138,9 @@ export async function getReservesThreeEmbed() {
     .setTitle(`Reservations`)
     .setColor("#188eac")
     .setDescription(
-      `${await submitHelper.getAllReservedPartnerEntries()}
-    
-    Looking to reserve an Evolutionary Destination in advance? Use **/submit partner-reserve**! Note that reservervations cannot be changed to another species until a week has passed, you must submit with your current reservation, and there are no extensions.`,
+      `Looking to reserve an Evolutionary Destination in advance? Use **/submit partner-reserve**! Note that reservervations cannot be changed to another species until a week has passed, you must submit with your current reservation, and there are no extensions.
+      
+      ${await submitHelper.getAllReservedPartnerEntries()}`,
     )
     .setThumbnail(
       `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png?format=webp&quality=lossless`,
