@@ -161,6 +161,22 @@ export async function registerCharacter(user: string, client: Client) {
   };
   await submitHelper.approveDestination(submission.partner.toLowerCase());
 
+  const guild = client.guilds.cache.get(`${process.env.GUILD_ID}`);
+  const member = await guild!.members.fetch(user);
+  await member.roles.add(`${process.env.ROLEPLAYER_ROLE}`);
+
+  switch (submission.house) {
+    case "Victini":
+      await member.roles.add(`${process.env.VICTINI_ROLE}`);
+      break;
+    case "Jirachi":
+      await member.roles.add(`${process.env.JIRACHI_ROLE}`);
+      break;
+    case "Mew":
+      await member.roles.add(`${process.env.MEW_ROLE}`);
+      break;
+  }
+
   if (!charaDex[user]) {
     charaDex[user] = {
       characters: {},
@@ -178,7 +194,6 @@ export async function deleteCharacter(
   client: Client,
 ): Promise<EmbedBuilder> {
   await loadUsers();
-
   const user = charaDex?.[id];
 
   const character = user?.characters[name];
@@ -188,12 +203,32 @@ export async function deleteCharacter(
       .setDescription(`User or Character ${name} could not be found!`)
       .setColor("Red");
   }
+  const guild = client.guilds.cache.get(`${process.env.GUILD_ID}`);
+  const guildMember = await guild!.members.fetch(id);
+
+  switch (character.house) {
+    case "Victini":
+      await guildMember.roles.remove(`${process.env.VICTINI_ROLE}`);
+      break;
+    case "Jirachi":
+      await guildMember.roles.remove(`${process.env.JIRACHI_ROLE}`);
+      break;
+    case "Mew":
+      await guildMember.roles.remove(`${process.env.MEW_ROLE}`);
+      break;
+  }
+
   await deleteThread(id, name, client);
 
   const evoDestination = character.destination;
   await submitHelper.deleteDestination(evoDestination);
 
   delete user.characters[name];
+
+  //if no more characters
+  if (Object.keys(user.characters).length === 0) {
+    await guildMember.roles.remove(`${process.env.ROLEPLAYER_ROLE}`);
+  }
 
   await saveUsers();
 
@@ -208,7 +243,10 @@ export async function deleteCharacter(
     .setColor("Green");
 }
 
-export async function deleteAll(id: string, client: Client): Promise<EmbedBuilder> {
+export async function deleteAll(
+  id: string,
+  client: Client,
+): Promise<EmbedBuilder> {
   await loadUsers();
 
   if (!charaDex?.[id]) {
@@ -231,8 +269,11 @@ export async function deleteAll(id: string, client: Client): Promise<EmbedBuilde
 
 export function getCharacterEmbed(id: string, name: string) {
   loadUsers();
-  console.log(charaDex[id]);
-  if (!charaDex[id] || !charaDex[id].characters || !charaDex[id].characters[name]) {
+  if (
+    !charaDex[id] ||
+    !charaDex[id].characters ||
+    !charaDex[id].characters[name]
+  ) {
     return new EmbedBuilder()
       .setDescription("User or character could not be found!")
       .setColor("Red");
