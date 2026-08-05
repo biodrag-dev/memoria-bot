@@ -283,6 +283,12 @@ export const chatInput: ChatInputCommand = async (ctx) => {
       interaction.options.getString("character", true),
     );
 
+    characterHelper.updateCharaForumPost(
+      interaction.user.id,
+      interaction.options.getString("character", true),
+      interaction.client,
+    );
+    
     return interaction.reply({
       content: `Your character's profile has been edited!`,
       embeds: [embed],
@@ -307,6 +313,11 @@ export const chatInput: ChatInputCommand = async (ctx) => {
       interaction.options.getString("character", true),
     );
 
+    characterHelper.updateCharaForumPost(
+      interaction.user.id,
+      interaction.options.getString("character", true),
+      interaction.client,
+    );
     return interaction.reply({
       content: `Your character's profile has been edited!`,
       embeds: [embed],

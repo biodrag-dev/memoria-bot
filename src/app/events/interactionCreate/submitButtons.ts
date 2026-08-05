@@ -148,9 +148,8 @@ export default async function (interaction: Interaction) {
           embeds: [embed],
           components: [],
         });
-        await characterHelper.registerCharacter(`${userId}`);
+        await characterHelper.registerCharacter(`${userId}`, interaction.client);
         await submitHelper.deleteSubmit(`${userId}`);
-
         break;
 
       case "admin-decline":

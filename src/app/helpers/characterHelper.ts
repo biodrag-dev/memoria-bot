@@ -1,29 +1,35 @@
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
-import { EmbedBuilder } from "discord.js";
+import {
+  AnyThreadChannel,
+  ChannelType,
+  Client,
+  ColorResolvable,
+  EmbedBuilder,
+} from "discord.js";
 
 import * as pokehelper from "./pokeHelper";
 import * as submitHelper from "./submitHelper";
 
 interface Partner {
-  nickname: string | null;
+  nickname?: string;
   shiny: boolean;
   species: string;
   specialMoves: Record<string, unknown>;
   sizeMult: number;
 }
 interface CharacterData {
-  message_id: number | null;
-  age: number | null;
-  gender: string | null;
-  bio: string | null;
-  pronouns: string | null;
-  img_link: string | null;
-  artist_credits: string | null;
+  age?: number;
+  gender?: string;
+  bio?: string;
+  pronouns?: string;
+  img_link?: string;
+  artist_credits?: string;
 }
 
 interface Character {
+  thread_id?: string;
   name: string;
   house: string;
   badges: string[];
@@ -43,27 +49,34 @@ type CharacterDex = Record<string, UserData>;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const jsonsPath = path.resolve(__dirname, "../../../jsons");
 
-let charaDex: CharacterDex | null = null;
+let charaDex: CharacterDex;
 
 interface houseData {
-  hexcode: string;
+  hexcode: ColorResolvable;
   iconLink: string;
+  thumbnail: string;
 }
 
 const houseData: Record<string, houseData> = {
   Victini: {
     hexcode: "#ce1b1b",
     iconLink: "https://play.pokemonshowdown.com/sprites/bwicons/494.png",
+    thumbnail:
+      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/494.png",
   },
 
   Mew: {
     hexcode: "#3473fa",
     iconLink: "https://play.pokemonshowdown.com/sprites/bwicons/151.png",
+    thumbnail:
+      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png",
   },
 
   Jirachi: {
     hexcode: "#fadb2c",
     iconLink: "https://play.pokemonshowdown.com/sprites/bwicons/385.png",
+    thumbnail:
+      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/385.png",
   },
 };
 
@@ -115,7 +128,7 @@ export async function getCharacterNames(id: string): Promise<string[]> {
   return names;
 }
 
-export async function registerCharacter(user: string): Promise<EmbedBuilder> {
+export async function registerCharacter(user: string, client: Client) {
   await loadUsers();
   const submission = await submitHelper.getSubmit(user);
   const pokemon = await pokehelper.findPokemon(submission.partner);
@@ -148,20 +161,21 @@ export async function registerCharacter(user: string): Promise<EmbedBuilder> {
   };
   await submitHelper.approveDestination(submission.partner.toLowerCase());
 
-  if (!charaDex![user]) {
+  if (!charaDex[user]) {
     charaDex[user] = {
       characters: {},
     };
-    console.log("New character set created");
   }
   charaDex![user].characters[submission.name] = character;
 
   await saveUsers();
+  await createNewForumPost(`${user}`, `${submission.name}`, client);
 }
 
 export async function deleteCharacter(
   id: string,
   name: string,
+  client: Client,
 ): Promise<EmbedBuilder> {
   await loadUsers();
 
@@ -174,6 +188,7 @@ export async function deleteCharacter(
       .setDescription(`User or Character ${name} could not be found!`)
       .setColor("Red");
   }
+  await deleteThread(id, name, client);
 
   const evoDestination = character.destination;
   await submitHelper.deleteDestination(evoDestination);
@@ -193,7 +208,7 @@ export async function deleteCharacter(
     .setColor("Green");
 }
 
-export async function deleteAll(id: string): Promise<EmbedBuilder> {
+export async function deleteAll(id: string, client: Client): Promise<EmbedBuilder> {
   await loadUsers();
 
   if (!charaDex?.[id]) {
@@ -202,10 +217,9 @@ export async function deleteAll(id: string): Promise<EmbedBuilder> {
       .setColor("Red");
   }
 
-  for (const character of Object.values(charaDex[id].characters)) {
-    await submitHelper.deleteDestination(character.destination);
+  for (const character of await getCharactersObj(id)) {
+    await deleteCharacter(id, character.name, client);
   }
-
   delete charaDex[id];
 
   await saveUsers();
@@ -229,7 +243,10 @@ export function getCharacterEmbed(id: string, name: string) {
   const houseInfo = houseData[character.house]!;
 
   const house = `**House** | ${character.house}\n`;
-  const docuLink = character.docLink === "STAFF NPC" ? `**Doc** | STAFF NPC` : `**Doc** | [Link](${character.docLink})\n`;
+  const docuLink =
+    character.docLink === "STAFF NPC"
+      ? `**Doc** | STAFF NPC`
+      : `**Doc** | [Link](${character.docLink})\n`;
   const partnerDestination = `**Partner Destination** | ${pokehelper.displayName(character.destination)}\n`;
   const roleplayer = `**Roleplayer** | <@${id}>\n`;
 
@@ -253,14 +270,13 @@ export function getCharacterEmbed(id: string, name: string) {
     .setFooter({
       text: `Want to add more to your OC's profile? Try /character edit!`,
       iconURL: `${houseInfo.iconLink}`,
-    });
+    })
+    .setThumbnail(houseInfo.thumbnail);
 
   if (img_link) {
     embed.setImage(img_link);
   }
-  // .setThumbnail(
-  //       `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/494.png?format=webp&quality=lossless`,
-  //     )
+
   return embed;
 }
 
@@ -278,6 +294,77 @@ export function editCharacter(
     const character: CharacterData = charaDex[id].characters[name].optional;
     character[`${field}`] = info;
   }
-  console.log(`edited character ${name}`);
+  saveUsers();
+}
+
+export async function deleteThread(id: string, name: string, client: Client) {
+  await loadUsers();
+  if (!charaDex?.[id]?.characters[name]) {
+    return;
+  }
+  const character: Character = charaDex[id].characters[name];
+  const channel = await client.channels.fetch(character.thread_id!);
+  await channel?.delete();
+}
+
+export async function createNewForumPost(
+  id: string,
+  name: string,
+  client: Client,
+) {
+  loadUsers();
+  if (!charaDex?.[id]?.characters[name]) {
+    return;
+  } else {
+    const embed = getCharacterEmbed(id, name);
+
+    const forumChannel = await client.channels.fetch(
+      `${process.env.APPROVED_CHANNEL}`,
+    );
+
+    if (!forumChannel || forumChannel.type !== ChannelType.GuildForum) {
+      console.log(
+        "Error! Forum channel could not be found, or APPROVED_CHANNEL is not a forum!",
+      );
+      return;
+    }
+
+    const thread = await forumChannel!.threads.create({
+      name: `${name}`,
+      message: {
+        embeds: [embed],
+      },
+    });
+
+    const character: Character = charaDex[id].characters[name];
+    character.thread_id = thread.id;
+  }
+  saveUsers();
+}
+
+export async function updateCharaForumPost(
+  id: string,
+  name: string,
+  client: Client,
+) {
+  loadUsers();
+  if (!charaDex?.[id]?.characters[name]) {
+    return;
+  } else {
+    const thread = (await client.channels.fetch(
+      charaDex[id].characters[name].thread_id!,
+    )) as AnyThreadChannel;
+    const starterMessage = await thread.fetchStarterMessage();
+    if (!starterMessage) return;
+
+    const embed = getCharacterEmbed(id, name);
+
+    await starterMessage.edit({
+      embeds: [embed],
+    });
+
+    const character: Character = charaDex[id].characters[name];
+    character.thread_id = thread.id;
+  }
   saveUsers();
 }

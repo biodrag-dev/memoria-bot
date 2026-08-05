@@ -1,12 +1,6 @@
-import fs from "fs/promises";
-import path from "path";
-import { fileURLToPath } from "url";
-import { EmbedBuilder, Interaction } from "discord.js";
-
-import * as pokehelper from "./pokeHelper";
+import { Client, EmbedBuilder, Interaction, TextChannel } from "discord.js";
 
 import * as submitHelper from "./submitHelper";
-import * as characterHelper from "./characterHelper";
 
 export async function updateEmbed(
   channel: any,
@@ -20,8 +14,10 @@ export async function updateEmbed(
   });
 }
 
-export async function updateReservesEmbed(client) {
-  const channel = await client.channels.fetch(process.env.RESERVATIONS_CHANNEL);
+export async function updateReservesEmbed(client: Client) {
+  const channel = await client.channels.fetch(
+    `${process.env.RESERVATIONS_CHANNEL}`,
+  );
   if (!channel?.isTextBased()) return;
 
   const msgOne = await channel.messages.fetch(
@@ -52,8 +48,10 @@ export async function updateReservesEmbed(client) {
   });
 }
 
-export async function updateServerRulesEmbed(client) {
-  const channel = await client.channels.fetch(process.env.SERVER_RULES_CHANNEL);
+export async function updateServerRulesEmbed(client: Client) {
+  const channel = (await client.channels.fetch(
+    `${process.env.SERVER_RULES_CHANNEL}`,
+  )) as TextChannel;
   const msgOne = await channel.messages.fetch(
     `${process.env.SERVER_RULES_MSG_ONE}`,
   );
@@ -64,10 +62,10 @@ export async function updateServerRulesEmbed(client) {
   });
 }
 
-export async function updateCharacterRulesEmbed(client) {
-  const channel = await client.channels.fetch(
-    process.env.CHARACTER_RULES_CHANNEL,
-  );
+export async function updateCharacterRulesEmbed(client: Client) {
+  const channel = (await client.channels.fetch(
+    `${process.env.CHARACTER_RULES_CHANNEL}`,
+  )) as TextChannel;
   const msgOne = await channel.messages.fetch(
     `${process.env.CHARACTER_RULES_MSG_ONE}`,
   );
@@ -233,11 +231,15 @@ export async function getCharacterRulesOneEmbed() {
 > Pokémon evolutionary destinations are unique in this server. Two OCs cannot both have an Absol, so please check if the Pokémon you have in mind is already taken! Please take a look at <#${process.env.RESERVATIONS_CHANNEL}> for more info. We also allow species reservations that last 1 month.
 
 8. Three Character limit.
-> As of the moment, everyone will have a 3 character limit, one for each house (Victini, Mew, Jirachi). We want to focus on quality over quantity!`,)
+> As of the moment, everyone will have a 3 character limit, one for each house (Victini, Mew, Jirachi). We want to focus on quality over quantity!`,
+    )
     .setFooter({
       text: "Banner by @1041uuu on Tumblr",
       //,iconURL: "https://i.imgur.com/AfFp7pu.png",
-    }).setImage(`https://64.media.tumblr.com/aa05fe3b460d3dd0b4324a12f423ec72/c6c80f2198878c5f-18/s540x810/3ad5dbf237149e13e763f9ec9013e3306d918a6b.gif`);
+    })
+    .setImage(
+      `https://64.media.tumblr.com/aa05fe3b460d3dd0b4324a12f423ec72/c6c80f2198878c5f-18/s540x810/3ad5dbf237149e13e763f9ec9013e3306d918a6b.gif`,
+    );
 
   return embed;
 }

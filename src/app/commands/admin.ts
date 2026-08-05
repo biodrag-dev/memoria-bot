@@ -193,7 +193,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
             components: [],
           });
           await userHelper.deleteAll(
-            interaction.options.getUser("roleplayer", true).id
+            interaction.options.getUser("roleplayer", true).id, interaction.client
           );
           collector.stop();
         }
@@ -250,7 +250,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
           });
           await userHelper.deleteCharacter(
             interaction.options.getUser("roleplayer", true).id,
-            interaction.options.getString("character", true),
+            interaction.options.getString("character", true), interaction.client
           );
           collector.stop();
         }

@@ -5,14 +5,14 @@ import { EmbedBuilder } from "discord.js";
 
 import * as pokehelper from "./pokeHelper";
 
-interface Character {
+interface SubmitData {
   name: string;
   house: string;
   docLink: string;
   partner: string;
   status: string;
-  shiny: number;
-  alpha: number;
+  shinyRoll: number;
+  alphaRoll: number;
 }
 
 interface EvoData {
@@ -21,7 +21,7 @@ interface EvoData {
   dateMade: Date;
 }
 
-type SubmitDex = Record<string, Character>;
+type SubmitDex = Record<string, SubmitData>;
 type EvoDex = Record<string, EvoData>;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -158,7 +158,7 @@ export async function createSubmit(
   const shinyRoll = Math.floor(Math.random() * 20) + 1;
   const alphaRoll = Math.floor(Math.random() * 20) + 1;
 
-  const submitData: Character = {
+  const submitData: SubmitData = {
     name,
     house,
     docLink,
@@ -190,7 +190,7 @@ export async function continueSubmit(id: string) {
   await saveSubmissions();
 }
 
-export async function getSubmit(id: string) {
+export async function getSubmit(id: string) : Promise<SubmitData> {
   await loadSubmissions();
   return submitDex[`${id}`];
 }
