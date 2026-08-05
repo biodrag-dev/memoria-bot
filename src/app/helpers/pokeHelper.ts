@@ -170,7 +170,7 @@ export async function getRandDexEntry(pokemonName: string): Promise<string> {
   const species = await P.getResource(pokemon.species.url);
 
   const entries = species.flavor_text_entries.filter(
-    (entry) => entry.language.name === "en",
+    (entry : any) => entry.language.name === "en",
   );
 
   const random = Math.floor(Math.random() * entries.length);
@@ -181,7 +181,7 @@ export async function getRandDexEntry(pokemonName: string): Promise<string> {
 export async function getGenera(pokemonName: string): Promise<string> {
   const pokemon = await P.getPokemonByName(pokemonName);
   const species = await P.getResource(pokemon.species.url);
-  const entry = species.genera.find((item) => item.language.name === "en");
+  const entry = species.genera.find((item: any) => item.language.name === "en");
 
   return entry?.genus ?? "Pokémon";
 }

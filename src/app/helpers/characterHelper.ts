@@ -292,7 +292,7 @@ export function editCharacter(
     return;
   } else {
     const character: CharacterData = charaDex[id].characters[name].optional;
-    character[`${field}`] = info;
+    character[field as keyof CharacterData] = info;
   }
   saveUsers();
 }
