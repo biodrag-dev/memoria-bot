@@ -45,7 +45,6 @@ const jsonsPath = path.resolve(__dirname, "../../../jsons");
 
 let charaDex: CharacterDex | null = null;
 
-
 interface houseData {
   hexcode: string;
   iconLink: string;
@@ -153,7 +152,7 @@ export async function registerCharacter(user: string): Promise<EmbedBuilder> {
     charaDex[user] = {
       characters: {},
     };
-    console.log("New character set created")
+    console.log("New character set created");
   }
   charaDex![user].characters[submission.name] = character;
 
@@ -227,11 +226,12 @@ export function getCharacterEmbed(id: string, name: string) {
 
   const character = charaDex[id].characters[name];
   const charaData = character.optional;
-  const houseData = houseData[character.house];
+  const houseInfo = houseData[character.house]!;
 
   const house = `**House** | ${character.house}\n`;
-  const docuLink = `**Doc** | [Link](${character.docLink})`;
+  const docuLink = character.docLink === "STAFF NPC" ? `**Doc** | STAFF NPC` : `**Doc** | [Link](${character.docLink})\n`;
   const partnerDestination = `**Partner Destination** | ${pokehelper.displayName(character.destination)}\n`;
+  const roleplayer = `**Roleplayer** | <@${id}>\n`;
 
   const age = charaData.age ? `**Age** | ${charaData.age}\n` : ``;
   const gender = charaData.gender ? `**Gender** | ${charaData.gender}\n` : ``;
@@ -239,29 +239,28 @@ export function getCharacterEmbed(id: string, name: string) {
     ? `**Pronouns** | ${charaData.pronouns}\n`
     : ``;
   const img_link = charaData.img_link ?? undefined;
-  const artist_credits = charaData.gender ? `**Artist Credits** | ${charaData.artist_credits}\n` : ``;
+  const artist_credits = charaData.artist_credits
+    ? `**Artist Credits** | ${charaData.artist_credits}\n`
+    : ``;
   const bio = charaData.bio ? `\n${charaData.bio}` : ``;
 
   const embed = new EmbedBuilder()
     .setTitle(`${name}`)
-    .setColor(houseData.hexcode)
+    .setColor(houseInfo.hexcode)
     .setDescription(
-      `${house}${age}${gender}${pronouns}${partnerDestination}${docuLink}${artist_credits}${bio}`,
+      `${roleplayer}${house}${age}${gender}${pronouns}${partnerDestination}${docuLink}${artist_credits}${bio}`,
     )
-    .setThumbnail(
-      `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/494.png?format=webp&quality=lossless`,
-    ).setFooter({text: `Want to add more to your profile? Try /character edit!`});
+    .setFooter({
+      text: `Want to add more to your OC's profile? Try /character edit!`,
+      iconURL: `${houseInfo.iconLink}`,
+    });
 
   if (img_link) {
     embed.setImage(img_link);
   }
-  if (artist_credits) {
-    embed.setFooter({
-      text: `${artist_credits}`,
-      iconURL: houseData.iconLink,
-    });
-  }
-
+  // .setThumbnail(
+  //       `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/494.png?format=webp&quality=lossless`,
+  //     )
   return embed;
 }
 
@@ -270,14 +269,15 @@ export function editCharacter(
   name: string,
   field: string,
   info: string,
-): Promise<string[]> {
+) {
   loadUsers();
 
-  if (!charaDex?.[id]) {
-    return [];
-  }else{
-    const character = charaDex[id].characters[name];
-    character.optional[field] = info;
+  if (!charaDex?.[id]?.characters[name]) {
+    return;
+  } else {
+    const character: CharacterData = charaDex[id].characters[name].optional;
+    character[`${field}`] = info;
   }
+  console.log(`edited character ${name}`);
   saveUsers();
 }

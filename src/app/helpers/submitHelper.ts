@@ -27,8 +27,8 @@ type EvoDex = Record<string, EvoData>;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const jsonsPath = path.resolve(__dirname, "../../../jsons");
 
-let submitDex: SubmitDex | null = null;
-let evoDex: EvoDex | null = null;
+let submitDex: SubmitDex;
+let evoDex: EvoDex;
 
 export async function toProperCase(name: string) {
   return name.charAt(0).toUpperCase() + name.slice(1);

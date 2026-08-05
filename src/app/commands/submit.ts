@@ -9,10 +9,9 @@ import {
   LabelBuilder,
   StringSelectMenuBuilder,
   StringSelectMenuOptionBuilder,
-  MessageFlags,
   EmbedBuilder,
 } from "discord.js";
-import type { ChatInputCommand, OnModalKitSubmit, Modal } from "commandkit";
+import type { ChatInputCommand, CommandData } from "commandkit";
 import * as pokehelper from "../helpers/pokeHelper";
 import * as submitHelper from "../helpers/submitHelper";
 
@@ -132,7 +131,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   } else if (sub === "partner-reserve") {
     const failEmbed = new EmbedBuilder().setColor("#ce1b1b");
     const pokemon = await pokehelper.findPokemon(
-      interaction.options.getString("species"),
+      interaction.options.getString("species", true),
     );
     var msg;
     if (!pokemon) {
@@ -147,12 +146,12 @@ export const chatInput: ChatInputCommand = async (ctx) => {
       return;
     }
     const displayName = pokehelper.displayName(
-      interaction.options.getString("species"),
+      interaction.options.getString("species", true),
     );
 
     const verifyCanReserve = submitHelper.verifyCanReserve(
       interaction.user.id,
-      interaction.options.getString("species"),
+      interaction.options.getString("species", true),
     );
 
     switch (verifyCanReserve) {
@@ -160,7 +159,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         failEmbed.setDescription(
           `You already have an existing reserve, which will be erased if you go through with this! Are you sure? 
           
-          **${pokehelper.displayName(submitHelper.getReserveOfUser(interaction.user.id)[0])}** -> **${displayName}**`,
+          **${pokehelper.displayName(submitHelper.getReserveOfUser(interaction.user.id)[0] ?? "Null")}** -> **${displayName}**`,
         );
 
         msg = await ctx.interaction.reply({
@@ -214,7 +213,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         if (button.customId === "reserve-accept") {
           await submitHelper.createProperReserve(
             interaction.user.id,
-            interaction.options.getString("species").toLowerCase(),
+            interaction.options.getString("species", true),
           );
           embed
             .setDescription(`Succesfully reserved ${displayName}!`)

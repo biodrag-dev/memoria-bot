@@ -14,7 +14,14 @@
           "sizeMult": 1.117994606613895
         },
         "docLink": "test",
-        "optional": {}
+        "optional": {
+          "age": "123",
+          "gender": "Female",
+          "pronouns": "She/her",
+          "bio": "An elven mage who travels the lands.",
+          "img_link": "https://preview.redd.it/frieren-fanart-by-me-v0-lfkceytpfulg1.jpeg?width=1080&crop=smart&auto=webp&s=fbb889a0eb62648e0953fd7f6d79d88b5dd28943",
+          "artist_credits": "EchanusOrphamiel on Reddit"
+        }
       },
       "test": {
         "name": "test",

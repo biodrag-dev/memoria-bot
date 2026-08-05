@@ -165,7 +165,6 @@ export const command: CommandData = {
 };
 
 export const autocomplete = async (ctx: any) => {
-  console.log("autocomplete")
   const interaction = ctx.interaction;
 
   const focused = interaction.options.getFocused();
@@ -270,6 +269,48 @@ export const chatInput: ChatInputCommand = async (ctx) => {
 
     return interaction.reply({
       embeds: [embed],
+    });
+  } else if (sub === "edit") {
+    await characterHelper.editCharacter(
+      interaction.user.id,
+      interaction.options.getString("character", true),
+      interaction.options.getString("field", true),
+      interaction.options.getString("information", true),
+    );
+
+    const embed = await characterHelper.getCharacterEmbed(
+      interaction.user.id,
+      interaction.options.getString("character", true),
+    );
+
+    return interaction.reply({
+      content: `Your character's profile has been edited!`,
+      embeds: [embed],
+      ephemeral: true,
+    });
+  } else if (sub === "edit-image") {
+    await characterHelper.editCharacter(
+      interaction.user.id,
+      interaction.options.getString("character", true),
+      "img_link",
+      interaction.options.getString("art-link", true),
+    );
+    await characterHelper.editCharacter(
+      interaction.user.id,
+      interaction.options.getString("character", true),
+      "artist_credits",
+      interaction.options.getString("artist-credit", true),
+    );
+
+    const embed = await characterHelper.getCharacterEmbed(
+      interaction.user.id,
+      interaction.options.getString("character", true),
+    );
+
+    return interaction.reply({
+      content: `Your character's profile has been edited!`,
+      embeds: [embed],
+      ephemeral: true,
     });
   }
 };

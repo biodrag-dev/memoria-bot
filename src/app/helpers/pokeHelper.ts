@@ -1,10 +1,10 @@
 import Pokedex from "pokedex-promise-v2";
-import { EmbedBuilder } from "discord.js";
+import { EmbedBuilder, ColorResolvable } from "discord.js";
 
 const P = new Pokedex();
 
 interface ColorData {
-  hexcode: string;
+  hexcode: ColorResolvable;
   bannerLink: string;
   bannerCreds: string;
 }
@@ -88,7 +88,7 @@ export async function findPokemon(name: string) {
   }
 }
 
-export async function getEvolutionPath(dest: string) {
+export async function getEvolutionPath(dest: string){
   if (dest === "basculin-white-striped") return ["basculin-white-striped"];
   if (dest === "basculegion-female")
     return ["basculin-white-striped", "basculegion-female"];
@@ -106,10 +106,8 @@ export async function getEvolutionPath(dest: string) {
     if (paths) return paths;
 
     return [pokemon.name];
-    console.log("paths", paths);
-    return paths;
   } catch {
-    return undefined;
+    return [];
   }
 }
 
@@ -151,7 +149,7 @@ function getEvolutionPathHelper(
 
 export async function findBaseMon(pokemon: any) {
   const evoTree = await getEvolutionPath(pokemon.name);
-  return await P.getPokemonByName(evoTree[0]);
+  return await P.getPokemonByName(evoTree[0]!);
 }
 
 export async function findRandomMon() {
@@ -196,10 +194,13 @@ export async function isLegendOrMyth(pokemonName: string): Promise<boolean> {
 
 export async function pokeEmbedCreate(pokemon: any): Promise<EmbedBuilder> {
   const dexEntry = await getRandDexEntry(pokemon.name);
-
   const species = await P.getResource(pokemon.species.url);
+  const color = colors[species.color.name]!;
 
-  const color = colors[species.color.name] ?? colors.gray;
+  const type1 = displayName(pokemon.types[0].type.name);
+  const type2 = pokemon.types[1]
+    ? `/${displayName(pokemon.types[1].type.name)}`
+    : ``;
 
   const embed = new EmbedBuilder()
     .setTitle(
@@ -209,25 +210,39 @@ export async function pokeEmbedCreate(pokemon: any): Promise<EmbedBuilder> {
       `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
     )
     .setColor(color.hexcode)
-    .setDescription(dexEntry)
+    .setDescription(
+      `**Typing** | ${type1}${type2}
+      
+      ${dexEntry}`,
+    )
     .setImage(color.bannerLink)
     .addFields(
-      { name: `Average Height`, value: `${(pokemon.height * .1).toFixed(1)} m | ${cmToFeetConversion(pokemon.height * 10)}`, inline: true },
-      { name: `Average Weight`, value: `${(pokemon.weight * .1).toFixed(1)} kg | ${kgToPounds(pokemon.weight * .1)} lbs`, inline: true },
+      {
+        name: `Average Height`,
+        value: `${(pokemon.height * 0.1).toFixed(1)} m | ${cmToFeetConversion(pokemon.height * 10)}`,
+        inline: true,
+      },
+      {
+        name: `Average Weight`,
+        value: `${(pokemon.weight * 0.1).toFixed(1)} kg | ${kgToPounds(pokemon.weight * 0.1)} lbs`,
+        inline: true,
+      },
     );
 
   return embed;
 }
 
-function cmToFeetConversion(cm: number){
-  var realFeet = (cm / 30.48);
+function cmToFeetConversion(cm: number) {
+  var realFeet = cm / 30.48;
   var feet = Math.floor(realFeet);
   var inches = ((realFeet - feet) * 12).toFixed(0);
   return feet + "'" + inches + '"';
 }
-function kgToPounds(kg: number){
-  return (kg * 2.20452262).toFixed(1)
+function kgToPounds(kg: number) {
+  return (kg * 2.20452262).toFixed(1);
 }
+
+export function getPokemonUrl(pokemonName: string) {}
 
 export function displayName(pokemonName: string) {
   var form = "";
@@ -314,4 +329,26 @@ export function displayName(pokemonName: string) {
       break;
   }
   return form + name;
+}
+
+export async function getSprite(
+  pokemonName: string,
+  pokemonGender: number,
+  shiny: boolean,
+) {
+  const pokemon = await P.getPokemonByName(pokemonName.toLowerCase());
+  const sprites = pokemon.sprites;
+
+  // if it is female
+  if (pokemonGender === 2) {
+    if (shiny === true) {
+      return sprites.front_shiny_female ?? sprites.front_shiny;
+    } else {
+      return sprites.front_female ?? sprites.front_default;
+    }
+  }
+  if (shiny === true) {
+    return sprites.front_shiny;
+  }
+  return sprites.front_default;
 }

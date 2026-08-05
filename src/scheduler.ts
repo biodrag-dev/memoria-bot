@@ -1,13 +1,7 @@
 import cron from "node-cron";
-import client from "./app.js";
 import * as submitHelper from "./app/helpers/submitHelper";
 import * as embedHelper from "./app/helpers/embedHelper";
-
-import type { ChatInputCommand, CommandData } from "commandkit";
-
-import { ApplicationCommandOptionType } from "discord.js";
-
-
+import type {Client} from "commandkit";
 
 export async function startScheduler(client: Client) {
   // Every 5 minutes

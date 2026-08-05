@@ -9,7 +9,6 @@ import {
 } from "discord.js";
 
 import * as userHelper from "../helpers/characterHelper";
-import * as submitHelper from "../../helpers/submitHelper";
 
 import { EmbedBuilder } from "discord.js";
 
@@ -28,7 +27,9 @@ const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 export const command: CommandData = {
   name: "admin",
   description: "Admin only commands!",
-  defaultMemberPermissions: "0",
+  default_member_permissions: "0",
+  dm_permission: false,
+
   contexts: [InteractionContextType.Guild],
   options: [
     {
@@ -62,7 +63,6 @@ export const command: CommandData = {
           name: "character",
           description: "Delete a character",
           type: ApplicationCommandOptionType.Subcommand,
-          dmPermission: false,
           options: [
             {
               name: "roleplayer",
@@ -84,7 +84,6 @@ export const command: CommandData = {
           name: "all",
           description: "Delete all characters",
           type: ApplicationCommandOptionType.Subcommand,
-          dmPermission: false,
           options: [
             {
               name: "roleplayer",
@@ -145,14 +144,13 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   const sub = interaction.options.getSubcommand();
 
   if (sub === "edit") {
-    const embed = await userHelper.editCharacter(
-      interaction.options.getUser("roleplayer")!.id,
-      interaction.options.getString("character")!,
-    );
-
-    return interaction.reply({
-      embeds: [embed],
-    });
+    // const embed = await userHelper.editCharacter(
+    //   interaction.options.getUser("roleplayer")!.id,
+    //   interaction.options.getString("character")!,
+    // );
+    // return interaction.reply({
+    //   embeds: [embed],
+    // });
   }
 
   if (group === "delete") {
@@ -185,17 +183,17 @@ export const chatInput: ChatInputCommand = async (ctx) => {
           embed.setDescription(
             `All of <@${interaction.options.getUser("roleplayer")!.id}>'s server data has been deleted.`,
           );
-          const member = await interaction.guild.members.fetch(
-            interaction.options.getUser("roleplayer")!.id,
+          const member = await interaction.guild!.members.fetch(
+            interaction.options.getUser("roleplayer", true).id,
           );
-          await member.roles.remove(process.env.ROLEPLAYER_ROLE); //roleplayer role
+          await member.roles.remove(`${process.env.ROLEPLAYER_ROLE}`); //roleplayer role
 
           await button.update({
             embeds: [embed],
             components: [],
           });
           await userHelper.deleteAll(
-            interaction.options.getUser("roleplayer").id,
+            interaction.options.getUser("roleplayer", true).id
           );
           collector.stop();
         }
@@ -243,7 +241,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
 
         if (button.customId === "admin-delete-accept") {
           embed.setDescription(
-            `${interaction.options.getString("character")} has been deleted!`,
+            `${interaction.options.getString("character", true)} has been deleted!`,
           );
 
           await button.update({
@@ -251,15 +249,15 @@ export const chatInput: ChatInputCommand = async (ctx) => {
             components: [],
           });
           await userHelper.deleteCharacter(
-            interaction.options.getUser("roleplayer").id,
-            interaction.options.getString("character"),
+            interaction.options.getUser("roleplayer", true).id,
+            interaction.options.getString("character", true),
           );
           collector.stop();
         }
 
         if (button.customId === "admin-delete-decline") {
           embed.setDescription(`Deletion cancelled.`);
-          embede.setColor("Green");
+          embed.setColor("Green");
           await button.update({
             embeds: [embed],
             components: [],

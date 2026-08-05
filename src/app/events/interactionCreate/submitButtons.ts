@@ -7,7 +7,6 @@ import {
   PermissionFlagsBits,
 } from "discord.js";
 import * as submitHelper from "../../helpers/submitHelper";
-import * as pokeHelper from "../../helpers/pokeHelper";
 import * as characterHelper from "../../helpers/characterHelper";
 
 export default async function (interaction: Interaction) {
@@ -22,7 +21,7 @@ export default async function (interaction: Interaction) {
     }
     const [action, userId, msgId] = interaction.customId.split(":");
     const channel = await interaction.client.channels.fetch(
-      process.env.SUBMIT_LOG,
+      `${process.env.SUBMIT_LOG}`,
     );
 
     var reviewMsg;

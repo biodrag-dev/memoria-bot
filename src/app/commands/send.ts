@@ -2,7 +2,10 @@ import {
   ApplicationCommandOptionType,
   ChannelType,
   InteractionContextType,
+  TextChannel,
 } from "discord.js";
+
+import type { CommandData, ChatInputCommand } from "commandkit";
 
 export const command: CommandData = {
   name: "send",
@@ -19,7 +22,13 @@ export const command: CommandData = {
           description: "Where to send the message",
           type: ApplicationCommandOptionType.Channel,
           required: true,
-          channelTypes: [ChannelType.GuildText],
+          channel_types: [ChannelType.GuildText],
+        },
+        {
+          name: "text",
+          description: "what to send",
+          type: ApplicationCommandOptionType.String,
+          required: true,
         },
       ],
     },
@@ -29,16 +38,19 @@ export const command: CommandData = {
 export const chatInput: ChatInputCommand = async (ctx) => {
   const interaction = ctx.interaction;
 
-  const channel = interaction.options.getChannel("channel", true);
+  const channel = interaction.options.getChannel(
+    "channel",
+    true,
+  ) as TextChannel;
 
-  if (!channel.isTextBased()) {
+  if (!channel?.isTextBased()) {
     return interaction.reply({
       content: "That isn't a text channel.",
       ephemeral: true,
     });
   }
   const msg = await channel.send({
-    content: "hi",
+    content: `${interaction.options.getString("text", true)}`,
   });
 
   await interaction.reply({
