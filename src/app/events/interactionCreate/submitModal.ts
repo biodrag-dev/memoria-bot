@@ -11,6 +11,7 @@ import {
   Interaction,
   EmbedBuilder,
   ColorResolvable,
+  ModalSubmitInteraction,
 } from "discord.js";
 import * as pokehelper from "../../helpers/pokeHelper";
 import * as submitHelper from "../../helpers/submitHelper";
@@ -27,13 +28,15 @@ export default async function (interaction: Interaction) {
   if (!interaction.isModalSubmit()) return;
   await interaction.deferReply({ ephemeral: true });
 
+
+  const modalInteraction = interaction as ModalSubmitInteraction;
   if (interaction.customId == "character-submit") {
-    const name = interaction.fields.getTextInputValue("chara-name");
-    const house = interaction.fields.fields.get("chara-house")!.values[0];
-    const dest = interaction.fields
+    const name = modalInteraction.fields.getTextInputValue("chara-name");
+    const house = modalInteraction.fields.getStringSelectValues("chara-house")[0];
+    const dest = modalInteraction.fields
       .getTextInputValue("chara-dest")
       .toLowerCase();
-    const doc = interaction.fields.getTextInputValue("chara-doc");
+    const doc = modalInteraction.fields.getTextInputValue("chara-doc");
 
     //checks if pokemon exists
     const pokemon = await pokehelper.findPokemon(dest);
@@ -85,7 +88,7 @@ export default async function (interaction: Interaction) {
       return;
     }
 
-    const color = houseColors[house] ?? "#221e1e";
+    const color = houseColors[house!] ?? "#221e1e";
 
     const embed = new EmbedBuilder()
       .setTitle(`Application | ${name}`)
@@ -112,7 +115,7 @@ export default async function (interaction: Interaction) {
     await submitHelper.createSubmit(
       interaction.user.id,
       name,
-      house,
+      house!,
       doc,
       dest,
     );
