@@ -20,7 +20,7 @@ interface Partner {
   sizeMult: number;
 }
 interface CharacterData {
-  age?: number;
+  age?: string;
   gender?: string;
   bio?: string;
   pronouns?: string;
@@ -232,7 +232,7 @@ export async function deleteAll(id: string, client: Client): Promise<EmbedBuilde
 export function getCharacterEmbed(id: string, name: string) {
   loadUsers();
   console.log(charaDex[id]);
-  if (!charaDex?.[id].characters || !charaDex[id].characters[name]) {
+  if (!charaDex[id] || !charaDex[id].characters || !charaDex[id].characters[name]) {
     return new EmbedBuilder()
       .setDescription("User or character could not be found!")
       .setColor("Red");

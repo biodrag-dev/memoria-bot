@@ -10,13 +10,14 @@ import {
   ButtonStyle,
   Interaction,
   EmbedBuilder,
+  ColorResolvable,
 } from "discord.js";
 import * as pokehelper from "../../helpers/pokeHelper";
 import * as submitHelper from "../../helpers/submitHelper";
 
 require("dotenv").config();
 
-const houseColors: Record<string, string> = {
+const houseColors: Record<string, ColorResolvable> = {
   Victini: "#ce1b1b",
   Jirachi: "#fadb2c",
   Mew: "#3473fa",
@@ -28,7 +29,7 @@ export default async function (interaction: Interaction) {
 
   if (interaction.customId == "character-submit") {
     const name = interaction.fields.getTextInputValue("chara-name");
-    const house = interaction.fields.fields.get("chara-house").values[0];
+    const house = interaction.fields.fields.get("chara-house")!.values[0];
     const dest = interaction.fields
       .getTextInputValue("chara-dest")
       .toLowerCase();
@@ -75,7 +76,7 @@ export default async function (interaction: Interaction) {
       const failEmbed = new EmbedBuilder()
         .setColor("#ce1b1b")
         .setDescription(
-          `Registration Error: You already have an existing reservation for ${await submitHelper.toProperCase(reserveCheck[0])}! Reservations last for a month, but can be changed after a week.`,
+          `Registration Error: You already have an existing reservation for ${await submitHelper.toProperCase(reserveCheck[0]!)}! Reservations last for a month, but can be changed after a week.`,
         );
 
       await interaction.editReply({

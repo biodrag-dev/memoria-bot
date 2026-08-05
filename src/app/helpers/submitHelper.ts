@@ -69,7 +69,7 @@ export async function checkDestination(id: string, name: string) {
   await loadEvos();
   if (
     !evoDex[`${name}`] ||
-    (evoDex[`${name}`].user == id && evoDex[`${name}`].status != "Approved")
+    (evoDex[`${name}`]!.user == id && evoDex[`${name}`]!.status != "Approved")
   )
     return true;
   return false;
@@ -77,14 +77,14 @@ export async function checkDestination(id: string, name: string) {
 
 export async function getDestination(name: string): Promise<EvoData> {
   await loadEvos();
-  return evoDex[`${name}`];
+  return evoDex[`${name}`]!;
 }
 
 //approves a reservation
 export async function approveDestination(name: string) {
   await loadEvos();
-  evoDex[`${name}`].status = "Approved";
-  evoDex[`${name}`].dateMade = new Date();
+  evoDex[`${name}`]!.status = "Approved";
+  evoDex[`${name}`]!.dateMade = new Date();
   await saveEvos();
 }
 
@@ -97,7 +97,7 @@ export async function deleteDestination(name: string) {
 
 export async function reserveDays(name: string) {
   await loadEvos();
-  const oldDate = new Date(evoDex[`${name.toLowerCase()}`].dateMade);
+  const oldDate = new Date(evoDex[`${name.toLowerCase()}`]!.dateMade);
   const now = new Date();
 
   const difference = now.getTime() - oldDate.getTime();
@@ -106,7 +106,7 @@ export async function reserveDays(name: string) {
 }
 
 export function reserveExpireDate(name: string) {
-  const expirationDate = new Date(evoDex[`${name.toLowerCase()}`].dateMade);
+  const expirationDate = new Date(evoDex[`${name.toLowerCase()}`]!.dateMade);
   expirationDate.setMonth(expirationDate.getMonth() + 1);
   return expirationDate;
 }
@@ -132,7 +132,7 @@ async function createDestination(id: string, name: string) {
 
 export async function hasSubmit(id: string) {
   await loadSubmissions();
-  if (submitDex[`${id}`] && submitDex[`${id}`] != "Temporary") return true;
+  if (submitDex[`${id}`] && submitDex[`${id}`]!.status != "Temporary") return true;
   return false;
 }
 export async function denySubmit(id: string) {
@@ -184,22 +184,22 @@ export async function createSubmit(
 
 export async function continueSubmit(id: string) {
   await loadSubmissions();
-  submitDex[`${id}`].status = "Reviewing";
-  await createDestination(id, submitDex[`${id}`].partner);
+  submitDex[`${id}`]!.status = "Reviewing";
+  await createDestination(id, submitDex[`${id}`]!.partner);
 
   await saveSubmissions();
 }
 
 export async function getSubmit(id: string) : Promise<SubmitData> {
   await loadSubmissions();
-  return submitDex[`${id}`];
+  return submitDex[`${id}`]!;
 }
 
 export async function deleteSubmit(id: string) {
   await loadSubmissions();
   await loadEvos();
-  const partner = submitDex[`${id}`].partner;
-  if (evoDex[`${partner}`].status == "Temporary") {
+  const partner = submitDex[`${id}`]!.partner;
+  if (evoDex[`${partner}`]!.status == "Temporary") {
     delete evoDex[`${partner}`];
     await saveEvos();
   }
@@ -238,12 +238,12 @@ export async function clearExpiredReserves() {
 
 export async function reviewEmbed(id: string, status: string) {
   await loadSubmissions();
-  const submission = submitDex[`${id}`];
+  const submission = submitDex[`${id}`]!;
   const pokemon = await pokehelper.findPokemon(submission.partner);
 
   const embed = new EmbedBuilder()
     .setThumbnail(
-      `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
+      `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon!.id}.png`,
     )
     .setDescription(
       `**House** | ${submission.house}\n**Evolutionary Destination** | ${await toProperCase(submission.partner)}\n**Document Link**\n${submission.docLink}`,
@@ -319,7 +319,7 @@ export function verifyCanReserve(userId: string, speciesName: string) {
 
   //if user has an existing reserve
   if (userReserveName) {
-    const changeDate = new Date(evoDex[`${userReserveName}`].dateMade);
+    const changeDate = new Date(evoDex[`${userReserveName}`]!.dateMade);
     changeDate.setDate(changeDate.getDate() + 7);
 
     const now = new Date();

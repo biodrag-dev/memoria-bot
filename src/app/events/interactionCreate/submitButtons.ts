@@ -5,6 +5,7 @@ import {
   ButtonStyle,
   Interaction,
   PermissionFlagsBits,
+  TextChannel,
 } from "discord.js";
 import * as submitHelper from "../../helpers/submitHelper";
 import * as characterHelper from "../../helpers/characterHelper";
@@ -22,7 +23,7 @@ export default async function (interaction: Interaction) {
     const [action, userId, msgId] = interaction.customId.split(":");
     const channel = await interaction.client.channels.fetch(
       `${process.env.SUBMIT_LOG}`,
-    );
+    ) as TextChannel;
 
     var reviewMsg;
     var embed;
@@ -50,7 +51,6 @@ export default async function (interaction: Interaction) {
         );
         const msg = await channel.send({
           embeds: [embed],
-          ephemeral: true,
         });
 
         const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -140,8 +140,8 @@ export default async function (interaction: Interaction) {
           });
           return;
         }
-        const member = await interaction.guild.members.fetch(userId);
-        await member.roles.add(process.env.ROLEPLAYER_ROLE); //roleplayer role
+        const member = await interaction.guild!.members.fetch(userId!);
+        await member.roles.add(process.env.ROLEPLAYER_ROLE!); //roleplayer role
         reviewMsg = await channel.messages.fetch(`${msgId}`);
         embed = await submitHelper.reviewEmbed(`${userId}`, "Approved");
         await reviewMsg.edit({
