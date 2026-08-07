@@ -4,12 +4,10 @@ import * as embedHelper from "./app/helpers/embedHelper";
 import type {Client} from "commandkit";
 
 export async function startScheduler(client: Client) {
-  // Every 5 minutes
-   await embedHelper.updateReservesEmbed(client);
-   await embedHelper.updateServerRulesEmbed(client);
-   await embedHelper.updateCharacterRulesEmbed(client);
-
-  cron.schedule("*/30 * * * *", async () => {
+   await embedHelper.updateAllEmbeds(client);
+   
+    //every 30 minutes
+   cron.schedule("*/30 * * * *", async () => {
     await submitHelper.clearTemporary();
     await submitHelper.clearExpiredReserves();
     await embedHelper.updateReservesEmbed(client);
