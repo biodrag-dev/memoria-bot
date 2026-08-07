@@ -14,73 +14,6 @@ export async function updateEmbed(
   });
 }
 
-export async function updateAllEmbeds(client: Client) {
-  await updateReservesEmbed(client);
-  await updateServerRulesEmbed(client);
-  await updateCharacterRulesEmbed(client);
-  await updateVerificationEmbed(client);
-  await updateRolesEmbed(client);
-}
-
-export async function updateRolesEmbed(client: Client) {
-  const channel = (await client.channels.fetch(
-    `${process.env.SELF_ROLES_CHANNEL}`,
-  )) as TextChannel;
-  const msgOne = await channel.messages.fetch(
-    `${process.env.SELF_ROLES_MSG_ONE}`,
-  );
-  const embedOne = await getRolesOneEmbed();
-  await msgOne.edit({
-    content: ``,
-    embeds: [embedOne],
-  });
-
-  const msgTwo = await channel.messages.fetch(
-    `${process.env.SELF_ROLES_MSG_TWO}`,
-  );
-  const embedTwo = await getRolesTwoEmbed();
-  await msgTwo.edit({
-    content: ``,
-    embeds: [embedTwo],
-  });
-
-  const msgThree = await channel.messages.fetch(
-    `${process.env.SELF_ROLES_MSG_THREE}`,
-  );
-  const embedThree = await getRolesThreeEmbed();
-  await msgThree.edit({
-    content: ``,
-    embeds: [embedThree],
-  });
-
-  const msgFour = await channel.messages.fetch(
-    `${process.env.SELF_ROLES_MSG_FOUR}`,
-  );
-  const embedFour = await getRolesFourEmbed();
-  await msgFour.edit({
-    content: ``,
-    embeds: [embedFour],
-  });
-
-  const msgFive = await channel.messages.fetch(
-    `${process.env.SELF_ROLES_MSG_FIVE}`,
-  );
-  const embedFive = await getRolesFiveEmbed();
-  await msgFive.edit({
-    content: ``,
-    embeds: [embedFive],
-  });
-
-  const msgSix = await channel.messages.fetch(
-    `${process.env.SELF_ROLES_MSG_SIX}`,
-  );
-  const embedSix = await getRolesSixEmbed();
-  await msgSix.edit({
-    content: ``,
-    embeds: [embedSix],
-  });
-}
-
 export async function updateReservesEmbed(client: Client) {
   const channel = await client.channels.fetch(
     `${process.env.RESERVATIONS_CHANNEL}`,
@@ -129,18 +62,6 @@ export async function updateServerRulesEmbed(client: Client) {
   });
 }
 
-export async function updateVerificationEmbed(client: Client) {
-  const channel = (await client.channels.fetch(
-    `${process.env.VERIFY_CHANNEL}`,
-  )) as TextChannel;
-  const msgOne = await channel.messages.fetch(`${process.env.VERIFY_MSG_ONE}`);
-  const embedOne = await getVerifyEmbed();
-  await msgOne.edit({
-    content: ``,
-    embeds: [embedOne],
-  });
-}
-
 export async function updateCharacterRulesEmbed(client: Client) {
   const channel = (await client.channels.fetch(
     `${process.env.CHARACTER_RULES_CHANNEL}`,
@@ -171,11 +92,12 @@ export async function getReservesOneEmbed() {
     .setDescription(
       `An 'Evolutionary Destination' describes the species that your pokemon partner will eventually evolve into.
         
-Each 'Evolution Destination' can only be claimed by one character at a time. Different forms are considered their own evolutionary destination, such as Ninetales and Alolan Ninetales. These must be permanent form changes that cannot be changed both in and out of battle (ie. Oricorio or Rotom and all its forms would be considered only one destination).
+        Each 'Evolution Destination' can only be claimed by one character at a time. Different forms are considered their own evolutionary destination, such as Ninetales and Alolan Ninetales.
+        These must be permanent form changes that cannot be changed both in and out of battle (ie. Oricorio or Rotom and all its forms would be considered only one destination).
         
-For example, someone may claim a Pikachu as a destination, but it cannot evolve into a Raichu. Another could claim a Pichu, though it is unable to evolve entirely. A third person may claim a Raichu, and a fourth person can claim Alolan Raichu. These four characters can coexist at the same time, but they will all start with Pichu.
+        For example, someone may claim a Pikachu as a destination, but it cannot evolve into a Raichu. Another could claim a Pichu, though it is unable to evolve entirely. A third person may claim a Raichu, and a fourth person can claim Alolan Raichu. These four characters can coexist at the same time, but they will all start with Pichu.
 
-Keep in mind that these destinations cannot be changed once a character is approved.`,
+        Keep in mind that these destinations cannot be changed once a character is approved.`,
     )
     .setThumbnail(
       `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/494.png?format=webp&quality=lossless`,
@@ -184,7 +106,7 @@ Keep in mind that these destinations cannot be changed once a character is appro
       "https://64.media.tumblr.com/4c989428ba947bc4966e07e76d36bd28/118ec01107834a73-07/s540x810/5c2aa6ffdba2c64d3deb6fb0a646313eb247c561.gif",
     )
     .setFooter({
-      text: "banner by @waneella on tumblr",
+      text: "Banner by @waneella on Tumblr",
       //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
@@ -203,7 +125,7 @@ export async function getReservesTwoEmbed() {
       "https://i.redd.it/yg62pmx9dhra1.gif?width=960&format=mp4&s=6643eb3a4de32a8b64cf45cb2474b68f77bfebe6",
     )
     .setFooter({
-      text: "banner by @anasabdin on tumblr",
+      text: "Banner by @AnasAbdin on Tumblr",
       //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
   return embed;
@@ -216,7 +138,7 @@ export async function getReservesThreeEmbed() {
     .setDescription(
       `Looking to reserve an Evolutionary Destination in advance? Use **/submit partner-reserve**! Note that reservervations cannot be changed to another species until a week has passed, you must submit with your current reservation, and there are no extensions.
       
-${await submitHelper.getAllReservedPartnerEntries()}`,
+      ${await submitHelper.getAllReservedPartnerEntries()}`,
     )
     .setThumbnail(
       `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png?format=webp&quality=lossless`,
@@ -225,7 +147,7 @@ ${await submitHelper.getAllReservedPartnerEntries()}`,
       "https://static2.klipy.com/ii/f87f46a2c5aeaeed4c68910815f73eaf/27/de/PSYjpPT7.gif",
     )
     .setFooter({
-      text: "banner by @anasabdin on tumblr",
+      text: "Banner by @AnasAbdin on Tumblr",
       //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
@@ -247,7 +169,7 @@ export async function getServerRulesEmbed() {
 > If, for some reason, they do need to be mentioned, please censor them with the appropriate tags. We discourage discussion about topics such as self-harm, abuse, suicide, and political matters due to how sensitive these subjects may be. Bear in mind that we are a community open to minors.
 
 3. No discrimination.
-> This is an inclusive space, so discrimination of any kind will not be tolerated. Making derogatory remarks against POC, disabled, LGBTQ+, religion, etc. can warrant warnings, kicks, or even an instant ban. We ask that you do not use slurs even if you have personally reclaimed them, as it can make those who haven't uncomfortable.
+> This is an inclusive space, so discrimination of any kind will not be tolerated. Making derogatory remarks against POC, disabled, LGBTQ+, religion, etc. can warrant warnings, kicks, or even an instant ban. We ask that you do not use slurs even if you have reclaimed them, as it can make those who haven't uncomfortable.
 
 4. Take arguments to DMs.
 > Respectful debates are allowed, such as discussing favorite foods or games. If a discussion is getting heated, please drop the topic or take it to DMs. If it continues within the server, it may lead to timeouts or warnings for anyone instigating or continuing the conversation.
@@ -275,7 +197,7 @@ export async function getServerRulesEmbed() {
     )
     .setImage("https://1041uuu.jp/Gallery/b/b27.gif")
     .setFooter({
-      text: "banner by @1041uuu on tumblr",
+      text: "Banner by @1041uuu on Tumblr",
       //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
@@ -309,10 +231,10 @@ export async function getCharacterRulesOneEmbed() {
 > Pokémon evolutionary destinations are unique in this server. Two OCs cannot both have an Absol, so please check if the Pokémon you have in mind is already taken! Please take a look at <#${process.env.RESERVATIONS_CHANNEL}> for more info. We also allow species reservations that last 1 month.
 
 8. Three Character limit.
-> As of the moment, everyone will have a 3 character limit, one for each house (Victini, Mew, Jirachi). We want to focus on quality over quantity! This also means that you cannot make two characters in the same house.`,
+> As of the moment, everyone will have a 3 character limit, one for each house (Victini, Mew, Jirachi). We want to focus on quality over quantity!`,
     )
     .setFooter({
-      text: "banner by @1041uuu on tumblr",
+      text: "Banner by @1041uuu on Tumblr",
       //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     })
     .setImage(
@@ -349,212 +271,7 @@ export async function getCharacterRulesTwoEmbed() {
       "https://64.media.tumblr.com/3ebef054c877d03c507aa8c40149908b/6ea0a0e867ebf441-0d/s540x810/b373eb4bbf73d955bc00c18d170b4093d6ad9044.gif",
     )
     .setFooter({
-      text: "banner by @1041uuu on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
-    });
-
-  return embed;
-}
-
-export async function getRolesOneEmbed() {
-  const embed = new EmbedBuilder()
-    .setTitle(`➴　　┈　　🔴　　Pronouns`)
-    .setColor("#d16f6f")
-    .setDescription(
-      `**　　**◌　　⏖　　ꜜ🍒　　<@&1534457442698661939>
-　　◌　　⏖　　ꜜ🍁　　<@&1534457486625607760>
-　　◌　　⏖　　ꜜ🍓　　<@&1534457524798095441>
-　　◌　　⏖　　ꜜ🍷　　<@&1534457591105716344>
-　　◌　　⏖　　ꜜ🏮　　<@&1534457630494294087>`,
-    )
-    .setImage(
-      "https://i.pinimg.com/originals/b2/2a/a2/b22aa22b2f3f55b6468361158d52e2e7.gif",
-    )
-    .setFooter({
-      text: "banner by @1041uuu on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
-    });
-
-  return embed;
-}
-
-export async function getRolesTwoEmbed() {
-  const embed = new EmbedBuilder()
-    .setTitle(`➴　　┈　　🟠　　Age`)
-    .setColor("#d19e6f")
-    .setDescription(
-      `**　　**◌　　⏖　　ꜜ🍹　　<@&1534457967779250277>
-　　◌　　⏖　　ꜜ🍊　　<@&1534457994295906327>`,
-    )
-    .setImage(
-      "https://i.pinimg.com/originals/bf/be/dc/bfbedce4a9c3ff9169faa5744634985f.gif",
-    )
-    .setFooter({
-      text: "banner by @minimoss on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
-    });
-
-  return embed;
-}
-
-export async function getRolesThreeEmbed() {
-  const embed = new EmbedBuilder()
-    .setTitle(`➴　　┈　　🟡　　Ping Preferences`)
-    .setColor("#d1cb6f")
-    .setDescription(
-      `**　　**◌　　⏖　　ꜜ☀️　　<@&1534460070635769936>
-　　◌　　⏖　　ꜜ🐝　　<@&1534460189518856332>
-　　◌　　⏖　　ꜜ🐥　　<@&1534460232024195143>`,
-    )
-    .setImage(
-      "https://i.pinimg.com/originals/26/45/47/2645475a9eef90f4a1fe67b76ae7d9fa.gif",
-    )
-    .setFooter({
-      text: "banner by @kirokaze on deviantart",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
-    });
-
-  return embed;
-}
-
-export async function getRolesFourEmbed() {
-  const embed = new EmbedBuilder()
-    .setTitle(`➴　　┈　　🟢　　DM Preferences`)
-    .setColor("#83d16f")
-    .setDescription(
-      `**　　**◌　　⏖　　ꜜ🍵　　<@&1534460372675858544>
-　　◌　　⏖　　ꜜ🍃　　<@&1534460455534334003>
-　　◌　　⏖　　ꜜ🧩　　<@&1534460500174442576>`,
-    )
-    .setImage(
-      "https://i.pinimg.com/originals/39/7e/f3/397ef3b50d7e3e6c289e53b0c95a0b0b.gif",
-    )
-    .setFooter({
-      text: "banner by motocross saito on artstation",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
-    });
-
-  return embed;
-}
-
-export async function getRolesFiveEmbed() {
-  const embed = new EmbedBuilder()
-    .setTitle(`➴　　┈　　🔵　　Writing Preferences`)
-    .setColor("#6fd1d1")
-    .setDescription(
-      `**　　**◌　　⏖　　ꜜ🐟　　<@&1534456980993998848>
-　　◌　　⏖　　ꜜ🐬　　<@&1534457025768194169>
-　　◌　　⏖　　ꜜ🌊　　<@&1534457061210066994>
-　　◌　　⏖　　ꜜ🌀　　<@&1534457107628163082>`,
-    )
-    .setImage(
-      "https://i.pinimg.com/originals/ff/a9/6e/ffa96ede4039820cdac1185df70b8dc7.gif",
-    )
-    .setFooter({
-      text: "banner by @1041uuu on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
-    });
-
-  return embed;
-}
-
-export async function getRolesSixEmbed() {
-  const embed = new EmbedBuilder()
-    .setTitle(`➴　　┈　　🟣　　Additional Pings`)
-    .setColor("#a56fd1")
-    .setDescription(
-      `**　　**◌　　⏖　　ꜜ🍇　　<@&1534631480373018655>
-　　◌　　⏖　　ꜜ👾　　<@&1534631563906777099>
-　　◌　　⏖　　ꜜ🔮　　<@&1534631736124772586>
-　　◌　　⏖　　ꜜ☂️　　<@&1534631779061727412>`,
-    )
-    .setImage(
-      "https://i.pinimg.com/originals/56/3a/b1/563ab15230f5bf4259f11125fd1f9c0e.gif",
-    )
-    .setFooter({
-      text: "banner by ao85 on artstation",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
-    });
-
-  return embed;
-}
-
-export async function getVerifyEmbed() {
-  const embed = new EmbedBuilder()
-    .setTitle(`𝐕𝐄𝐑𝐈𝐅𝐈𝐂𝐀𝐓𝐈𝐎𝐍`)
-    .setColor("#9dcac0")
-    .setDescription(
-      `read the <#${process.env.SERVER_RULES_CHANNEL}> to find the password! then, send the password in here (as one word) to be verified.
-      
-need a hint? 
--# ||it's in the rule that mentions staff safety||.
-`,
-    )
-    .setImage(
-      "https://i.pinimg.com/originals/b2/2a/a2/b22aa22b2f3f55b6468361158d52e2e7.gif",
-    )
-    .setFooter({
-      text: "banner by @1041uuu on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
-    });
-
-  return embed;
-}
-
-export async function getPostVerifyEmbed(user: string) {
-  const embed = new EmbedBuilder()
-    .setTitle(`a new trainer has enrolled in the academy!`)
-    .setColor("#9dcac0")
-    .setDescription(
-      `Right this way, <@${user}>! Feel free to look take a look around!
-
-Grab some roles from <#> and introduce yourself in <#>!
-`,
-    )
-    .setImage(
-      "https://i.pinimg.com/originals/b2/2a/a2/b22aa22b2f3f55b6468361158d52e2e7.gif",
-    )
-    .setFooter({
-      text: "banner by @1041uuu on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
-    });
-
-  return embed;
-}
-
-export async function getJoinEmbed(user: string) {
-  const embed = new EmbedBuilder()
-    .setTitle(`a new trainer has enrolled in the academy!`)
-    .setColor("#9dcac0")
-    .setDescription(
-      `Right this way, <@${user}>! Feel free to look take a look around!
-
-Grab some roles from <#> and introduce yourself in <#>!
-`,
-    )
-    .setImage(
-      "https://i.pinimg.com/originals/b2/2a/a2/b22aa22b2f3f55b6468361158d52e2e7.gif",
-    )
-    .setFooter({
-      text: "banner by @1041uuu on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
-    });
-
-  return embed;
-}
-
-export async function getLeaveEmbed(user: string) {
-  const embed = new EmbedBuilder()
-    .setTitle(`oh no!`)
-    .setColor("#9dcac0")
-    .setDescription(
-      `It seems <@${user}> didn't quite have the passion for being a trainer like we thought...`,
-    )
-    .setImage(
-      "https://i.pinimg.com/originals/b2/2a/a2/b22aa22b2f3f55b6468361158d52e2e7.gif",
-    )
-    .setFooter({
-      text: "banner by @1041uuu on tumblr",
+      text: "Banner by @1041uuu on Tumblr",
       //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 

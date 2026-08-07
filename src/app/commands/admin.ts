@@ -183,6 +183,10 @@ export const chatInput: ChatInputCommand = async (ctx) => {
           embed.setDescription(
             `All of <@${interaction.options.getUser("roleplayer")!.id}>'s server data has been deleted.`,
           );
+          const member = await interaction.guild!.members.fetch(
+            interaction.options.getUser("roleplayer", true).id,
+          );
+          await member.roles.remove(`${process.env.ROLEPLAYER_ROLE}`); //roleplayer role
 
           await button.update({
             embeds: [embed],

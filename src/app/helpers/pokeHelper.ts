@@ -14,69 +14,69 @@ const colors: Record<string, ColorData> = {
     hexcode: "#ce1b1b",
     bannerLink:
       "https://i.pinimg.com/originals/a6/17/32/a61732f43791d44d5d1ca18057d59574.gif",
-    bannerCreds: "banner from an official game: the last blade",
+    bannerCreds: "",
   },
 
   blue: {
     hexcode: "#3473fa",
     bannerLink: "https://i.redd.it/dt799bhjhhoc1.gif",
-    bannerCreds: "banner by @anasabdin on tumblr",
+    bannerCreds: "",
   },
 
   yellow: {
     hexcode: "#fadb2c",
     bannerLink:
-      "https://i.pinimg.com/originals/b6/1c/2a/b61c2abdd2e1abd354e6b0692cce6e37.gif",
-    bannerCreds: "banner by @anasabdin on tumblr",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJUTCgh7DOFcRBLXGvGAMPu3QRf82B8TCToexws_K6FA&s=10",
+    bannerCreds: "",
   },
 
   green: {
     hexcode: "#15c048",
     bannerLink:
       "https://i.pinimg.com/originals/0a/12/e1/0a12e130650543cf5b165a008d1604e3.gif",
-    bannerCreds: "banner by @minimoss on tumblr",
+    bannerCreds: "",
   },
 
   black: {
     hexcode: "#221e1e",
     bannerLink:
-      "https://i.pinimg.com/originals/c1/fc/9d/c1fc9d7f6ae08d56f2b84e81799790a5.gif",
-    bannerCreds: "banner by @waneella on tumblr",
+      "https://64.media.tumblr.com/fd970fa64ea36db438022444d9e1ba43/tumblr_p4x6ed3lQP1u7gnm9o1_500.gif",
+    bannerCreds: "",
   },
 
   brown: {
     hexcode: "#ad7250",
     bannerLink:
       "https://i.pinimg.com/originals/cf/65/a7/cf65a7b41594a1794d07e1f2041f4b6e.gif",
-    bannerCreds: "banner by @waneella on tumblr",
+    bannerCreds: "",
   },
 
   purple: {
     hexcode: "#801d8d",
     bannerLink:
       "https://i.pinimg.com/originals/b9/01/85/b9018579aebd5c161b0eac79ca04f17a.gif",
-    bannerCreds: "banner by @pixeldanc3r on twitter",
+    bannerCreds: "",
   },
 
   gray: {
     hexcode: "#746f6f",
     bannerLink:
-      "https://i.pinimg.com/originals/cc/85/30/cc8530a1418e2d94c35590e6543a3a22.gif",
-    bannerCreds: "banner by @waneella on tumblr",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTP-CfFBubLCM6YsrtjRSiRn7GNNpqCpojl-keCVBwqOg&s=10",
+    bannerCreds: "",
   },
 
   white: {
     hexcode: "#eee6e6",
     bannerLink:
-      "https://i.pinimg.com/originals/80/6e/de/806ede5583f088c6bdb788bf867f8064.gif",
-    bannerCreds: "banner by @lennsan on tumblr",
+      "https://i.pinimg.com/originals/20/e9/22/20e92227c9b739044e377b3567cfdac0.gif",
+    bannerCreds: "",
   },
 
   pink: {
     hexcode: "#db7a89",
     bannerLink:
-      "https://i.pinimg.com/originals/eb/cc/2b/ebcc2bbe06889c7b104786ea1a189622.gif",
-    bannerCreds: "banner by @waneella on tumblr",
+      "https://i.pinimg.com/originals/a4/94/3d/a4943d26744e1f14630dd9ddb4f499d8.gif",
+    bannerCreds: "",
   },
 };
 
@@ -88,7 +88,7 @@ export async function findPokemon(name: string) {
   }
 }
 
-export async function getEvolutionPath(dest: string) {
+export async function getEvolutionPath(dest: string){
   if (dest === "basculin-white-striped") return ["basculin-white-striped"];
   if (dest === "basculegion-female")
     return ["basculin-white-striped", "basculegion-female"];
@@ -170,7 +170,7 @@ export async function getRandDexEntry(pokemonName: string): Promise<string> {
   const species = await P.getResource(pokemon.species.url);
 
   const entries = species.flavor_text_entries.filter(
-    (entry: any) => entry.language.name === "en",
+    (entry : any) => entry.language.name === "en",
   );
 
   const random = Math.floor(Math.random() * entries.length);
@@ -227,9 +227,9 @@ export async function pokeEmbedCreate(pokemon: any): Promise<EmbedBuilder> {
         value: `${(pokemon.weight * 0.1).toFixed(1)} kg | ${kgToPounds(pokemon.weight * 0.1)} lbs`,
         inline: true,
       },
+
     )
     .setFooter({ text: `${color.bannerCreds}` });
-
   return embed;
 }
 
