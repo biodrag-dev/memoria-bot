@@ -1,8 +1,67 @@
 {
   "1074503972037075054": {
-    "characters": {}
+    "characters": {
+      "testsar": {
+        "name": "testsar",
+        "house": "Mew",
+        "badges": [],
+        "registeredOn": "2026-08-05T23:05:00.621Z",
+        "destination": "salamence",
+        "partner": {
+          "shiny": true,
+          "species": "shelgon",
+          "specialMoves": {},
+          "sizeMult": 2
+        },
+        "docLink": "fsdfsadfasdfas",
+        "optional": {},
+        "thread_id": "1534698770342613174"
+      }
+    }
   },
   "1533761918261526623": {
     "characters": {}
+  },
+  "723291117302448169": {
+    "characters": {
+      "fat": {
+        "name": "fat",
+        "house": "Mew",
+        "badges": [],
+        "registeredOn": "2026-08-06T01:39:35.216Z",
+        "destination": "wailord",
+        "partner": {
+          "gender": -1,
+          "shiny": false,
+          "species": "wailmer",
+          "specialMoves": {},
+          "sizeMult": 1.0923464432119292
+        },
+        "docLink": "link",
+        "optional": {},
+        "thread_id": "1534737670058541098"
+      }
+    }
+  },
+  "350614938722500608": {
+    "characters": {
+      "Lol": {
+        "name": "Lol",
+        "house": "Mew",
+        "badges": [],
+        "registeredOn": "2026-08-06T01:40:26.440Z",
+        "destination": "spewpa",
+        "partner": {
+          "gender": -1,
+          "shiny": false,
+          "species": "scatterbug",
+          "specialMoves": {},
+          "sizeMult": 0.9445813191515319
+        },
+        "docLink": "A",
+        "optional": {},
+        "thread_id": "1534737889395736737"
+      }
+    }
   }
 }

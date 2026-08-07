@@ -228,18 +228,18 @@ export async function pokeEmbedCreate(pokemon: any): Promise<EmbedBuilder> {
         inline: true,
       },
     )
-    .setFooter({ text: `${color.bannerCreds}`});
+    .setFooter({ text: `${color.bannerCreds}` });
 
   return embed;
 }
 
-function cmToFeetConversion(cm: number) {
+export function cmToFeetConversion(cm: number) {
   var realFeet = cm / 30.48;
   var feet = Math.floor(realFeet);
   var inches = ((realFeet - feet) * 12).toFixed(0);
   return feet + "'" + inches + '"';
 }
-function kgToPounds(kg: number) {
+export function kgToPounds(kg: number) {
   return (kg * 2.20452262).toFixed(1);
 }
 
@@ -352,4 +352,28 @@ export async function getSprite(
     return sprites.front_shiny;
   }
   return sprites.front_default;
+}
+
+export function getSize(sizeMult: number) {
+  if (sizeMult < 0.85) return "(XS)";
+  if (sizeMult < 0.95) return "(S)";
+  if (sizeMult < 1.05) return "(M)";
+  if (sizeMult < 1.15) return "(L)";
+  if (sizeMult <= 1.25) return "(XL)";
+  if (sizeMult <= 2) return "<:ea_alphaicon:1533355784769896459>";
+}
+
+export async function getPossibleGenders(pokemonName: string) {
+  const pokemon = await findPokemon(pokemonName.toLowerCase());
+  const pokemonSpecies = await P.getResource(pokemon!.species.url);
+  switch (pokemonSpecies.gender_rate) {
+    case -1:
+      return ["Genderless"];
+    case 0:
+      return ["Male"];
+    case 8:
+      return ["Female"];
+    default:
+      return ["Male", "Female"]
+  }
 }

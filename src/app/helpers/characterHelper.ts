@@ -13,7 +13,9 @@ import * as pokehelper from "./pokeHelper";
 import * as submitHelper from "./submitHelper";
 
 interface Partner {
+  gender: number;
   nickname?: string;
+  nature?: string;
   shiny: boolean;
   species: string;
   specialMoves: Record<string, unknown>;
@@ -150,6 +152,7 @@ export async function registerCharacter(user: string, client: Client) {
     registeredOn: new Date(),
     destination: submission.partner.toLowerCase(),
     partner: {
+      gender: -1,
       nickname: undefined,
       shiny: submission.shinyRoll == 20,
       species: basemon.name,
@@ -408,4 +411,75 @@ export async function updateCharaForumPost(
     character.thread_id = thread.id;
   }
   saveUsers();
+}
+
+export async function getPartnerEmbed(
+  id: string,
+  name: string,
+): Promise<EmbedBuilder> {
+  loadUsers();
+
+  const embed = new EmbedBuilder();
+  if (charaDex?.[id]?.characters[name]) {
+    const character = charaDex[id].characters[name]!;
+    const partner = character.partner as Partner;
+    const houseInfo = houseData[character.house]!;
+
+    const species = `**Species** | ${pokehelper.displayName(partner.species)}`;
+    const alphaCheck =
+      pokehelper.getSize(partner.sizeMult);
+    const shinyCheck =
+      partner.shiny == true ? `<:ea_shinyicon:1533355848217399419>` : ``;
+
+    const pokemon = await pokehelper.findPokemon(partner.species);
+    const scaledHeight = pokemon!.height * partner.sizeMult;
+    const scaledWeight = pokemon!.weight * Math.pow(partner.sizeMult, 3);
+    
+    const height = `${(scaledHeight * 0.1).toFixed(1)} m | ${pokehelper.cmToFeetConversion(scaledHeight * 10)}`;
+    const weight = `${(scaledWeight * 0.1).toFixed(1)} kg | ${pokehelper.kgToPounds(scaledWeight * 0.1)} lbs`;
+
+    const nick = partner.nickname ? `${partner.nickname} | `:``;
+    const metOn = `**Met On** | <t:${Math.floor(new Date(character.registeredOn).getTime() / 1000)}:D>\n`;
+
+    const gender =
+      partner.gender === 0
+        ? `**Gender** | Genderless\n`
+        : partner.gender === 1
+          ? `**Gender** | Male\n`
+          : partner.gender === 2
+            ? `**Gender** | Female\n`
+            : ``;
+
+    const dexEntry = await pokehelper.getRandDexEntry(partner.species);
+    const image = await pokehelper.getSprite(
+      partner.species,
+      partner.gender,
+      partner.shiny,
+    );
+    embed
+      .setTitle(`${nick}${`${name}'s ${pokehelper.displayName(partner.species)}`}`)
+      .setColor(houseInfo.hexcode)
+      .setDescription(
+        `${species} ${alphaCheck} ${shinyCheck}
+${gender}${metOn}${dexEntry}`,
+      )
+      .setFooter({
+        text: `Want to add more to your OC's profile? Try /character edit!`,
+        iconURL: `${houseInfo.iconLink}`,
+      })
+      .addFields(
+        {
+          name: `Height`,
+          value: `${height}`,
+          inline: true,
+        },
+        {
+          name: `Weight`,
+          value: `${weight}`,
+          inline: true,
+        },
+      )
+      .setThumbnail(image);
+  }
+  return embed;
 }

@@ -98,37 +98,37 @@ export const command: CommandData = {
   ],
 };
 
-export const autocomplete = async (ctx: any) => {
-  const interaction = ctx.interaction;
+// export const autocomplete = async (ctx: any) => {
+//   const interaction = ctx.interaction;
 
-  const focused = interaction.options.getFocused();
-  const sub = interaction.options.getSubcommand();
+//   const focused = interaction.options.getFocused();
+//   const sub = interaction.options.getSubcommand();
 
-  if (sub !== "edit" && sub !== "character") {
-    return;
-  }
+//   if (sub !== "edit" && sub !== "character") {
+//     return;
+//   }
 
-  const user = interaction.options._hoistedOptions[0].value;
+//   const user = interaction.options._hoistedOptions[0].value;
 
-  if (!user) {
-    return interaction.respond([]);
-  }
+//   if (!user) {
+//     return interaction.respond([]);
+//   }
 
-  const names = await userHelper.getCharacterNames(user);
+//   const names = await userHelper.getCharacterNames(user);
 
-  const filtered = names
-    .filter((name: string) =>
-      name.toLowerCase().startsWith(focused.toLowerCase()),
-    )
-    .slice(0, 25);
+//   const filtered = names
+//     .filter((name: string) =>
+//       name.toLowerCase().startsWith(focused.toLowerCase()),
+//     )
+//     .slice(0, 25);
 
-  await interaction.respond(
-    filtered.map((name: string) => ({
-      name,
-      value: name,
-    })),
-  );
-};
+//   await interaction.respond(
+//     filtered.map((name: string) => ({
+//       name,
+//       value: name,
+//     })),
+//   );
+// };
 
 export const chatInput: ChatInputCommand = async (ctx) => {
   const interaction = ctx.interaction;

@@ -79,7 +79,6 @@ export const chatInput: ChatInputCommand = async (ctx) => {
 
     const embed = await pokehelper.pokeEmbedCreate(
       pokemon,
-      pokehelper.getRandDexEntry(pokemon.name),
     );
 
     return interaction.editReply({
@@ -99,7 +98,6 @@ export const chatInput: ChatInputCommand = async (ctx) => {
 
     const basemon = await pokehelper.findBaseMon(
       pokemon,
-      pokehelper.getRandDexEntry(pokemon.name),
     );
 
     const embed = await pokehelper.pokeEmbedCreate(basemon);
@@ -119,7 +117,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   }
 
   if (sub === "evo-path") {
-    const name = interaction.options.getString("name")!;
+    const name = interaction.options.getString("name", true)!;
     const pokemon = await pokehelper.findPokemon(name);
 
     if (!pokemon) {
@@ -128,9 +126,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
       );
     }
 
-    const evoPath = await pokehelper.getEvolutionPath(
-      interaction.options.getString("name"),
-    );
+    const evoPath = await pokehelper.getEvolutionPath(name);
 
     const evoEmbeds = [];
     for (const evoName of evoPath) {
@@ -140,7 +136,6 @@ export const chatInput: ChatInputCommand = async (ctx) => {
 
     return interaction.editReply({
       embeds: evoEmbeds,
-      ephemeral: true,
     });
   }
 };

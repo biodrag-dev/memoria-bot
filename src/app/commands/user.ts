@@ -21,7 +21,6 @@ export const command: CommandData = {
           name: "view",
           description: "View your partner Pokémon",
           type: ApplicationCommandOptionType.Subcommand,
-
           options: [
             {
               name: "character",
@@ -34,20 +33,56 @@ export const command: CommandData = {
         },
 
         {
-          name: "nickname",
-          description: "Edit your partner's nickname",
+          name: "edit",
+          description: "Edit something about your partner",
           type: ApplicationCommandOptionType.Subcommand,
           options: [
             {
               name: "character",
-              description: "Whose partner are you nicknaming?",
+              description: "Whose partner are you editing?",
               type: ApplicationCommandOptionType.String,
               required: true,
               autocomplete: true,
             },
             {
-              name: "nickname",
-              description: "What is the new nickname?",
+              name: "field",
+              description: "Which field are you editing?",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+              choices: [
+                { name: "Nickname", value: "nickname" },
+                { name: "Bio", value: "bio" },
+              ],
+            },
+          ],
+        },
+        {
+          name: "set",
+          description:
+            "Set something about your partner (These cannot be changed after being set)",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "character",
+              description: "Whose partner are you editing?",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+              autocomplete: true,
+            },
+            {
+              name: "nature",
+              description: "Which field are you setting?",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+              choices: [
+                { name: "Nature", value: "nature" },
+                { name: "Ability", value: "ability" },
+                { name: "Gender", value: "gender" },
+              ],
+            },
+            {
+              name: "field",
+              description: "What are you setting?",
               type: ApplicationCommandOptionType.String,
               required: true,
             },
@@ -91,7 +126,6 @@ export const command: CommandData = {
       name: "view",
       description: "View your character",
       type: ApplicationCommandOptionType.Subcommand,
-
       options: [
         {
           name: "character",
@@ -165,25 +199,30 @@ export const command: CommandData = {
 };
 
 export const autocomplete = async (ctx: any) => {
-  const interaction = ctx.interaction;
-
-  const focused = interaction.options.getFocused();
-
-  const names = await characterHelper.getCharacterNames(interaction.user.id);
-
-  const filtered = names
-    .filter((name: string) =>
-      name.toLowerCase().startsWith(focused.toLowerCase()),
-    )
-    .slice(0, 25);
-
-  return interaction.respond(
-    filtered.map((name: string) => ({
-      name,
-      value: name,
-    })),
-  );
+  console.log("AUTOCOMPLETE CALLED");
 };
+
+// export const autocomplete = async (ctx: any) => {
+//   const interaction = ctx.interaction;
+//   console.log(ctx);
+
+//   const focused = interaction.options.getFocused();
+
+//   const names = await characterHelper.getCharacterNames(interaction.user.id);
+
+//   const filtered = names
+//     .filter((name: string) =>
+//       name.toLowerCase().startsWith(focused.toLowerCase()),
+//     )
+//     .slice(0, 25);
+
+//   return interaction.respond(
+//     filtered.map((name: string) => ({
+//       name,
+//       value: name,
+//     })),
+//   );
+// };
 
 export const chatInput: ChatInputCommand = async (ctx) => {
   const interaction = ctx.interaction;
@@ -196,24 +235,13 @@ export const chatInput: ChatInputCommand = async (ctx) => {
     switch (sub) {
       case "view": {
         const character = interaction.options.getString("character")!;
-
-        /*
-        Replace with your helper:
-
-        const embed =
-          await userHelper.viewPartner(
-            interaction.user.id,
-            character
-          );
-
-        return interaction.reply({
-          embeds: [embed]
-        });
-      */
-
-        return interaction.reply(
-          `Viewing partner for ${character} (not implemented yet).`,
+        const embed = await characterHelper.getPartnerEmbed(
+          interaction.user.id,
+          character,
         );
+        return interaction.reply({
+          embeds: [embed],
+        });
       }
 
       case "nickname": {
@@ -288,7 +316,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
       interaction.options.getString("character", true),
       interaction.client,
     );
-    
+
     return interaction.reply({
       content: `Your character's profile has been edited!`,
       embeds: [embed],

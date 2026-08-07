@@ -166,7 +166,7 @@ export async function updateCharacterRulesEmbed(client: Client) {
 
 export async function getReservesOneEmbed() {
   const embed = new EmbedBuilder()
-    .setTitle(`Evolutionary Destination`)
+    .setTitle(`𝐄𝐕𝐎𝐋𝐔𝐓𝐈𝐎𝐍𝐀𝐑𝐘 𝐃𝐄𝐒𝐓𝐈𝐍𝐀𝐓𝐈𝐎𝐍𝐒`)
     .setColor("#d11a1a")
     .setDescription(
       `An 'Evolutionary Destination' describes the species that your pokemon partner will eventually evolve into.
@@ -193,7 +193,7 @@ Keep in mind that these destinations cannot be changed once a character is appro
 
 export async function getReservesTwoEmbed() {
   const embed = new EmbedBuilder()
-    .setTitle(`Approved Evolutionary Destinations`)
+    .setTitle(`𝐀𝐏𝐏𝐑𝐎𝐕𝐄𝐃 𝐃𝐄𝐒𝐓𝐈𝐍𝐀𝐓𝐈𝐎𝐍𝐒`)
     .setColor("#ddad10")
     .setDescription(`${await submitHelper.getAllApprovedPartnerEntries()} `)
     .setThumbnail(
@@ -211,7 +211,7 @@ export async function getReservesTwoEmbed() {
 
 export async function getReservesThreeEmbed() {
   const embed = new EmbedBuilder()
-    .setTitle(`Reservations`)
+    .setTitle(`𝐎𝐍𝐆𝐎𝐈𝐍𝐆 𝐑𝐄𝐒𝐄𝐑𝐕𝐀𝐓𝐈𝐎𝐍𝐒`)
     .setColor("#188eac")
     .setDescription(
       `Looking to reserve an Evolutionary Destination in advance? Use **/submit partner-reserve**! Note that reservervations cannot be changed to another species until a week has passed, you must submit with your current reservation, and there are no extensions.
