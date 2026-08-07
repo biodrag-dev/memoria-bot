@@ -11,19 +11,16 @@ const handler: EventHandler<"messageCreate"> = async (message) => {
 
   if (message.channel.id !== process.env.VERIFY_CHANNEL) return;
 
-  if (!message.content.trim().toLowerCase().includes(KEYWORD)) {
-    setTimeout(() => {
-      message.delete().catch(() => {});
-    }, 30_000);
-  } else {
-    const member = await message.guild.members.fetch(message.author.id);
+  if (!message.content.trim().toLowerCase().includes(KEYWORD)) return;
 
-    await member.roles.add(VERIFIED_ROLE_ID!);
-    await member.roles.remove(UNVERIFIED_ROLE_ID!);
+  const member = await message.guild.members.fetch(message.author.id);
 
-    // Optional
-    await message.delete().catch(() => {});
-  }
+  await member.roles.add(VERIFIED_ROLE_ID!);
+  await member.roles.remove(UNVERIFIED_ROLE_ID!);
+  await message.reply("✅ You have been verified!");
+
+  // Optional
+  await message.delete().catch(() => {});
 };
 
 export default handler;

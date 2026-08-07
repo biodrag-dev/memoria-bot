@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "salamence": {
     "user": "1074503972037075054",
     "status": "Approved",
@@ -24,4 +25,6 @@
     "status": "Approved",
     "dateMade": "2026-08-06T01:49:07.126Z"
   }
+=======
+>>>>>>> parent of 47e9bfb (still working)
 }
