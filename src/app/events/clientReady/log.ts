@@ -7,7 +7,6 @@ const handler: EventHandler<"clientReady"> = async (client) => {
   startScheduler(client);
   client.user.setActivity({ name: "Watching over the Archives..." });
   client.user.setStatus("idle");
-
 };
 
 export default handler;

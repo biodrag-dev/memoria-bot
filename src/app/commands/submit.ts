@@ -139,7 +139,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   } else if (sub === "partner-reserve") {
     const failEmbed = new EmbedBuilder().setColor("#ce1b1b");
     const pokemon = await pokehelper.findPokemon(
-      interaction.options.getString("species", true).toLowerCase(),
+      interaction.options.getString("species", true),
     );
     var msg;
     if (!pokemon) {
@@ -159,7 +159,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
 
     const verifyCanReserve = await submitHelper.verifyCanReserve(
       interaction.user.id,
-      interaction.options.getString("species", true).toLowerCase(),
+      interaction.options.getString("species", true),
     );
 
     console.log(verifyCanReserve);
@@ -247,7 +247,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         if (button.customId === "reserve-accept") {
           await submitHelper.createProperReserve(
             interaction.user.id,
-            interaction.options.getString("species", true).toLowerCase(),
+            interaction.options.getString("species", true),
           );
           embed
             .setDescription(`Succesfully reserved ${displayName}!`)

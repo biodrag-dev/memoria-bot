@@ -140,6 +140,8 @@ export default async function (interaction: Interaction) {
           });
           return;
         }
+        const member = await interaction.guild!.members.fetch(userId!);
+        await member.roles.add(process.env.ROLEPLAYER_ROLE!); //roleplayer role
         reviewMsg = await channel.messages.fetch(`${msgId}`);
         embed = await submitHelper.reviewEmbed(`${userId}`, "Approved");
         await reviewMsg.edit({
