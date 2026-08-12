@@ -11,9 +11,17 @@ import {
   StringSelectMenuOptionBuilder,
   EmbedBuilder,
 } from "discord.js";
-import type { ChatInputCommand, CommandData } from "commandkit";
+import type {
+  ChatInputCommand,
+  CommandData,
+  CommandMetadata,
+} from "commandkit";
 import * as pokehelper from "../helpers/pokeHelper";
 import * as submitHelper from "../helpers/submitHelper";
+
+export const metadata: CommandMetadata = {
+  guilds: [`${process.env.GUILD_ID}`],
+};
 
 const favoriteStarterSelect = new StringSelectMenuBuilder()
   .setCustomId("chara-house")
@@ -149,18 +157,41 @@ export const chatInput: ChatInputCommand = async (ctx) => {
       interaction.options.getString("species", true),
     );
 
-    const verifyCanReserve = submitHelper.verifyCanReserve(
+    const verifyCanReserve = await submitHelper.verifyCanReserve(
       interaction.user.id,
       interaction.options.getString("species", true).toLowerCase(),
     );
 
+    console.log(verifyCanReserve);
     switch (verifyCanReserve) {
+      case -3:
+        failEmbed
+          .setDescription(
+            `Species **${displayName}** is legendary or mythical!`,
+          )
+          .setThumbnail(
+            await pokehelper.getSprite(pokemon.name, "Genderless", false),
+          );
+        msg = await ctx.interaction.reply({
+          embeds: [failEmbed],
+          ephemeral: true,
+        });
+        break;
       case -2:
-        failEmbed.setDescription(
-          `You already have an existing reserve, which will be erased if you go through with this! Are you sure? 
+        failEmbed
+          .setDescription(
+            `You already have an existing reserve, which will be erased if you go through with this! Are you sure? 
           
           **${pokehelper.displayName(submitHelper.getReserveOfUser(interaction.user.id)[0] ?? "Null")}** -> **${displayName}**`,
-        );
+          )
+          .setColor("Yellow")
+          .setThumbnail(
+            await pokehelper.getSprite(
+              submitHelper.getReserveOfUser(interaction.user.id)[0] ?? "Null",
+              "Genderless",
+              false,
+            ),
+          );
 
         msg = await ctx.interaction.reply({
           embeds: [failEmbed],
@@ -182,7 +213,10 @@ export const chatInput: ChatInputCommand = async (ctx) => {
           .setDescription(
             `Are you sure you want to reserve **${displayName}?** This reservation cannot be changed for a week!`,
           )
-          .setColor("Green");
+          .setColor("Yellow")
+          .setThumbnail(
+            await pokehelper.getSprite(pokemon.name, "Genderless", false),
+          );
 
         msg = await ctx.interaction.reply({
           embeds: [failEmbed],
@@ -217,7 +251,10 @@ export const chatInput: ChatInputCommand = async (ctx) => {
           );
           embed
             .setDescription(`Succesfully reserved ${displayName}!`)
-            .setColor("Green");
+            .setColor("Green")
+            .setThumbnail(
+              await pokehelper.getSprite(pokemon.name, "Genderless", false),
+            );
           await button.update({
             embeds: [embed],
             components: [],

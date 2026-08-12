@@ -1,8 +1,11 @@
-import type { ChatInputCommand, CommandData } from "commandkit";
+import type { ChatInputCommand, CommandData, CommandMetadata } from "commandkit";
 
 import { ApplicationCommandOptionType } from "discord.js";
 
 import * as pokehelper from "../helpers/pokeHelper";
+export const metadata: CommandMetadata = {
+  guilds: [`${process.env.GUILD_ID}`],
+};
 
 export const command: CommandData = {
   name: "pokedex",

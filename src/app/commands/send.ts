@@ -5,7 +5,10 @@ import {
   TextChannel,
 } from "discord.js";
 
-import type { CommandData, ChatInputCommand } from "commandkit";
+import type { CommandData, ChatInputCommand, CommandMetadata } from "commandkit";
+export const metadata: CommandMetadata = {
+  guilds: [`${process.env.GUILD_ID}`],
+};
 
 export const command: CommandData = {
   name: "send",

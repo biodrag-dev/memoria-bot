@@ -28,7 +28,6 @@ export default async function (interaction: Interaction) {
   if (!interaction.isModalSubmit()) return;
   await interaction.deferReply({ ephemeral: true });
 
-
   const modalInteraction = interaction as ModalSubmitInteraction;
   if (interaction.customId == "character-submit") {
     const name = modalInteraction.fields.getTextInputValue("chara-name");

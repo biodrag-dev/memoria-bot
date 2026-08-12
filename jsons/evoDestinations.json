@@ -4,24 +4,34 @@
     "status": "Approved",
     "dateMade": "2026-08-05T23:05:00.621Z"
   },
-  "wailord": {
-    "user": "723291117302448169",
-    "status": "Approved",
-    "dateMade": "2026-08-06T01:39:35.216Z"
-  },
   "spewpa": {
     "user": "350614938722500608",
     "status": "Approved",
     "dateMade": "2026-08-06T01:40:26.440Z"
   },
-  "mewtwo": {
+  "dragonite": {
+    "user": "1074503972037075054",
+    "status": "Approved",
+    "dateMade": "2026-08-10T11:59:50.871Z"
+  },
+  "garchomp": {
+    "user": "1074503972037075054",
+    "status": "Approved",
+    "dateMade": "2026-08-10T22:52:22.072Z"
+  },
+  "charmeleon": {
+    "user": "1074503972037075054",
+    "status": "Approved",
+    "dateMade": "2026-08-11T19:46:08.657Z"
+  },
+  "espeon": {
+    "user": "350614938722500608",
+    "status": "Reserved",
+    "dateMade": "2026-08-11T23:16:22.343Z"
+  },
+  "boldore": {
     "user": "1074503972037075054",
     "status": "Reserved",
-    "dateMade": "2026-08-06T01:42:07.024Z"
-  },
-  "ribombee": {
-    "user": "723291117302448169",
-    "status": "Approved",
-    "dateMade": "2026-08-06T01:49:07.126Z"
+    "dateMade": "2026-08-11T23:16:44.088Z"
   }
 }

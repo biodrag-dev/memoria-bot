@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
-import { EmbedBuilder } from "discord.js";
+import { Client, EmbedBuilder } from "discord.js";
 
 import * as pokehelper from "./pokeHelper";
 
@@ -122,7 +122,8 @@ async function createDestination(id: string, name: string) {
 
 export async function hasSubmit(id: string) {
   await loadSubmissions();
-  if (submitDex[`${id}`] && submitDex[`${id}`]!.status != "Temporary") return true;
+  if (submitDex[`${id}`] && submitDex[`${id}`]!.status != "Temporary")
+    return true;
   return false;
 }
 export async function denySubmit(id: string) {
@@ -179,7 +180,7 @@ export async function continueSubmit(id: string) {
   await saveSubmissions();
 }
 
-export async function getSubmit(id: string) : Promise<SubmitData> {
+export async function getSubmit(id: string): Promise<SubmitData> {
   await loadSubmissions();
   return submitDex[`${id}`]!;
 }
@@ -235,7 +236,10 @@ export async function reviewEmbed(id: string, status: string) {
     )
     .setDescription(
       `**House** | ${submission.house}\n**Evolutionary Destination** | ${await toProperCase(submission.partner)}\n**Document Link**\n${submission.docLink}`,
-    ).setFooter({text: `our template is required for submission!`});
+    )
+    .setFooter({
+      text: `use /submit character to submit your oc! our template is required.`,
+    });
 
   switch (status) {
     case "Reviewing":
@@ -264,7 +268,7 @@ export async function getAllApprovedPartnerEntries() {
     }
   }
   array.sort();
-    if (array.length == 0) {
+  if (array.length == 0) {
     return "No approved characters exist right now. Why don't you change that?";
   }
   return array.join("\n");
@@ -291,8 +295,13 @@ export async function getAllReservedPartnerEntries() {
   return array.join("\n");
 }
 
-export function verifyCanReserve(userId: string, speciesName: string) {
+export async function verifyCanReserve(userId: string, speciesName: string) {
   loadEvos();
+
+  if ((await pokehelper.isLegendOrMyth(speciesName.toLowerCase())) === true) {
+    return -3;
+  }
+
   const existingReserve = evoDex[`${speciesName}`];
   //if they cannot reserve (-1)
   if (existingReserve) {
@@ -324,11 +333,28 @@ export function verifyCanReserve(userId: string, speciesName: string) {
   return 0;
 }
 
-export function createProperReserve(userId: string, speciesName: string){
+export function createProperReserve(userId: string, speciesName: string) {
   const userReserve = getReserveOfUser(userId);
   if (userReserve.length != 0) {
     delete evoDex[`${userReserve[0]}`];
   }
-  
+
   createDestination(userId, speciesName);
+}
+
+export async function getAllReserves(client: Client): Promise<any[]> {
+  loadEvos();
+  const reservations = await Promise.all(
+    Object.entries(evoDex)
+      .filter(([_, reservation]) => reservation.status === "Reserved")
+      .map(async ([key, reservation]) => {
+        const user = await client.users.fetch(reservation.user);
+        return {
+          value: key,
+          name: `${pokehelper.displayName(key)} | ${user.username}`,
+        };
+      }),
+  );
+  console.log(reservations);
+  return reservations;
 }

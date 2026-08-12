@@ -8,15 +8,6 @@ const handler: EventHandler<"clientReady"> = async (client) => {
   client.user.setActivity({ name: "Watching over the Archives..." });
   client.user.setStatus("idle");
 
-  client.on("interactionCreate", async (interaction) => {
-    if (!interaction.isAutocomplete()) return;
-
-    console.log("AUTOCOMPLETE");
-    console.log(interaction.commandName);
-    console.log(interaction.options.getFocused(true));
-
-    await interaction.respond([{ name: "test", value: "test" }]);
-  });
 };
 
 export default handler;

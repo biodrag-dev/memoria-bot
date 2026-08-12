@@ -1,11 +1,47 @@
-import type { ChatInputCommand, CommandData } from "commandkit";
+import type {
+  ChatInputCommand,
+  CommandData,
+  CommandMetadata,
+} from "commandkit";
+import { EmbedBuilder } from "discord.js";
 
 import {
   ApplicationCommandOptionType,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
   InteractionContextType,
 } from "discord.js";
 
 import * as characterHelper from "../helpers/characterHelper";
+
+const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+  new ButtonBuilder()
+    .setCustomId("set-accept")
+    .setLabel("Accept")
+    .setStyle(ButtonStyle.Success),
+
+  new ButtonBuilder()
+    .setCustomId("set-decline")
+    .setLabel("Decline")
+    .setStyle(ButtonStyle.Danger),
+);
+
+const evoRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+  new ButtonBuilder()
+    .setCustomId("evolve-accept")
+    .setLabel("Proceed")
+    .setStyle(ButtonStyle.Success),
+
+  new ButtonBuilder()
+    .setCustomId("evolve-decline")
+    .setLabel("Cancel")
+    .setStyle(ButtonStyle.Danger),
+);
+
+export const metadata: CommandMetadata = {
+  guilds: [`${process.env.GUILD_ID}`],
+};
 
 export const command: CommandData = {
   name: "character",
@@ -23,7 +59,7 @@ export const command: CommandData = {
           type: ApplicationCommandOptionType.Subcommand,
           options: [
             {
-              name: "character",
+              name: "name",
               description: "Whose partner are you viewing?",
               type: ApplicationCommandOptionType.String,
               required: true,
@@ -38,7 +74,7 @@ export const command: CommandData = {
           type: ApplicationCommandOptionType.Subcommand,
           options: [
             {
-              name: "character",
+              name: "name",
               description: "Whose partner are you editing?",
               type: ApplicationCommandOptionType.String,
               required: true,
@@ -54,6 +90,12 @@ export const command: CommandData = {
                 { name: "Bio", value: "bio" },
               ],
             },
+            {
+              name: "data",
+              description: "What are you setting?",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+            },
           ],
         },
         {
@@ -63,28 +105,25 @@ export const command: CommandData = {
           type: ApplicationCommandOptionType.Subcommand,
           options: [
             {
-              name: "character",
+              name: "name",
               description: "Whose partner are you editing?",
               type: ApplicationCommandOptionType.String,
               required: true,
               autocomplete: true,
             },
             {
-              name: "nature",
+              name: "field",
               description: "Which field are you setting?",
               type: ApplicationCommandOptionType.String,
               required: true,
-              choices: [
-                { name: "Nature", value: "nature" },
-                { name: "Ability", value: "ability" },
-                { name: "Gender", value: "gender" },
-              ],
+              autocomplete: true,
             },
             {
-              name: "field",
+              name: "data",
               description: "What are you setting?",
               type: ApplicationCommandOptionType.String,
               required: true,
+              autocomplete: true,
             },
           ],
         },
@@ -96,7 +135,7 @@ export const command: CommandData = {
 
           options: [
             {
-              name: "character",
+              name: "name",
               description: "Whose partner are you viewing?",
               type: ApplicationCommandOptionType.String,
               required: true,
@@ -112,7 +151,7 @@ export const command: CommandData = {
 
           options: [
             {
-              name: "character",
+              name: "name",
               description: "Whose partner are you evolving?",
               type: ApplicationCommandOptionType.String,
               required: true,
@@ -128,7 +167,7 @@ export const command: CommandData = {
       type: ApplicationCommandOptionType.Subcommand,
       options: [
         {
-          name: "character",
+          name: "name",
           description: "Whose profile are you viewing?",
           type: ApplicationCommandOptionType.String,
           required: true,
@@ -143,7 +182,7 @@ export const command: CommandData = {
       type: ApplicationCommandOptionType.Subcommand,
       options: [
         {
-          name: "character",
+          name: "name",
           description: "Whose profile are you editing?",
           type: ApplicationCommandOptionType.String,
           required: true,
@@ -175,7 +214,7 @@ export const command: CommandData = {
       type: ApplicationCommandOptionType.Subcommand,
       options: [
         {
-          name: "character",
+          name: "name",
           description: "Whose profile are you editing?",
           type: ApplicationCommandOptionType.String,
           required: true,
@@ -199,30 +238,63 @@ export const command: CommandData = {
 };
 
 export const autocomplete = async (ctx: any) => {
-  console.log("AUTOCOMPLETE CALLED");
+  const interaction = ctx.interaction;
+  const focused = interaction.options.getFocused(true);
+  const names = await characterHelper.getCharacterNames(interaction.user.id);
+
+  if (interaction.options.getSubcommand() == "set") {
+    const characterId = interaction.options.getString("name", false);
+
+    if (focused.name === "field") {
+      if (!characterId) {
+        return await interaction.respond([]);
+      } else {
+        const fields = await characterHelper.getSetPartnerFields(
+          interaction.user.id,
+          characterId,
+        );
+        return await interaction.respond(fields);
+      }
+    }
+
+    if (focused.name === "data") {
+      const fieldName = interaction.options.getString("field", false);
+      if (!characterId || !fieldName) {
+        console.log("Nothing");
+        return await interaction.respond([]);
+      } else {
+        switch (fieldName) {
+          case "nature":
+            const natures = await characterHelper.getNatures();
+            return await interaction.respond(natures);
+          case "ability":
+            const abilities = await characterHelper.getAbilities(
+              interaction.user.id,
+              characterId,
+            );
+            return await interaction.respond(abilities);
+          case "gender":
+            const genders = await characterHelper.getGenders(
+              interaction.user.id,
+              characterId,
+            );
+            return await interaction.respond(genders);
+        }
+      }
+    }
+  }
+
+  const filtered = names
+    .filter((name: string) => name.toLowerCase())
+    .slice(0, 25);
+
+  return interaction.respond(
+    filtered.map((name: string) => ({
+      name,
+      value: name,
+    })),
+  );
 };
-
-// export const autocomplete = async (ctx: any) => {
-//   const interaction = ctx.interaction;
-//   console.log(ctx);
-
-//   const focused = interaction.options.getFocused();
-
-//   const names = await characterHelper.getCharacterNames(interaction.user.id);
-
-//   const filtered = names
-//     .filter((name: string) =>
-//       name.toLowerCase().startsWith(focused.toLowerCase()),
-//     )
-//     .slice(0, 25);
-
-//   return interaction.respond(
-//     filtered.map((name: string) => ({
-//       name,
-//       value: name,
-//     })),
-//   );
-// };
 
 export const chatInput: ChatInputCommand = async (ctx) => {
   const interaction = ctx.interaction;
@@ -234,7 +306,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   if (group === "partner") {
     switch (sub) {
       case "view": {
-        const character = interaction.options.getString("character")!;
+        const character = interaction.options.getString("name")!;
         const embed = await characterHelper.getPartnerEmbed(
           interaction.user.id,
           character,
@@ -244,52 +316,161 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         });
       }
 
-      case "nickname": {
-        const character = interaction.options.getString("character")!;
-        const nickname = interaction.options.getString("nickname")!;
+      case "dex-entry": {
+        const character = interaction.options.getString("name", true);
 
-        /*
-        Replace with:
+        const embed = await characterHelper.getPartnerDexEmbed(
+          interaction.user.id,
+          character,
+        );
+        return interaction.reply({ embeds: [embed] });
+      }
 
-        const embed =
-          await userHelper.renamePartner(
+      case "edit": {
+        const character = interaction.options.getString("name", true);
+        const field = interaction.options.getString("field", true);
+        const data = interaction.options.getString("data", true);
+
+        await characterHelper.editPartner(
+          interaction.user.id,
+          character,
+          field,
+          data,
+        );
+        const embed = await characterHelper.getPartnerEmbed(
+          interaction.user.id,
+          character,
+        );
+
+        characterHelper.updateCharaForumPost(
+          interaction.user.id,
+          interaction.options.getString("name", true),
+          interaction.client,
+        );
+        return await interaction.reply({
+          content: `Partner edited successfully!`,
+          embeds: [embed],
+          ephemeral: true,
+        });
+      }
+      case "evolve": {
+        const character = interaction.options.getString("name", true);
+
+        const embed = new EmbedBuilder();
+        if (
+          (await characterHelper.canEvolve(
             interaction.user.id,
             character,
-            nickname
-          );
-      */
+            embed,
+          )) === true
+        ) {
+          const msg = await interaction.reply({
+            embeds: [embed],
+            ephemeral: true,
+            components: [evoRow],
+          });
 
-        return interaction.reply(
-          `Changing ${character}'s nickname to ${nickname} (not implemented yet).`,
-        );
+          const collector = msg.createMessageComponentCollector({
+            time: 30_000,
+          });
+
+          collector.on("collect", async (button) => {
+            if (button.customId === "evolve-accept") {
+              await characterHelper.evolvePartner(
+                interaction.user.id,
+                character,
+                embed,
+              );
+              characterHelper.updateCharaForumPost(
+                interaction.user.id,
+                interaction.options.getString("name", true),
+                interaction.client,
+              );
+              await button.update({
+                content: ``,
+                embeds: [embed],
+                components: [],
+              });
+              collector.stop();
+            }
+
+            if (button.customId === "evolve-decline") {
+              embed.setDescription(`Huh? Your partner stopped evolving!`);
+              embed.setColor("Red");
+              await button.update({
+                embeds: [embed],
+                components: [],
+              });
+              collector.stop();
+            }
+          });
+        }
+        return await interaction.reply({
+          embeds: [embed],
+          ephemeral: true,
+        });
       }
+      case "set": {
+        const character = interaction.options.getString("name", true);
+        const field = interaction.options.getString("field", true);
+        const data = interaction.options.getString("data", true);
 
-      case "dex-entry": {
-        const character = interaction.options.getString("character")!;
+        var embed = new EmbedBuilder();
+        embed
+          .setDescription(
+            `Are you sure you want to set ${character}'s partner's **${field.charAt(0).toUpperCase() + field.slice(1)}** to **${field == "ability" ? `Slot ${data}` : field == "nature" ? characterHelper.getNatureFromValue(data) : data}**? Warning: This cannot be changed in the future!`,
+          )
+          .setColor("Yellow");
 
-        /*
-        Replace with your dex entry helper.
-      */
+        const msg = await interaction.reply({
+          embeds: [embed],
+          components: [row],
+          ephemeral: true,
+        });
+        const collector = msg.createMessageComponentCollector({
+          time: 30_000,
+        });
 
-        return interaction.reply(
-          `Dex entry for ${character} (not implemented yet).`,
-        );
-      }
+        collector.on("collect", async (button) => {
+          if (button.customId === "set-accept") {
+            await characterHelper.editPartner(
+              interaction.user.id,
+              character,
+              field,
+              data,
+            );
+            embed = await characterHelper.getPartnerEmbed(
+              interaction.user.id,
+              character,
+            );
+            characterHelper.updateCharaForumPost(
+              interaction.user.id,
+              interaction.options.getString("name", true),
+              interaction.client,
+            );
+            await button.update({
+              content: `Edited succesfully!`,
+              embeds: [embed],
+              components: [],
+            });
+            collector.stop();
+          }
 
-      case "evolve": {
-        const character = interaction.options.getString("character")!;
+          if (button.customId === "set-decline") {
+            embed.setDescription(`Setting cancelled.`);
+            embed.setColor("Red");
+            await button.update({
+              embeds: [embed],
+              components: [],
+            });
 
-        /*
-        Replace with your evolution helper.
-      */
-
-        return interaction.reply(
-          `Evolution for ${character} (not implemented yet).`,
-        );
+            collector.stop();
+          }
+        });
       }
     }
   } else if (sub === "view") {
-    const character = interaction.options.getString("character")!;
+    const character = interaction.options.getString("name", true);
     const embed = await characterHelper.getCharacterEmbed(
       interaction.user.id,
       character,
@@ -301,19 +482,19 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   } else if (sub === "edit") {
     await characterHelper.editCharacter(
       interaction.user.id,
-      interaction.options.getString("character", true),
+      interaction.options.getString("name", true),
       interaction.options.getString("field", true),
       interaction.options.getString("information", true),
     );
 
     const embed = await characterHelper.getCharacterEmbed(
       interaction.user.id,
-      interaction.options.getString("character", true),
+      interaction.options.getString("name", true),
     );
 
     characterHelper.updateCharaForumPost(
       interaction.user.id,
-      interaction.options.getString("character", true),
+      interaction.options.getString("name", true),
       interaction.client,
     );
 
@@ -325,25 +506,25 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   } else if (sub === "edit-image") {
     await characterHelper.editCharacter(
       interaction.user.id,
-      interaction.options.getString("character", true),
+      interaction.options.getString("name", true),
       "img_link",
       interaction.options.getString("art-link", true),
     );
     await characterHelper.editCharacter(
       interaction.user.id,
-      interaction.options.getString("character", true),
+      interaction.options.getString("name", true),
       "artist_credits",
       interaction.options.getString("artist-credit", true),
     );
 
     const embed = await characterHelper.getCharacterEmbed(
       interaction.user.id,
-      interaction.options.getString("character", true),
+      interaction.options.getString("name", true),
     );
 
     characterHelper.updateCharaForumPost(
       interaction.user.id,
-      interaction.options.getString("character", true),
+      interaction.options.getString("name", true),
       interaction.client,
     );
     return interaction.reply({

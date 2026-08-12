@@ -1,4 +1,4 @@
-import Pokedex from "pokedex-promise-v2";
+import Pokedex, { Pokemon } from "pokedex-promise-v2";
 import { EmbedBuilder, ColorResolvable } from "discord.js";
 
 const P = new Pokedex();
@@ -334,14 +334,14 @@ export function displayName(pokemonName: string) {
 
 export async function getSprite(
   pokemonName: string,
-  pokemonGender: number,
+  pokemonGender: string | undefined,
   shiny: boolean,
 ) {
   const pokemon = await P.getPokemonByName(pokemonName.toLowerCase());
   const sprites = pokemon.sprites;
 
   // if it is female
-  if (pokemonGender === 2) {
+  if (pokemonGender && pokemonGender === "Female") {
     if (shiny === true) {
       return sprites.front_shiny_female ?? sprites.front_shiny;
     } else {
@@ -368,12 +368,57 @@ export async function getPossibleGenders(pokemonName: string) {
   const pokemonSpecies = await P.getResource(pokemon!.species.url);
   switch (pokemonSpecies.gender_rate) {
     case -1:
-      return ["Genderless"];
+      return [{ value: "Genderless", name: "Genderless" }]; //["Genderless"];
     case 0:
-      return ["Male"];
+      return [{ value: "Male", name: "Male" }];
     case 8:
-      return ["Female"];
+      return [{ value: "Female", name: "Female" }];
     default:
-      return ["Male", "Female"]
+      return [
+        { value: "Male", name: "Male" },
+        { value: "Female", name: "Female" },
+      ];
   }
+}
+
+//returns an ability at a specific slot
+export function getAbilityName(pokemonObj: Pokemon, slot: number) {
+  const ability = pokemonObj.abilities.find((a) => a.slot == slot);
+  if (ability) {
+    return displayName(ability.ability.name);
+  }
+
+  const ability2 = pokemonObj.abilities.find((a) => a.slot == slot - 1);
+  if (ability2) {
+    return displayName(ability2.ability.name);
+  }
+
+  const ability3 = pokemonObj.abilities.find((a) => a.slot == slot - 3);
+  if (ability3) {
+    return displayName(ability3.ability.name);
+  }
+}
+
+export async function getPossibleAbilities(
+  pokemonName: string,
+  pokemonDest: string,
+) {
+  const pokemon = await findPokemon(pokemonName.toLowerCase());
+  const destMon = await findPokemon(pokemonDest.toLowerCase());
+  var sameMon = pokemonName === pokemonDest;
+
+  return [
+    {
+      value: "1",
+      name: `Slot 1 | ${getAbilityName(pokemon!, 1)}${!sameMon ? ` (${getAbilityName(destMon!, 1)})` : ``}`,
+    },
+    {
+      value: "2",
+      name: `Slot 2 | ${getAbilityName(pokemon!, 2)}${!sameMon ? ` (${getAbilityName(destMon!, 2)})` : ``}`,
+    },
+    {
+      value: "3",
+      name: `Slot HA | ${getAbilityName(pokemon!, 3)}${!sameMon ? ` (${getAbilityName(destMon!, 3)})` : ``}`,
+    },
+  ];
 }

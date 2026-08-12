@@ -181,7 +181,7 @@ Keep in mind that these destinations cannot be changed once a character is appro
       `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/494.png?format=webp&quality=lossless`,
     )
     .setImage(
-      "https://64.media.tumblr.com/4c989428ba947bc4966e07e76d36bd28/118ec01107834a73-07/s540x810/5c2aa6ffdba2c64d3deb6fb0a646313eb247c561.gif",
+      "https://i.pinimg.com/originals/15/de/50/15de50852da9987a3c15d84d4b25f45d.gif",
     )
     .setFooter({
       text: "banner by @waneella on tumblr",
@@ -358,7 +358,7 @@ export async function getCharacterRulesTwoEmbed() {
 
 export async function getRolesOneEmbed() {
   const embed = new EmbedBuilder()
-    .setTitle(`➴　　┈　　🔴　　Pronouns`)
+    .setTitle(`➴　　┈　　🔴　　𝐏𝐑𝐎𝐍𝐎𝐔𝐍𝐒`)
     .setColor("#d16f6f")
     .setDescription(
       `**　　**◌　　⏖　　ꜜ🍒　　<@&1534457442698661939>
@@ -380,7 +380,7 @@ export async function getRolesOneEmbed() {
 
 export async function getRolesTwoEmbed() {
   const embed = new EmbedBuilder()
-    .setTitle(`➴　　┈　　🟠　　Age`)
+    .setTitle(`➴　　┈　　🟠　　𝐀𝐆𝐄`)
     .setColor("#d19e6f")
     .setDescription(
       `**　　**◌　　⏖　　ꜜ🍹　　<@&1534457967779250277>
@@ -399,7 +399,7 @@ export async function getRolesTwoEmbed() {
 
 export async function getRolesThreeEmbed() {
   const embed = new EmbedBuilder()
-    .setTitle(`➴　　┈　　🟡　　Ping Preferences`)
+    .setTitle(`➴　　┈　　🟡　　𝐏𝐈𝐍𝐆 𝐏𝐑𝐄𝐅𝐄𝐑𝐄𝐍𝐂𝐄𝐒`)
     .setColor("#d1cb6f")
     .setDescription(
       `**　　**◌　　⏖　　ꜜ☀️　　<@&1534460070635769936>
@@ -419,7 +419,7 @@ export async function getRolesThreeEmbed() {
 
 export async function getRolesFourEmbed() {
   const embed = new EmbedBuilder()
-    .setTitle(`➴　　┈　　🟢　　DM Preferences`)
+    .setTitle(`➴　　┈　　🟢　　𝐃𝐌 𝐏𝐑𝐄𝐅𝐄𝐑𝐄𝐍𝐂𝐄𝐒`)
     .setColor("#83d16f")
     .setDescription(
       `**　　**◌　　⏖　　ꜜ🍵　　<@&1534460372675858544>
@@ -439,7 +439,7 @@ export async function getRolesFourEmbed() {
 
 export async function getRolesFiveEmbed() {
   const embed = new EmbedBuilder()
-    .setTitle(`➴　　┈　　🔵　　Writing Preferences`)
+    .setTitle(`➴　　┈　　🔵　　𝐖𝐑𝐈𝐓𝐈𝐍𝐆 𝐏𝐑𝐄𝐅𝐄𝐑𝐄𝐍𝐂𝐄𝐒`)
     .setColor("#6fd1d1")
     .setDescription(
       `**　　**◌　　⏖　　ꜜ🐟　　<@&1534456980993998848>
@@ -460,7 +460,7 @@ export async function getRolesFiveEmbed() {
 
 export async function getRolesSixEmbed() {
   const embed = new EmbedBuilder()
-    .setTitle(`➴　　┈　　🟣　　Additional Pings`)
+    .setTitle(`➴　　┈　　🟣　　𝐀𝐃𝐃𝐈𝐓𝐈𝐎𝐍𝐀𝐋 𝐏𝐈𝐍𝐆𝐒`)
     .setColor("#a56fd1")
     .setDescription(
       `**　　**◌　　⏖　　ꜜ🍇　　<@&1534631480373018655>
