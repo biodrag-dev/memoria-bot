@@ -60,6 +60,24 @@ export const command: CommandData = {
           required: true,
           autocomplete: true,
         },
+        {
+          name: "field",
+          description: "Which field are you editing?",
+          type: ApplicationCommandOptionType.String,
+          required: true,
+          choices: [
+            { name: "Age", value: "age" },
+            { name: "Gender", value: "gender" },
+            { name: "Bio", value: "bio" },
+            { name: "Pronouns", value: "pronouns" },
+          ],
+        },
+        {
+          name: "information",
+          description: "What are you filling in the detail with?",
+          type: ApplicationCommandOptionType.String,
+          required: true,
+        },
       ],
     },
     {
@@ -212,13 +230,29 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   const sub = interaction.options.getSubcommand();
 
   if (sub === "edit") {
-    // const embed = await userHelper.editCharacter(
-    //   interaction.options.getUser("roleplayer")!.id,
-    //   interaction.options.getString("character")!,
-    // );
-    // return interaction.reply({
-    //   embeds: [embed],
-    // });
+    await characterHelper.editCharacter(
+      interaction.options.getUser("roleplayer")!.id,
+      interaction.options.getString("character", true),
+      interaction.options.getString("field", true),
+      interaction.options.getString("data", true),
+    );
+
+    const embed = await characterHelper.getCharacterEmbed(
+      interaction.options.getUser("roleplayer")!.id,
+      interaction.options.getString("character", true),
+    );
+
+    characterHelper.updateCharaForumPost(
+      interaction.options.getUser("roleplayer")!.id,
+      interaction.options.getString("character", true),
+      interaction.client,
+    );
+
+    return interaction.reply({
+      content: `The character's profile has been edited!`,
+      embeds: [embed],
+      ephemeral: true,
+    });
   }
 
   if (sub === "toggle-badge") {
@@ -252,7 +286,9 @@ export const chatInput: ChatInputCommand = async (ctx) => {
     if (sub === "reserve") {
       const species = interaction.options.getString("reservation", true);
       submitHelper.deleteDestination(species);
-      embed.setDescription(`Deleted ${pokeHelper.displayName(species)} reservation.`);
+      embed.setDescription(
+        `Deleted ${pokeHelper.displayName(species)} reservation.`,
+      );
       await interaction.reply({
         embeds: [embed],
       });

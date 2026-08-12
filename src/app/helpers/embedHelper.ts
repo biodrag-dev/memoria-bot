@@ -62,6 +62,20 @@ export async function updateServerRulesEmbed(client: Client) {
   });
 }
 
+export async function updateRoleplayRules(client: Client) {
+  const channel = (await client.channels.fetch(
+    `${process.env.RP_RULES_CHANNEL}`,
+  )) as TextChannel;
+  const msgOne = await channel.messages.fetch(
+    `${process.env.RP_RULES_MSG_ONE}`,
+  );
+  const embedOne = await getRoleplayRulesEmbed();
+  await msgOne.edit({
+    content: ``,
+    embeds: [embedOne],
+  });
+}
+
 export async function updateCharacterRulesEmbed(client: Client) {
   const channel = (await client.channels.fetch(
     `${process.env.CHARACTER_RULES_CHANNEL}`,
@@ -196,6 +210,36 @@ export async function getServerRulesEmbed() {
 > For both organization and our staff’s safety, we ask that you avoid DMing staff for server/moderation purposes. If you have something private you’d like to discuss with staff (e.g. harassment from another server member or a private character idea), please open up a ticket in <#1533686056019300452>. The password is \`starburst\`.`,
     )
     .setImage("https://1041uuu.jp/Gallery/b/b27.gif")
+    .setFooter({
+      text: "Banner by @1041uuu on Tumblr",
+      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
+    });
+
+  return embed;
+}
+
+export async function getRoleplayRulesEmbed() {
+  const embed = new EmbedBuilder()
+    .setTitle(`𝐑𝐎𝐋𝐄𝐏𝐋𝐀𝐘 𝐑𝐔𝐋𝐄𝐒`)
+    .setColor("#657c58")
+    .setDescription(
+      `1. Roleplay Rules.
+> A character can be in multiple locations at once, so long as it makes sense chronologically. If you are to engage in multiple roleplays at the same time, please make it clear which RP happens when.
+
+2. Proper RP etiquette.
+> Understand that everyone in the server has their own lives, and please be patient in regards to RP response times. However, communication is a two way street, so also don't go ghosting your RP partner. In the same vein, do not control someone else's OCs or Metagame (where the character has knowledge that they have learned OOC but not IRP). ALWAYS ask if you may join in on a roleplay, whether it is currently planning or ongoing.
+ 
+3. Permission to Injure.
+> We typically operate on a Permission to Injure rule, where the other roleplayer's permission is required in order to cause injury to their character. In the case of poor decision-making,  staff can override this to invoke Reason to Injure. However, you will be notified beforehand and will also be given a chance to retcon the poor decisions in question if need be.
+
+4. Content Guidelines
+> Standard fantasy violence is allowed, but potentially triggered topics should be censored or omitted entirely as server rules still apply. Pokemon universe humans are way tougher than their IRL counterparts, so they're durable enough to withstand a Pokemon's attack or two! This is intended to be a light-hearted roleplay, and staff may intervene if your roleplay is unnecessarily dark. 
+
+5. Writing Guidelines
+> Our server writing minimum is semi-literate, so try to aim for 5 sentences minimum. Higher quality writing is expected in terms of proper punctuation, length and grammar. Additionally, to avoid channel clutter, roleplay should be conducted in threads.
+`,
+    )
+    .setImage("https://i.pinimg.com/originals/2d/dd/65/2ddd65d337a48d0c8dc223f849c3dc5a.gif")
     .setFooter({
       text: "Banner by @1041uuu on Tumblr",
       //,iconURL: "https://i.imgur.com/AfFp7pu.png",

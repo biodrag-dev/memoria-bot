@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
   "1074503972037075054": {
     "characters": {
@@ -69,7 +68,7 @@
         "docLink": "test",
         "optional": {
           "age": "17",
-          "gender": "134",
+          "gender": "Male",
           "bio": "test bio test bio lorem ipsum or something",
           "pronouns": "They/Them",
           "img_link": "https://media.discordapp.net/attachments/797711998926323752/1536426075536752650/Screenshot_2026-08-02_030745.jpg?ex=6a7b5bc9&is=6a7a0a49&hm=01969b27525fa2f0236422ad155393dde7838c14a1362e4733c12b90ced03128&=&format=webp",
@@ -136,6 +135,3 @@
     }
   }
 }
-=======
-{}
->>>>>>> parent of 47e9bfb (still working)
