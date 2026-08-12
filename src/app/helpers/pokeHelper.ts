@@ -227,12 +227,8 @@ export async function pokeEmbedCreate(pokemon: any): Promise<EmbedBuilder> {
         value: `${(pokemon.weight * 0.1).toFixed(1)} kg | ${kgToPounds(pokemon.weight * 0.1)} lbs`,
         inline: true,
       },
-<<<<<<< HEAD
     )
     .setFooter({ text: `${color.bannerCreds}` });
-=======
-    );
->>>>>>> parent of 47e9bfb (still working)
 
   return embed;
 }
