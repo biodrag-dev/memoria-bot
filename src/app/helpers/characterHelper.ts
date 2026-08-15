@@ -103,9 +103,39 @@ const badges: Record<string, badgeData> = {
     name: `Ember`,
   },
   Water: {
-    emoji: ``,
-    house: ``,
-    name: ``,
+    emoji: `<:ea_badge_polaris:1538306037877047386>`,
+    house: `Jirachi`,
+    name: `Polaris`,
+  },
+
+  Ice: {
+    emoji: `<:ea_badge_anachronism:1538306091681710121>`,
+    house: `Victini`,
+    name: `Anachronism`,
+  },
+
+  Ground: {
+    emoji: `<:ea_badge_origin:1538306279867555911>`,
+    house: `Victini`,
+    name: `Origin`,
+  },
+
+  Bug: {
+    emoji: `<:ea_badge_exuviae:1538306151547142275>`,
+    house: `Mew`,
+    name: `Exuviae`,
+  },
+
+  Rock: {
+    emoji: `<:ea_badge_halcyon:1538306344619221106>`,
+    house: `Mew`,
+    name: `Altar`,
+  },
+
+  Fairy: {
+    emoji: `:ea_badge_halcyon:`,
+    house: `Jirachi`,
+    name: `Halcyon`,
   },
   Electric: {
     emoji: `<:ea_badge_cataclysm:1538101885544824832>`,
@@ -117,11 +147,6 @@ const badges: Record<string, badgeData> = {
     house: `Mew`,
     name: `Panacea`,
   },
-  Ice: {
-    emoji: ``,
-    house: ``,
-    name: ``,
-  },
   Fighting: {
     emoji: `<:ea_badge_reagant:1536596517425774622>`,
     house: `Jirachi`,
@@ -132,11 +157,6 @@ const badges: Record<string, badgeData> = {
     house: `Mew`,
     name: `Reagent`,
   },
-  Ground: {
-    emoji: ``,
-    house: ``,
-    name: ``,
-  },
   Flying: {
     emoji: `<:ea_badge_contrivance:1538101905513914459>`,
     house: `Mew`,
@@ -146,16 +166,6 @@ const badges: Record<string, badgeData> = {
     emoji: `<:ea_badge_ego:1536597936178204743>`,
     house: `Mew`,
     name: `Ego`,
-  },
-  Bug: {
-    emoji: ``,
-    house: ``,
-    name: ``,
-  },
-  Rock: {
-    emoji: ``,
-    house: ``,
-    name: ``,
   },
   Ghost: {
     emoji: `<:ea_badge_hereafter:1536514601724674098>`,
@@ -176,11 +186,6 @@ const badges: Record<string, badgeData> = {
     emoji: `<:ea_badge_gilded:1536599347200921610>`,
     house: `Victini`,
     name: `Gilded`,
-  },
-  Fairy: {
-    emoji: ``,
-    house: ``,
-    name: ``,
   },
 };
 

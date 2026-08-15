@@ -73,7 +73,7 @@ export const command: CommandData = {
           ],
         },
         {
-          name: "information",
+          name: "data",
           description: "What are you filling in the detail with?",
           type: ApplicationCommandOptionType.String,
           required: true,
