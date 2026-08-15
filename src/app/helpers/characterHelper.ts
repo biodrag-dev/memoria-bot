@@ -127,13 +127,13 @@ const badges: Record<string, badgeData> = {
   },
 
   Rock: {
-    emoji: `<:ea_badge_halcyon:1538306344619221106>`,
+    emoji: `<:ea_badge_altar:1538306224507060304>`,
     house: `Mew`,
     name: `Altar`,
   },
 
   Fairy: {
-    emoji: `:ea_badge_halcyon:`,
+    emoji: `<:ea_badge_halcyon:1538306344619221106>`,
     house: `Jirachi`,
     name: `Halcyon`,
   },
