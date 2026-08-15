@@ -2,6 +2,15 @@ import { Client, EmbedBuilder, Interaction, TextChannel } from "discord.js";
 
 import * as submitHelper from "./submitHelper";
 
+export async function updateAllEmbeds(client: Client) {
+  await updateReservesEmbed(client);
+  await updateServerRulesEmbed(client);
+  await updateCharacterRulesEmbed(client);
+  await updateVerificationEmbed(client);
+  await updateRolesEmbed(client);
+  await updateRoleplayRules(client);
+}
+
 export async function updateEmbed(
   channel: any,
   message_id: string,
@@ -11,6 +20,75 @@ export async function updateEmbed(
   const msg = await channel.messages.fetch(`${message_id}`);
   await msg.edit({
     embeds: [embed],
+  });
+}
+export async function updateVerificationEmbed(client: Client) {
+  const channel = (await client.channels.fetch(
+    `${process.env.VERIFY_CHANNEL}`,
+  )) as TextChannel;
+  const msgOne = await channel.messages.fetch(`${process.env.VERIFY_MSG_ONE}`);
+  const embedOne = await getVerifyEmbed();
+  await msgOne.edit({
+    content: ``,
+    embeds: [embedOne],
+  });
+}
+export async function updateRolesEmbed(client: Client) {
+  const channel = (await client.channels.fetch(
+    `${process.env.SELF_ROLES_CHANNEL}`,
+  )) as TextChannel;
+  const msgOne = await channel.messages.fetch(
+    `${process.env.SELF_ROLES_MSG_ONE}`,
+  );
+  const embedOne = await getRolesOneEmbed();
+  await msgOne.edit({
+    content: ``,
+    embeds: [embedOne],
+  });
+
+  const msgTwo = await channel.messages.fetch(
+    `${process.env.SELF_ROLES_MSG_TWO}`,
+  );
+  const embedTwo = await getRolesTwoEmbed();
+  await msgTwo.edit({
+    content: ``,
+    embeds: [embedTwo],
+  });
+
+  const msgThree = await channel.messages.fetch(
+    `${process.env.SELF_ROLES_MSG_THREE}`,
+  );
+  const embedThree = await getRolesThreeEmbed();
+  await msgThree.edit({
+    content: ``,
+    embeds: [embedThree],
+  });
+
+  const msgFour = await channel.messages.fetch(
+    `${process.env.SELF_ROLES_MSG_FOUR}`,
+  );
+  const embedFour = await getRolesFourEmbed();
+  await msgFour.edit({
+    content: ``,
+    embeds: [embedFour],
+  });
+
+  const msgFive = await channel.messages.fetch(
+    `${process.env.SELF_ROLES_MSG_FIVE}`,
+  );
+  const embedFive = await getRolesFiveEmbed();
+  await msgFive.edit({
+    content: ``,
+    embeds: [embedFive],
+  });
+
+  const msgSix = await channel.messages.fetch(
+    `${process.env.SELF_ROLES_MSG_SIX}`,
+  );
+  const embedSix = await getRolesSixEmbed();
+  await msgSix.edit({
+    content: ``,
+    embeds: [embedSix],
   });
 }
 
@@ -104,14 +182,11 @@ export async function getReservesOneEmbed() {
     .setTitle(`𝐄𝐕𝐎𝐋𝐔𝐓𝐈𝐎𝐍𝐀𝐑𝐘 𝐃𝐄𝐒𝐓𝐈𝐍𝐀𝐓𝐈𝐎𝐍𝐒`)
     .setColor("#d11a1a")
     .setDescription(
-      `An 'Evolutionary Destination' describes the species that your pokemon partner will eventually evolve into.
-        
-        Each 'Evolution Destination' can only be claimed by one character at a time. Different forms are considered their own evolutionary destination, such as Ninetales and Alolan Ninetales.
-        These must be permanent form changes that cannot be changed both in and out of battle (ie. Oricorio or Rotom and all its forms would be considered only one destination).
-        
-        For example, someone may claim a Pikachu as a destination, but it cannot evolve into a Raichu. Another could claim a Pichu, though it is unable to evolve entirely. A third person may claim a Raichu, and a fourth person can claim Alolan Raichu. These four characters can coexist at the same time, but they will all start with Pichu.
+      `Each 'Evolution Destination' can only be claimed by one character at a time. Different forms are considered their own evolutionary destination, such as Ninetales and Alolan Ninetales. These must be permanent form changes that cannot be changed both in and out of battle (ie. Oricorio or Rotom and all its forms would be considered only one destination).
 
-        Keep in mind that these destinations cannot be changed once a character is approved.`,
+For example, someone may claim a Pikachu as a destination, but it cannot evolve into a Raichu. Another could claim a Pichu, though it is unable to evolve entirely. A third person may claim a Raichu, and a fourth person can claim Alolan Raichu. These four characters can coexist at the same time, but they will all start with Pichu.
+
+Keep in mind that these destinations cannot be changed once a character is approved.`,
     )
     .setThumbnail(
       `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/494.png?format=webp&quality=lossless`,
@@ -120,7 +195,7 @@ export async function getReservesOneEmbed() {
       "https://i.pinimg.com/originals/15/de/50/15de50852da9987a3c15d84d4b25f45d.gif",
     )
     .setFooter({
-      text: "Banner by @waneella on Tumblr",
+      text: "banner by @waneella on tumblr",
       //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
@@ -139,7 +214,7 @@ export async function getReservesTwoEmbed() {
       "https://i.redd.it/yg62pmx9dhra1.gif?width=960&format=mp4&s=6643eb3a4de32a8b64cf45cb2474b68f77bfebe6",
     )
     .setFooter({
-      text: "Banner by @AnasAbdin on Tumblr",
+      text: "banner by @anasabdin on tumblr",
       //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
   return embed;
@@ -161,7 +236,7 @@ export async function getReservesThreeEmbed() {
       "https://static2.klipy.com/ii/f87f46a2c5aeaeed4c68910815f73eaf/27/de/PSYjpPT7.gif",
     )
     .setFooter({
-      text: "Banner by @AnasAbdin on Tumblr",
+      text: "banner by @anasabdin on tumblr",
       //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
@@ -183,7 +258,7 @@ export async function getServerRulesEmbed() {
 > If, for some reason, they do need to be mentioned, please censor them with the appropriate tags. We discourage discussion about topics such as self-harm, abuse, suicide, and political matters due to how sensitive these subjects may be. Bear in mind that we are a community open to minors.
 
 3. No discrimination.
-> This is an inclusive space, so discrimination of any kind will not be tolerated. Making derogatory remarks against POC, disabled, LGBTQ+, religion, etc. can warrant warnings, kicks, or even an instant ban. We ask that you do not use slurs even if you have reclaimed them, as it can make those who haven't uncomfortable.
+> This is an inclusive space, so discrimination of any kind will not be tolerated. Making derogatory remarks against POC, disabled, LGBTQ+, religion, etc. can warrant warnings, kicks, or even an instant ban. We ask that you do not use slurs even if you have personally reclaimed them, as it can make those who haven't uncomfortable.
 
 4. Take arguments to DMs.
 > Respectful debates are allowed, such as discussing favorite foods or games. If a discussion is getting heated, please drop the topic or take it to DMs. If it continues within the server, it may lead to timeouts or warnings for anyone instigating or continuing the conversation.
@@ -211,7 +286,7 @@ export async function getServerRulesEmbed() {
     )
     .setImage("https://1041uuu.jp/Gallery/b/b27.gif")
     .setFooter({
-      text: "Banner by @1041uuu on Tumblr",
+      text: "banner by @1041uuu on tumblr",
       //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
@@ -239,9 +314,11 @@ export async function getRoleplayRulesEmbed() {
 > Our server writing minimum is semi-literate, so try to aim for 5 sentences minimum. Higher quality writing is expected in terms of proper punctuation, length and grammar. Additionally, to avoid channel clutter, roleplay should be conducted in threads.
 `,
     )
-    .setImage("https://i.pinimg.com/originals/2d/dd/65/2ddd65d337a48d0c8dc223f849c3dc5a.gif")
+    .setImage(
+      "https://i.pinimg.com/originals/2d/dd/65/2ddd65d337a48d0c8dc223f849c3dc5a.gif",
+    )
     .setFooter({
-      text: "Banner by @1041uuu on Tumblr",
+      text: "banner by @1041uuu on tumblr",
       //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
@@ -275,10 +352,10 @@ export async function getCharacterRulesOneEmbed() {
 > Pokémon evolutionary destinations are unique in this server. Two OCs cannot both have an Absol, so please check if the Pokémon you have in mind is already taken! Please take a look at <#${process.env.RESERVATIONS_CHANNEL}> for more info. We also allow species reservations that last 1 month.
 
 8. Three Character limit.
-> As of the moment, everyone will have a 3 character limit, one for each house (Victini, Mew, Jirachi). We want to focus on quality over quantity!`,
+> As of the moment, everyone will have a 3 character limit, one for each house (Victini, Mew, Jirachi). We want to focus on quality over quantity! This also means that you cannot make two characters in the same house.`,
     )
     .setFooter({
-      text: "Banner by @1041uuu on Tumblr",
+      text: "banner by @1041uuu on tumblr",
       //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     })
     .setImage(

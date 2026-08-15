@@ -159,7 +159,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
 
     const verifyCanReserve = await submitHelper.verifyCanReserve(
       interaction.user.id,
-      interaction.options.getString("species", true),
+      interaction.options.getString("species", true).toLowerCase(),
     );
 
     console.log(verifyCanReserve);
@@ -247,7 +247,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         if (button.customId === "reserve-accept") {
           await submitHelper.createProperReserve(
             interaction.user.id,
-            interaction.options.getString("species", true),
+            interaction.options.getString("species", true).toLowerCase(),
           );
           embed
             .setDescription(`Succesfully reserved ${displayName}!`)

@@ -99,7 +99,7 @@ const badges: Record<string, badgeData> = {
   },
   Fire: {
     emoji: `<:ea_badge_ember:1536602424662298675>`,
-    house: `Victini`,
+    house: `Jirachi`,
     name: `Ember`,
   },
   Water: {
@@ -108,9 +108,9 @@ const badges: Record<string, badgeData> = {
     name: ``,
   },
   Electric: {
-    emoji: ``,
-    house: ``,
-    name: ``,
+    emoji: `<:ea_badge_cataclysm:1538101885544824832>`,
+    house: `Victini`,
+    name: `Cataclysm`,
   },
   Grass: {
     emoji: `<:ea_badge_panacea:1536514286564671588>`,
@@ -138,9 +138,9 @@ const badges: Record<string, badgeData> = {
     name: ``,
   },
   Flying: {
-    emoji: ``,
-    house: ``,
-    name: ``,
+    emoji: `<:ea_badge_contrivance:1538101905513914459>`,
+    house: `Mew`,
+    name: `Contrivance`,
   },
   Psychic: {
     emoji: `<:ea_badge_ego:1536597936178204743>`,
@@ -211,7 +211,8 @@ const houseData: Record<string, houseData> = {
     thumbnail:
       "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png",
     tagid: "1536506628667478096",
-    banner: "https://i.pinimg.com/originals/33/00/37/330037e99d9692d6b6a290296a33bdca.gif",
+    banner:
+      "https://i.pinimg.com/originals/33/00/37/330037e99d9692d6b6a290296a33bdca.gif",
     artist_credits: "banner by @1041uuu on tumblr",
   },
 
@@ -221,7 +222,8 @@ const houseData: Record<string, houseData> = {
     thumbnail:
       "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/385.png",
     tagid: "1536506614285082676",
-    banner: "https://i.pinimg.com/originals/82/19/ad/8219adaa7148d1dcd477a4d728f97b85.gif",
+    banner:
+      "https://i.pinimg.com/originals/82/19/ad/8219adaa7148d1dcd477a4d728f97b85.gif",
     artist_credits: "banner by @anasabdin on tumblr",
   },
 };
@@ -306,6 +308,21 @@ export async function registerCharacter(user: string, client: Client) {
     optional: charaData,
   };
   await submitHelper.approveDestination(submission.partner.toLowerCase());
+  const guild = client.guilds.cache.get(`${process.env.GUILD_ID}`);
+  const member = await guild!.members.fetch(user);
+  await member.roles.add(`${process.env.ROLEPLAYER_ROLE}`);
+
+  switch (submission.house) {
+    case "Victini":
+      await member.roles.add(`${process.env.VICTINI_ROLE}`);
+      break;
+    case "Jirachi":
+      await member.roles.add(`${process.env.JIRACHI_ROLE}`);
+      break;
+    case "Mew":
+      await member.roles.add(`${process.env.MEW_ROLE}`);
+      break;
+  }
 
   if (!charaDex[user]) {
     charaDex[user] = {
@@ -339,12 +356,33 @@ export async function deleteCharacter(
       .setDescription(`User or Character ${name} could not be found!`)
       .setColor("Red");
   }
+
+  const guild = client.guilds.cache.get(`${process.env.GUILD_ID}`);
+  const guildMember = await guild!.members.fetch(id);
+
+  switch (character.house) {
+    case "Victini":
+      await guildMember.roles.remove(`${process.env.VICTINI_ROLE}`);
+      break;
+    case "Jirachi":
+      await guildMember.roles.remove(`${process.env.JIRACHI_ROLE}`);
+      break;
+    case "Mew":
+      await guildMember.roles.remove(`${process.env.MEW_ROLE}`);
+      break;
+  }
+
   await deleteThread(id, name, client);
 
   const evoDestination = character.destination;
   await submitHelper.deleteDestination(evoDestination);
 
   delete user.characters[name];
+
+  //if no more characters, remove rper role
+  if (Object.keys(user.characters).length === 0) {
+    await guildMember.roles.remove(`${process.env.ROLEPLAYER_ROLE}`);
+  }
 
   await saveUsers();
 
@@ -359,7 +397,10 @@ export async function deleteCharacter(
     .setColor("Green");
 }
 
-export async function deleteAll(id: string, client: Client): Promise<EmbedBuilder> {
+export async function deleteAll(
+  id: string,
+  client: Client,
+): Promise<EmbedBuilder> {
   await loadUsers();
 
   if (!charaDex?.[id]) {
@@ -382,8 +423,11 @@ export async function deleteAll(id: string, client: Client): Promise<EmbedBuilde
 
 export function getCharacterEmbed(id: string, name: string) {
   loadUsers();
-  console.log(charaDex[id]);
-  if (!charaDex[id] || !charaDex[id].characters || !charaDex[id].characters[name]) {
+  if (
+    !charaDex[id] ||
+    !charaDex[id].characters ||
+    !charaDex[id].characters[name]
+  ) {
     return new EmbedBuilder()
       .setDescription("User or character could not be found!")
       .setColor("Red");
@@ -597,7 +641,8 @@ ${gender}${ability}${nature}${metOn}${dexEntry}${bio}`,
           inline: true,
         },
       )
-      .setThumbnail(image).setImage(houseInfo.banner);
+      .setThumbnail(image)
+      .setImage(houseInfo.banner);
   }
   return embed;
 }

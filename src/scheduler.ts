@@ -5,10 +5,7 @@ import type { Client } from "commandkit";
 
 export async function startScheduler(client: Client) {
   // Every 5 minutes
-  await embedHelper.updateReservesEmbed(client);
-  await embedHelper.updateServerRulesEmbed(client);
-  await embedHelper.updateCharacterRulesEmbed(client);
-  await embedHelper.updateRoleplayRules(client);
+  await embedHelper.updateAllEmbeds(client);
 
   cron.schedule("*/30 * * * *", async () => {
     await submitHelper.clearTemporary();

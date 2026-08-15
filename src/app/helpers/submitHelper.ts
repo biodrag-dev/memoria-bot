@@ -95,16 +95,6 @@ export async function deleteDestination(name: string) {
   await saveEvos();
 }
 
-export async function reserveDays(name: string) {
-  await loadEvos();
-  const oldDate = new Date(evoDex[`${name.toLowerCase()}`]!.dateMade);
-  const now = new Date();
-
-  const difference = now.getTime() - oldDate.getTime();
-
-  console.log(difference); // milliseconds
-}
-
 export function reserveExpireDate(name: string) {
   const expirationDate = new Date(evoDex[`${name.toLowerCase()}`]!.dateMade);
   expirationDate.setMonth(expirationDate.getMonth() + 1);
@@ -153,7 +143,6 @@ export async function createSubmit(
   docLink: string,
   partner: string,
 ) {
-  console.log("CreateSubmit triggered");
   await loadSubmissions();
   await loadEvos();
   const shinyRoll = Math.floor(Math.random() * 20) + 1;

@@ -9,6 +9,21 @@
             "name": "Ego",
             "type": "Psychic",
             "dateAcquired": "2026-08-11T04:52:33.430Z"
+          },
+          {
+            "name": "Panacea",
+            "type": "Grass",
+            "dateAcquired": "2026-08-15T08:47:12.186Z"
+          },
+          {
+            "name": "Reagent",
+            "type": "Poison",
+            "dateAcquired": "2026-08-15T08:47:20.873Z"
+          },
+          {
+            "name": "Contrivance",
+            "type": "Flying",
+            "dateAcquired": "2026-08-15T08:47:28.343Z"
           }
         ],
         "registeredOn": "2026-08-05T23:05:00.621Z",
@@ -50,6 +65,11 @@
             "name": "Gilded",
             "type": "Steel",
             "dateAcquired": "2026-08-11T05:17:36.682Z"
+          },
+          {
+            "name": "Cataclysm",
+            "type": "Electric",
+            "dateAcquired": "2026-08-15T08:46:11.847Z"
           }
         ],
         "registeredOn": "2026-08-10T11:59:50.871Z",
@@ -95,7 +115,28 @@
       "JirachiTest": {
         "name": "JirachiTest",
         "house": "Jirachi",
-        "badges": [],
+        "badges": [
+          {
+            "name": "Ember",
+            "type": "Fire",
+            "dateAcquired": "2026-08-15T08:46:29.025Z"
+          },
+          {
+            "name": "Endurance",
+            "type": "Fighting",
+            "dateAcquired": "2026-08-15T08:46:38.250Z"
+          },
+          {
+            "name": "Hereafter",
+            "type": "Ghost",
+            "dateAcquired": "2026-08-15T08:46:56.408Z"
+          },
+          {
+            "name": "Quietude",
+            "type": "Dark",
+            "dateAcquired": "2026-08-15T08:47:03.888Z"
+          }
+        ],
         "registeredOn": "2026-08-11T19:46:08.657Z",
         "destination": "charmeleon",
         "partner": {
@@ -105,7 +146,9 @@
           "sizeMult": 0.8685351721340425
         },
         "docLink": "STAFF NPC",
-        "optional": {},
+        "optional": {
+          "gender": "Male"
+        },
         "thread_id": "1536823052879532154"
       }
     }
@@ -131,6 +174,32 @@
         "docLink": "A",
         "optional": {},
         "thread_id": "1534737889395736737"
+      }
+    }
+  },
+  "723291117302448169": {
+    "characters": {
+      "mewling": {
+        "name": "mewling",
+        "house": "Mew",
+        "badges": [
+          {
+            "name": "Contrivance",
+            "type": "Flying",
+            "dateAcquired": "2026-08-15T09:05:11.200Z"
+          }
+        ],
+        "registeredOn": "2026-08-15T09:03:56.756Z",
+        "destination": "inteleon",
+        "partner": {
+          "shiny": false,
+          "species": "sobble",
+          "specialMoves": {},
+          "sizeMult": 0.9196564281303594
+        },
+        "docLink": "mew test",
+        "optional": {},
+        "thread_id": "1538110990099419139"
       }
     }
   }
