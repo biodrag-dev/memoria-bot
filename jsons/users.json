@@ -96,22 +96,6 @@
         },
         "thread_id": "1536343321939673100"
       },
-      "resrsafsd": {
-        "name": "resrsafsd",
-        "house": "Mew",
-        "badges": [],
-        "registeredOn": "2026-08-10T22:52:22.072Z",
-        "destination": "garchomp",
-        "partner": {
-          "shiny": false,
-          "species": "gible",
-          "specialMoves": {},
-          "sizeMult": 0.9224738344508033
-        },
-        "docLink": "STAFF NPC",
-        "optional": {},
-        "thread_id": "1536507533148295239"
-      },
       "JirachiTest": {
         "name": "JirachiTest",
         "house": "Jirachi",
