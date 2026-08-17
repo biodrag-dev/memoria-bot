@@ -9,6 +9,7 @@ export async function updateAllEmbeds(client: Client) {
   await updateVerificationEmbed(client);
   await updateRolesEmbed(client);
   await updateRoleplayRules(client);
+  await updateFaqEmbed(client);
 }
 
 export async function updateEmbed(
@@ -33,6 +34,50 @@ export async function updateVerificationEmbed(client: Client) {
     embeds: [embedOne],
   });
 }
+
+export async function updateFaqEmbed(client: Client) {
+  const channel = (await client.channels.fetch(
+    `${process.env.FAQ_CHANNEL}`,
+  )) as TextChannel;
+  const msgOne = await channel.messages.fetch(
+    `${process.env.FAQ_MSG_ONE}`,
+  );
+  const embedOne = await getFaqOneEmbed();
+  await msgOne.edit({
+    content: ``,
+    embeds: [embedOne],
+  });
+
+  const msgTwo = await channel.messages.fetch(
+    `${process.env.FAQ_MSG_TWO}`,
+  );
+  const embedTwo = await getFaqTwoEmbed();
+  await msgTwo.edit({
+    content: ``,
+    embeds: [embedTwo],
+  });
+
+  const msgThree = await channel.messages.fetch(
+    `${process.env.FAQ_MSG_THREE}`,
+  );
+  const embedThree = await getFaqThreeEmbed();
+  await msgThree.edit({
+    content: ``,
+    embeds: [embedThree],
+  });
+
+  const msgFour = await channel.messages.fetch(
+    `${process.env.FAQ_MSG_FOUR}`,
+  );
+  const embedFour = await getFaqFourEmbed();
+  await msgFour.edit({
+    content: ``,
+    embeds: [embedFour],
+  });
+
+}
+
+
 export async function updateRolesEmbed(client: Client) {
   const channel = (await client.channels.fetch(
     `${process.env.SELF_ROLES_CHANNEL}`,
@@ -196,7 +241,6 @@ Keep in mind that these destinations cannot be changed once a character is appro
     )
     .setFooter({
       text: "banner by @waneella on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
   return embed;
@@ -215,7 +259,6 @@ export async function getReservesTwoEmbed() {
     )
     .setFooter({
       text: "banner by @anasabdin on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
   return embed;
 }
@@ -237,7 +280,6 @@ export async function getReservesThreeEmbed() {
     )
     .setFooter({
       text: "banner by @anasabdin on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
   return embed;
@@ -287,7 +329,6 @@ export async function getServerRulesEmbed() {
     .setImage("https://1041uuu.jp/Gallery/b/b27.gif")
     .setFooter({
       text: "banner by @1041uuu on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
   return embed;
@@ -319,7 +360,6 @@ export async function getRoleplayRulesEmbed() {
     )
     .setFooter({
       text: "banner by @1041uuu on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
   return embed;
@@ -356,7 +396,6 @@ export async function getCharacterRulesOneEmbed() {
     )
     .setFooter({
       text: "banner by @1041uuu on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     })
     .setImage(
       `https://64.media.tumblr.com/aa05fe3b460d3dd0b4324a12f423ec72/c6c80f2198878c5f-18/s540x810/3ad5dbf237149e13e763f9ec9013e3306d918a6b.gif`,
@@ -393,7 +432,6 @@ export async function getCharacterRulesTwoEmbed() {
     )
     .setFooter({
       text: "banner by @1041uuu on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
   return embed;
@@ -415,7 +453,6 @@ export async function getRolesOneEmbed() {
     )
     .setFooter({
       text: "banner by @1041uuu on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
   return embed;
@@ -434,7 +471,6 @@ export async function getRolesTwoEmbed() {
     )
     .setFooter({
       text: "banner by @minimoss on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
   return embed;
@@ -454,7 +490,6 @@ export async function getRolesThreeEmbed() {
     )
     .setFooter({
       text: "banner by @kirokaze on deviantart",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
   return embed;
@@ -474,7 +509,6 @@ export async function getRolesFourEmbed() {
     )
     .setFooter({
       text: "banner by motocross saito on artstation",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
   return embed;
@@ -495,7 +529,6 @@ export async function getRolesFiveEmbed() {
     )
     .setFooter({
       text: "banner by @1041uuu on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
   return embed;
@@ -516,11 +549,159 @@ export async function getRolesSixEmbed() {
     )
     .setFooter({
       text: "banner by ao85 on artstation",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
   return embed;
 }
+
+export async function getFaqOneEmbed() {
+  const embed = new EmbedBuilder()
+    .setTitle(`➴　　┈　　🟣　　𝐀𝐃𝐃𝐈𝐓𝐈𝐎𝐍𝐀𝐋 𝐏𝐈𝐍𝐆𝐒`)
+    .setColor("#84809b")
+    .setDescription(
+      `If you need more clarification or answers to a question that isn't on this list, feel free to ask about it in <#1527299700699566162>!`,
+    )
+    .setImage(
+      "https://i.pinimg.com/originals/56/3a/b1/563ab15230f5bf4259f11125fd1f9c0e.gif",
+    )
+    .setFooter({
+      text: "banner by ao85 on artstation",
+    });
+
+  return embed;
+}
+
+export async function getFaqTwoEmbed() {
+  const embed = new EmbedBuilder()
+    .setTitle(`server questions`)
+    .setColor("#84809b")
+    .setDescription(
+      `OO1 ﹕Can I invite a friend?
+> Of course! The more, the merrier. Giving staff a head's up beforehand would be appreciated, though.
+
+OO2 ﹕Can I get a color role?
+> While we would like to avoid excessive role clutter in the server, you can gain a custom color role through boosting the server.`,
+    )
+    .setImage(
+      "https://i.pinimg.com/originals/56/3a/b1/563ab15230f5bf4259f11125fd1f9c0e.gif",
+    )
+    .setFooter({
+      text: "banner by ao85 on artstation",
+    });
+
+  return embed;
+}
+
+export async function getFaqThreeEmbed() {
+  const embed = new EmbedBuilder()
+    .setTitle(`﹒﹒Character Questions !!`)
+    .setColor("#84809b")
+    .setDescription(
+      `OO1 ﹕Where's the template? How do I submit my character?
+> The template for OCs can be found in <#1531841416865648841>. Submit your oc with **/submit character**.
+
+OO2 ﹒﹒How many OCs can I make?
+> You can make three OCs total, though they have to be in different classes.
+
+OO3 ﹕How long will it be until my submission is reviewed?
+> The time varies, but typically we'll get to it within a week. Please understand that staff do have their own lives outside of this server, but if you feel that your submission has been entirely forgotten about, feel free to politely (not demand or guilttrip) bring it up in your review thread.
+
+OO4 ﹒﹒Can I use other templates or modify the existing one?
+> As long as you have **all** of the mandatory sections on our template, yes!
+
+OO5 ﹕Do I need a photo for my character?
+> No, though if you do not use a photo, written description is required. Keep in mind that we require artist permission and do not allow faceclaims.
+
+OO6 ﹕Why do you guys not allow faceclaims?
+> To encourage originality! We want to see characters that are made by **you**, not someone else's OC ripped off of Pinterest.
+ 
+OO7 ﹕Can my character be a Psychic or an Aura Guardian?
+> Psychic is allowed, but it would be extremely limited to the point of only minor telekinesis. Mind reading or telepathy would not be allowed. Aura Guardians are not allowed entirely.
+
+OO8 ﹕Do regional forms count as different evolutionary destinations?
+> Yes! So long as the form cannot be changed, it would be considered separate.
+
+OO7 ﹕Can my character's partner be Shiny or Alpha? 
+> Shiny and Alpha status is decided at submission by a d20 dice roll.
+
+OO8 ﹕If an evolution chain includes a baby pokemon, can I start by skipping that stage?
+> No. If you were to claim a Pikachu, you would start off with a Pichu. All evolutions start off at the very base of the chain.
+`,
+    )
+    .setImage(
+      "https://i.pinimg.com/originals/56/3a/b1/563ab15230f5bf4259f11125fd1f9c0e.gif",
+    )
+    .setFooter({
+      text: "banner by ao85 on artstation",
+    });
+
+  return embed;
+}
+
+export async function getFaqFourEmbed() {
+  const embed = new EmbedBuilder()
+    .setTitle(`﹒﹒Character Questions !!`)
+    .setColor("#84809b")
+    .setDescription(
+      `﹒﹒Roleplay Questions !!
+OO1 ﹕Can I NPC a character?
+> You can use NPCs for interactions that call for them (ie. a waiter at a restaurant bringing your character a meal, a librarian checking out books for your character, your OC's family), however these NPCs cannot be used on their own in separate interactions apart from with their relevant OC.
+
+OO2 ﹕When can my Pokemon evolve?
+> While there are many methods to evolving pokemon, in this server, they will scale off of your badge account. If their evolution chain has three stages, then they can evolve at badge 2 and 4. If their evolution chain has two, then they can evolve at badge 3.
+
+OO3 ﹒﹒How are Z-Moves, Mega Evolution, Terastalization, Gigantamaxxing, and/or other battle mechanics being handled?
+> While most of the details are entirely unknown or mythologized in-character, attending events could potentially (but are not always guaranteed to) get you something related to those mechanics later down the line!
+
+OO4 ﹕Can I have some variation in my Pokemon to make them distinct from the base species?
+> It depends on how large the variation may be. A slight shift in color or markings could work, like how May's Bulbasaur in the anime has heart markings instead of the traditional triangle markings. However, enough variations to make it mistakable for a shiny form or for a regional form is not allowed. Feel free to check with Staff first just to make sure it's alright!
+
+OO5 ﹒﹒Do people eat Pokemon or animals?
+> There are no regular animals. People eat Pokemon products like Wishiwashi Sashimi and Tauros Steaks all the time! Many people opt to consume the more renewable sources of meat, like naturally detatched Slowpoke Tails or Blissey Eggs, though.
+
+OO6 ﹒﹒
+`,
+//OO3 ﹕What are the channels with the formatting like ・⊂a-city-of-grandeur⊃?
+//These are the OOC channels! They're used to talk about RPs that occur within the city, so you don't end up pushing up your own RP with discussion.
+
+    )
+    .setImage(
+      "https://i.pinimg.com/originals/56/3a/b1/563ab15230f5bf4259f11125fd1f9c0e.gif",
+    )
+    .setFooter({
+      text: "banner by ao85 on artstation",
+    });
+
+  return embed;
+}
+
+export async function getFaqFiveEmbed() {
+  const embed = new EmbedBuilder()
+    .setTitle(`﹒﹒Character Questions !!`)
+    .setColor("#84809b")
+    .setDescription(
+      `﹒﹒Roleplay Questions !!
+OO1 ﹕Can I NPC a character?
+You can use NPCs for interactions that call for them (ie. a waiter at a restaurant bringing your character a meal, a librarian checking out books for your character, your OC's family), however these NPCs cannot be used on their own in separate interactions apart from with their relevant OC.
+
+OO2 ﹒﹒Do I roleplay my Pokemon Partner, or does staff do it?
+Aside from plot important moments (such as during Trials, and in some circumstances, events), you'll be roleplaying as your own partner! While we would like to make it a more interactive experience, managing everyone's partners would take too much time and effort to do in an efficient manner.
+
+OO3 ﹕What are the channels with the formatting like ・⊂a-city-of-grandeur⊃?
+These are the OOC channels! They're used to talk about RPs that occur within the city, so you don't end up pushing up your own RP with discussion.
+
+`,
+    )
+    .setImage(
+      "https://i.pinimg.com/originals/56/3a/b1/563ab15230f5bf4259f11125fd1f9c0e.gif",
+    )
+    .setFooter({
+      text: "banner by ao85 on artstation",
+    });
+
+  return embed;
+}
+
 
 export async function getVerifyEmbed() {
   const embed = new EmbedBuilder()
@@ -538,7 +719,6 @@ need a hint?
     )
     .setFooter({
       text: "banner by @1041uuu on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
   return embed;
@@ -559,7 +739,6 @@ Grab some roles from <#> and introduce yourself in <#>!
     )
     .setFooter({
       text: "banner by @1041uuu on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
   return embed;
@@ -580,7 +759,6 @@ Grab some roles from <#> and introduce yourself in <#>!
     )
     .setFooter({
       text: "banner by @1041uuu on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
   return embed;
@@ -598,7 +776,6 @@ export async function getLeaveEmbed(user: string) {
     )
     .setFooter({
       text: "banner by @1041uuu on tumblr",
-      //,iconURL: "https://i.imgur.com/AfFp7pu.png",
     });
 
   return embed;
