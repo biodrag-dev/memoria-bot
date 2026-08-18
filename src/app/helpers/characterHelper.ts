@@ -32,6 +32,15 @@ interface CharacterData {
   artist_credits?: string;
 }
 
+interface OocPartner {
+  age?: string;
+  gender?: string;
+  bio?: string;
+  pronouns?: string;
+  img_link?: string;
+  artist_credits?: string;
+}
+
 interface Character {
   thread_id?: string;
   name: string;
@@ -45,11 +54,16 @@ interface Character {
 }
 
 interface UserData {
+  OocPartner?: OocPartner;
+  last_rolled?: Date;
+  monthly_rolled?: number;
+  booster_role?: string;
   characters: Record<string, Character>;
 }
 
 type CharacterDex = Record<string, UserData>;
 
+const monthlyRerolls = 3;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const jsonsPath = path.resolve(__dirname, "../../../jsons");
 const natures = [
@@ -281,6 +295,17 @@ export async function getCharacterNames(id: string): Promise<string[]> {
   return names;
 }
 
+export async function getPartnerSprite(id: string, name: string) {
+  const character = charaDex[id]!.characters[name]!;
+  const partner = character.partner as Partner;
+  const image = await pokehelper.getSprite(
+    partner.species,
+    partner.gender!,
+    partner.shiny,
+  );
+  return image;
+}
+
 export async function registerCharacter(user: string, client: Client) {
   await loadUsers();
   const submission = await submitHelper.getSubmit(user);
@@ -417,12 +442,18 @@ export async function deleteAll(
   for (const character of await getCharactersObj(id)) {
     await deleteCharacter(id, character.name, client);
   }
+
+  if (charaDex?.[id].booster_role) {
+    const guild = client.guilds.cache.get(`${process.env.GUILD_ID}`)!;
+    const role = await guild.roles.fetch(charaDex?.[id].booster_role);
+    role?.delete();
+  }
   delete charaDex[id];
 
   await saveUsers();
 
   return new EmbedBuilder()
-    .setDescription("All characters were deleted!")
+    .setDescription(`All of <@${id}>'s data was deleted!`)
     .setColor("Green");
 }
 
@@ -825,7 +856,6 @@ export async function canEvolve(
     (evo) => evo === character.partner.species,
   );
 
-  console.log("evoIndex", evoIndex);
   if (evoChain.length === 3) {
     if (evoIndex === 0) {
       minCount = 2;
@@ -892,3 +922,173 @@ export async function evolvePartner(
   character.partner.species = evoChain[evoIndex + 1]!;
   await saveUsers();
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//    BOOSTER ROLE
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function isValidHex(color: string): boolean {
+  return /^#?[0-9A-F]{6}$/i.test(color);
+}
+async function createRole(client: Client, id: string) {
+  await loadUsers();
+  if (!charaDex[id]) {
+    charaDex[id] = { characters: {} };
+  }
+  if (!charaDex[id]!.booster_role) {
+    const guild = client.guilds.cache.get(`${process.env.GUILD_ID}`)!;
+    const member = await guild.members.fetch(id);
+    const role = await guild.roles.create({ name: `${member.user.username}` });
+    const targetRole = guild.roles.cache.get(`${process.env.COLOR_ROLE}`)!;
+    await role.setPosition(targetRole.position - 1);
+    await member.roles.add(role);
+    charaDex[id].booster_role = role.id;
+    saveUsers();
+  }
+}
+export async function removeBoosterRole(client: Client, id: string) {
+  await loadUsers();
+  if (charaDex[id]?.booster_role) {
+    const guild = client.guilds.cache.get(`${process.env.GUILD_ID}`)!;
+    const role = await guild.roles.fetch(charaDex?.[id].booster_role);
+    role?.delete();
+  }
+}
+
+export async function boosterColor(
+  client: Client,
+  id: string,
+  color: string,
+  secondaryColor: string | null,
+): Promise<string> {
+  await createRole(client, id);
+  if (
+    isValidHex(color) === false ||
+    (secondaryColor ? isValidHex(secondaryColor) : true) === false
+  ) {
+    return `Error: not a hex code!`;
+  }
+  const guild = client.guilds.cache.get(`${process.env.GUILD_ID}`)!;
+  const role = guild.roles.cache.get(charaDex[id]?.booster_role!);
+
+  const color1 = color.startsWith("#") ? color : `#${color}`;
+  const color2 = secondaryColor
+    ? secondaryColor.startsWith("#")
+      ? secondaryColor
+      : `#${secondaryColor}`
+    : null;
+
+  try {
+    if (secondaryColor) {
+      await role?.edit({
+        colors: {
+          primaryColor: color1 as ColorResolvable,
+          secondaryColor: color2 as ColorResolvable,
+        },
+      });
+    } else {
+      await role?.edit({
+        colors: {
+          primaryColor: color1 as ColorResolvable,
+        },
+      });
+    }
+  } catch {
+    return `Error: Invalid hex code!`;
+  }
+  return `Your role's color has been successfully changed!`;
+}
+
+export async function boosterName(client: Client, id: string, name: string) {
+  await createRole(client, id);
+  const guild = client.guilds.cache.get(`${process.env.GUILD_ID}`)!;
+  const role = guild.roles.cache.get(charaDex[id]?.booster_role!);
+
+  await role?.edit({
+    name: name,
+  });
+}
+export async function getRerolls(id: string) : Promise<number>{
+  await loadUsers();
+  if (!charaDex[id]?.last_rolled) {
+    // if never rolled
+    return monthlyRerolls;
+  } else {
+    const lastRolled = new Date(charaDex[id]?.last_rolled);
+    const currentDate = new Date();
+
+    if (lastRolled.getMonth() == currentDate.getMonth()) {
+      // gets rerolls this month
+      return charaDex[id]?.monthly_rolled!;
+    }
+    return monthlyRerolls;
+  }
+}
+
+export async function rerollOOC(
+  client: Client,
+  id: string,
+  field: string,
+): Promise<EmbedBuilder> {
+  return new EmbedBuilder();
+}
+
+export async function rerollIRP(
+  client: Client,
+  id: string,
+  name: string,
+  field: string,
+): Promise<EmbedBuilder> {
+  const roll = Math.floor(Math.random() * 20) + 1;
+  const embed = new EmbedBuilder();
+
+  const partner = charaDex[id]!.characters[name]!.partner;
+
+  if (field === "shiny") {
+    embed
+      .setDescription(`🎲 **Result** | ${roll}`)
+      .setTitle(`Rolling for Shiny Status (1d20)...`);
+    if (roll == 20) {
+      embed
+        .setColor("#f0ed4c")
+        .setFooter({ text: `Oh? Congratulations! It's a shiny!` });
+    } else {
+      embed.setColor("#3c3d3c").setFooter({ text: "Better luck next time..." });
+    }
+    partner.shiny = roll == 20;
+  } else if (field === "size") {
+    var sizeMult;
+    if (roll == 20) {
+      sizeMult = 2;
+    } else {
+      sizeMult = Math.random() / 2 + 0.75;
+    }
+
+    embed
+      .setDescription(
+        `🎲 **Result** | ${roll} ${roll === 20 ? `<:ea_alphaicon:1533355784769896459>` : ``}
+
+${pokehelper.getSize(partner.sizeMult)} -> ${pokehelper.getSize(sizeMult)}`,
+      )
+      .setTitle(`Rolling for Alpha Status (1d20)...`);
+      partner.sizeMult = sizeMult;
+    if (roll == 20) {
+      embed.setColor("#f81a1a").setFooter({
+        text: `Oh? Congratulations! It's an alpha!`,
+      });
+    } else {
+      embed.setColor("#3c3d3c").setFooter({ text: `Better luck next time...` });
+    }
+  }
+  charaDex[id]!.monthly_rolled = await getRerolls(id) - 1;
+  charaDex[id]!.last_rolled = new Date();
+  await saveUsers();
+  embed.setThumbnail(await getPartnerSprite(id, name));
+
+  return embed;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//    BOOSTER ROLE
+///////////////////////////////////////////////////////////////////////////////////////////////////////

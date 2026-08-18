@@ -5,7 +5,6 @@ import type { Client } from "commandkit";
 
 export async function startScheduler(client: Client) {
   // Every 5 minutes
-  await embedHelper.updateAllEmbeds(client);
 
   cron.schedule("*/30 * * * *", async () => {
     await submitHelper.clearTemporary();

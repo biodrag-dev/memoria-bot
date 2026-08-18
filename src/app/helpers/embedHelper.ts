@@ -23,6 +23,52 @@ export async function updateEmbed(
     embeds: [embed],
   });
 }
+
+export async function sendEnterMsg(client: Client, user: string) {
+  const channel = (await client.channels.fetch(
+    `${process.env.DOOR_CHANNEL}`,
+  )) as TextChannel;
+
+  const embedOne = await getJoinEmbed(client, user);
+  await channel.send({
+    embeds: [embedOne],
+  });
+}
+
+export async function sendLeaveMsg(client: Client, user: string) {
+  const channel = (await client.channels.fetch(
+    `${process.env.DOOR_CHANNEL}`,
+  )) as TextChannel;
+
+  const embedOne = await getLeaveEmbed(client, user);
+  await channel.send({
+    embeds: [embedOne],
+  });
+}
+
+export async function sendBoostMsg(client: Client, user: string) {
+  const channel = (await client.channels.fetch(
+    `${process.env.GEN_CHAT_CHANNEL}`,
+  )) as TextChannel;
+
+  const embedOne = await getBoostEmbed(client, user);
+  await channel.send({
+    embeds: [embedOne],
+  });
+}
+
+export async function sendWelcomeMsg(client: Client, user: string) {
+  const channel = (await client.channels.fetch(
+    `${process.env.GEN_CHAT_CHANNEL}`,
+  )) as TextChannel;
+
+  const embedOne = await getPostVerifyEmbed(client, user);
+  await channel.send({
+    content: `<@${user}>`,
+    embeds: [embedOne],
+  });
+}
+
 export async function updateVerificationEmbed(client: Client) {
   const channel = (await client.channels.fetch(
     `${process.env.VERIFY_CHANNEL}`,
@@ -39,44 +85,34 @@ export async function updateFaqEmbed(client: Client) {
   const channel = (await client.channels.fetch(
     `${process.env.FAQ_CHANNEL}`,
   )) as TextChannel;
-  const msgOne = await channel.messages.fetch(
-    `${process.env.FAQ_MSG_ONE}`,
-  );
+  const msgOne = await channel.messages.fetch(`${process.env.FAQ_MSG_ONE}`);
   const embedOne = await getFaqOneEmbed();
   await msgOne.edit({
     content: ``,
     embeds: [embedOne],
   });
 
-  const msgTwo = await channel.messages.fetch(
-    `${process.env.FAQ_MSG_TWO}`,
-  );
+  const msgTwo = await channel.messages.fetch(`${process.env.FAQ_MSG_TWO}`);
   const embedTwo = await getFaqTwoEmbed();
   await msgTwo.edit({
     content: ``,
     embeds: [embedTwo],
   });
 
-  const msgThree = await channel.messages.fetch(
-    `${process.env.FAQ_MSG_THREE}`,
-  );
+  const msgThree = await channel.messages.fetch(`${process.env.FAQ_MSG_THREE}`);
   const embedThree = await getFaqThreeEmbed();
   await msgThree.edit({
     content: ``,
     embeds: [embedThree],
   });
 
-  const msgFour = await channel.messages.fetch(
-    `${process.env.FAQ_MSG_FOUR}`,
-  );
+  const msgFour = await channel.messages.fetch(`${process.env.FAQ_MSG_FOUR}`);
   const embedFour = await getFaqFourEmbed();
   await msgFour.edit({
     content: ``,
     embeds: [embedFour],
   });
-
 }
-
 
 export async function updateRolesEmbed(client: Client) {
   const channel = (await client.channels.fetch(
@@ -222,7 +258,7 @@ export async function updateCharacterRulesEmbed(client: Client) {
   });
 }
 
-export async function getReservesOneEmbed() {
+async function getReservesOneEmbed() {
   const embed = new EmbedBuilder()
     .setTitle(`𝐄𝐕𝐎𝐋𝐔𝐓𝐈𝐎𝐍𝐀𝐑𝐘 𝐃𝐄𝐒𝐓𝐈𝐍𝐀𝐓𝐈𝐎𝐍𝐒`)
     .setColor("#d11a1a")
@@ -246,7 +282,7 @@ Keep in mind that these destinations cannot be changed once a character is appro
   return embed;
 }
 
-export async function getReservesTwoEmbed() {
+async function getReservesTwoEmbed() {
   const embed = new EmbedBuilder()
     .setTitle(`𝐀𝐏𝐏𝐑𝐎𝐕𝐄𝐃 𝐃𝐄𝐒𝐓𝐈𝐍𝐀𝐓𝐈𝐎𝐍𝐒`)
     .setColor("#ddad10")
@@ -263,7 +299,7 @@ export async function getReservesTwoEmbed() {
   return embed;
 }
 
-export async function getReservesThreeEmbed() {
+async function getReservesThreeEmbed() {
   const embed = new EmbedBuilder()
     .setTitle(`𝐎𝐍𝐆𝐎𝐈𝐍𝐆 𝐑𝐄𝐒𝐄𝐑𝐕𝐀𝐓𝐈𝐎𝐍𝐒`)
     .setColor("#188eac")
@@ -285,7 +321,7 @@ export async function getReservesThreeEmbed() {
   return embed;
 }
 
-export async function getServerRulesEmbed() {
+async function getServerRulesEmbed() {
   const embed = new EmbedBuilder()
     .setTitle(`𝐒𝐄𝐑𝐕𝐄𝐑 𝐑𝐔𝐋𝐄𝐒`)
     .setColor("#67a5eb")
@@ -334,7 +370,7 @@ export async function getServerRulesEmbed() {
   return embed;
 }
 
-export async function getRoleplayRulesEmbed() {
+async function getRoleplayRulesEmbed() {
   const embed = new EmbedBuilder()
     .setTitle(`𝐑𝐎𝐋𝐄𝐏𝐋𝐀𝐘 𝐑𝐔𝐋𝐄𝐒`)
     .setColor("#657c58")
@@ -365,7 +401,7 @@ export async function getRoleplayRulesEmbed() {
   return embed;
 }
 
-export async function getCharacterRulesOneEmbed() {
+async function getCharacterRulesOneEmbed() {
   const embed = new EmbedBuilder()
     .setTitle(`𝐂𝐇𝐀𝐑𝐀𝐂𝐓𝐄𝐑 𝐑𝐔𝐋𝐄𝐒`)
     .setColor("#4ce959")
@@ -404,7 +440,7 @@ export async function getCharacterRulesOneEmbed() {
   return embed;
 }
 
-export async function getCharacterRulesTwoEmbed() {
+async function getCharacterRulesTwoEmbed() {
   const embed = new EmbedBuilder()
     .setTitle(`𝐋𝐈𝐌𝐈𝐓𝐄𝐃/𝐁𝐀𝐍𝐍𝐄𝐃 𝐂𝐇𝐀𝐑𝐀𝐂𝐓𝐄𝐑 𝐓𝐑𝐀𝐈𝐓𝐒`)
     .setColor("#1ba851")
@@ -437,7 +473,7 @@ export async function getCharacterRulesTwoEmbed() {
   return embed;
 }
 
-export async function getRolesOneEmbed() {
+async function getRolesOneEmbed() {
   const embed = new EmbedBuilder()
     .setTitle(`➴　　┈　　🔴　　𝐏𝐑𝐎𝐍𝐎𝐔𝐍𝐒`)
     .setColor("#d16f6f")
@@ -458,7 +494,7 @@ export async function getRolesOneEmbed() {
   return embed;
 }
 
-export async function getRolesTwoEmbed() {
+async function getRolesTwoEmbed() {
   const embed = new EmbedBuilder()
     .setTitle(`➴　　┈　　🟠　　𝐀𝐆𝐄`)
     .setColor("#d19e6f")
@@ -476,7 +512,7 @@ export async function getRolesTwoEmbed() {
   return embed;
 }
 
-export async function getRolesThreeEmbed() {
+async function getRolesThreeEmbed() {
   const embed = new EmbedBuilder()
     .setTitle(`➴　　┈　　🟡　　𝐏𝐈𝐍𝐆 𝐏𝐑𝐄𝐅𝐄𝐑𝐄𝐍𝐂𝐄𝐒`)
     .setColor("#d1cb6f")
@@ -495,7 +531,7 @@ export async function getRolesThreeEmbed() {
   return embed;
 }
 
-export async function getRolesFourEmbed() {
+async function getRolesFourEmbed() {
   const embed = new EmbedBuilder()
     .setTitle(`➴　　┈　　🟢　　𝐃𝐌 𝐏𝐑𝐄𝐅𝐄𝐑𝐄𝐍𝐂𝐄𝐒`)
     .setColor("#83d16f")
@@ -514,7 +550,7 @@ export async function getRolesFourEmbed() {
   return embed;
 }
 
-export async function getRolesFiveEmbed() {
+async function getRolesFiveEmbed() {
   const embed = new EmbedBuilder()
     .setTitle(`➴　　┈　　🔵　　𝐖𝐑𝐈𝐓𝐈𝐍𝐆 𝐏𝐑𝐄𝐅𝐄𝐑𝐄𝐍𝐂𝐄𝐒`)
     .setColor("#6fd1d1")
@@ -534,7 +570,7 @@ export async function getRolesFiveEmbed() {
   return embed;
 }
 
-export async function getRolesSixEmbed() {
+async function getRolesSixEmbed() {
   const embed = new EmbedBuilder()
     .setTitle(`➴　　┈　　🟣　　𝐀𝐃𝐃𝐈𝐓𝐈𝐎𝐍𝐀𝐋 𝐏𝐈𝐍𝐆𝐒`)
     .setColor("#a56fd1")
@@ -554,48 +590,51 @@ export async function getRolesSixEmbed() {
   return embed;
 }
 
-export async function getFaqOneEmbed() {
+async function getFaqOneEmbed() {
   const embed = new EmbedBuilder()
-    .setTitle(`➴　　┈　　🟣　　𝐀𝐃𝐃𝐈𝐓𝐈𝐎𝐍𝐀𝐋 𝐏𝐈𝐍𝐆𝐒`)
-    .setColor("#84809b")
+    .setTitle(`𝐅𝐑𝐄𝐐𝐔𝐄𝐍𝐓𝐋𝐘 𝐀𝐒𝐊𝐄𝐃 𝐐𝐔𝐄𝐒𝐓𝐈𝐎𝐍𝐒`)
+    .setColor("#bda1be")
     .setDescription(
       `If you need more clarification or answers to a question that isn't on this list, feel free to ask about it in <#1527299700699566162>!`,
     )
     .setImage(
-      "https://i.pinimg.com/originals/56/3a/b1/563ab15230f5bf4259f11125fd1f9c0e.gif",
+      "https://i.pinimg.com/originals/5f/f4/58/5ff45883d083027e28142ce6fc48659d.gif",
     )
     .setFooter({
-      text: "banner by ao85 on artstation",
+      text: "banner by valenberg on deviantart",
     });
 
   return embed;
 }
 
-export async function getFaqTwoEmbed() {
+async function getFaqTwoEmbed() {
   const embed = new EmbedBuilder()
-    .setTitle(`server questions`)
-    .setColor("#84809b")
+    .setTitle(`﹒﹒Server Questions !!`)
+    .setColor("#635e83")
     .setDescription(
       `OO1 ﹕Can I invite a friend?
-> Of course! The more, the merrier. Giving staff a head's up beforehand would be appreciated, though.
+> Of course! The more, the merrier. Giving staff a head's up beforehand would be appreciated, though, especially if you're inviting multiple people.
 
-OO2 ﹕Can I get a color role?
-> While we would like to avoid excessive role clutter in the server, you can gain a custom color role through boosting the server.`,
+OO2 ﹒﹒Can I get a color role?
+> While we would like to avoid excessive role clutter in the server, you can gain a custom color role through boosting the server.
+ 
+OO3 ﹕How can I create a partnership with this server?
+> Go to <#1533686056019300452> and create a ticket! Please do not DM staff for partnerships.`,
     )
     .setImage(
-      "https://i.pinimg.com/originals/56/3a/b1/563ab15230f5bf4259f11125fd1f9c0e.gif",
+      "https://i.pinimg.com/originals/9f/0d/ae/9f0dae7c8678a5b18b8bbfbf924d8392.gif",
     )
     .setFooter({
-      text: "banner by ao85 on artstation",
+      text: "banner by @ilta222 on tumblr",
     });
 
   return embed;
 }
 
-export async function getFaqThreeEmbed() {
+async function getFaqThreeEmbed() {
   const embed = new EmbedBuilder()
     .setTitle(`﹒﹒Character Questions !!`)
-    .setColor("#84809b")
+    .setColor("#504b6b")
     .setDescription(
       `OO1 ﹕Where's the template? How do I submit my character?
 > The template for OCs can be found in <#1531841416865648841>. Submit your oc with **/submit character**.
@@ -612,39 +651,42 @@ OO4 ﹒﹒Can I use other templates or modify the existing one?
 OO5 ﹕Do I need a photo for my character?
 > No, though if you do not use a photo, written description is required. Keep in mind that we require artist permission and do not allow faceclaims.
 
-OO6 ﹕Why do you guys not allow faceclaims?
+OO6 ﹒﹒Why do you guys not allow faceclaims?
 > To encourage originality! We want to see characters that are made by **you**, not someone else's OC ripped off of Pinterest.
  
 OO7 ﹕Can my character be a Psychic or an Aura Guardian?
 > Psychic is allowed, but it would be extremely limited to the point of only minor telekinesis. Mind reading or telepathy would not be allowed. Aura Guardians are not allowed entirely.
 
-OO8 ﹕Do regional forms count as different evolutionary destinations?
+OO8 ﹒﹒Do regional forms count as different evolutionary destinations?
 > Yes! So long as the form cannot be changed, it would be considered separate.
 
 OO7 ﹕Can my character's partner be Shiny or Alpha? 
 > Shiny and Alpha status is decided at submission by a d20 dice roll.
 
-OO8 ﹕If an evolution chain includes a baby pokemon, can I start by skipping that stage?
+OO8 ﹒﹒If an evolution chain includes a baby pokemon, can I start by skipping that stage?
 > No. If you were to claim a Pikachu, you would start off with a Pichu. All evolutions start off at the very base of the chain.
+
+OO9 ﹕Can I create a character from another region?
+> Yes, but the one pokemon per character rule is considered universal in this server. Large-scale events such as evil team takeovers or legendary sightings are not considered canon in this universe.
+
 `,
     )
     .setImage(
-      "https://i.pinimg.com/originals/56/3a/b1/563ab15230f5bf4259f11125fd1f9c0e.gif",
+      "https://cdn.discordapp.com/attachments/797711998926323752/1539069483891691590/6.29.2017fireflylakeych-ezgif.com-resize.gif?ex=6a84f9a7&is=6a83a827&hm=51bd0617edba40444b5308a68bd4ccd5171b21c5647b3169d4ddd50f09e267d5&",
     )
     .setFooter({
-      text: "banner by ao85 on artstation",
+      text: "banner by sqd on pixeljoint",
     });
 
   return embed;
 }
 
-export async function getFaqFourEmbed() {
+async function getFaqFourEmbed() {
   const embed = new EmbedBuilder()
-    .setTitle(`﹒﹒Character Questions !!`)
-    .setColor("#84809b")
+    .setTitle(`﹒﹒Roleplay Questions !!`)
+    .setColor("#785d8a")
     .setDescription(
-      `﹒﹒Roleplay Questions !!
-OO1 ﹕Can I NPC a character?
+      `OO1 ﹕Can I NPC a character?
 > You can use NPCs for interactions that call for them (ie. a waiter at a restaurant bringing your character a meal, a librarian checking out books for your character, your OC's family), however these NPCs cannot be used on their own in separate interactions apart from with their relevant OC.
 
 OO2 ﹕When can my Pokemon evolve?
@@ -657,51 +699,15 @@ OO4 ﹕Can I have some variation in my Pokemon to make them distinct from the ba
 > It depends on how large the variation may be. A slight shift in color or markings could work, like how May's Bulbasaur in the anime has heart markings instead of the traditional triangle markings. However, enough variations to make it mistakable for a shiny form or for a regional form is not allowed. Feel free to check with Staff first just to make sure it's alright!
 
 OO5 ﹒﹒Do people eat Pokemon or animals?
-> There are no regular animals. People eat Pokemon products like Wishiwashi Sashimi and Tauros Steaks all the time! Many people opt to consume the more renewable sources of meat, like naturally detatched Slowpoke Tails or Blissey Eggs, though.
-
-OO6 ﹒﹒
-`,
-//OO3 ﹕What are the channels with the formatting like ・⊂a-city-of-grandeur⊃?
-//These are the OOC channels! They're used to talk about RPs that occur within the city, so you don't end up pushing up your own RP with discussion.
-
+> There are no regular animals. People eat Pokemon products like Wishiwashi Sashimi and Tauros Steaks all the time! Many people opt to consume the more renewable sources of meat, like naturally detatched Slowpoke Tails or Blissey Eggs, though.`,
     )
-    .setImage(
-      "https://i.pinimg.com/originals/56/3a/b1/563ab15230f5bf4259f11125fd1f9c0e.gif",
-    )
+    .setImage("https://pbs.twimg.com/media/E-97E1hUYAAgmkc.png?name=orig")
     .setFooter({
-      text: "banner by ao85 on artstation",
+      text: "banner by @mattfdraws on twitter",
     });
 
   return embed;
 }
-
-export async function getFaqFiveEmbed() {
-  const embed = new EmbedBuilder()
-    .setTitle(`﹒﹒Character Questions !!`)
-    .setColor("#84809b")
-    .setDescription(
-      `﹒﹒Roleplay Questions !!
-OO1 ﹕Can I NPC a character?
-You can use NPCs for interactions that call for them (ie. a waiter at a restaurant bringing your character a meal, a librarian checking out books for your character, your OC's family), however these NPCs cannot be used on their own in separate interactions apart from with their relevant OC.
-
-OO2 ﹒﹒Do I roleplay my Pokemon Partner, or does staff do it?
-Aside from plot important moments (such as during Trials, and in some circumstances, events), you'll be roleplaying as your own partner! While we would like to make it a more interactive experience, managing everyone's partners would take too much time and effort to do in an efficient manner.
-
-OO3 ﹕What are the channels with the formatting like ・⊂a-city-of-grandeur⊃?
-These are the OOC channels! They're used to talk about RPs that occur within the city, so you don't end up pushing up your own RP with discussion.
-
-`,
-    )
-    .setImage(
-      "https://i.pinimg.com/originals/56/3a/b1/563ab15230f5bf4259f11125fd1f9c0e.gif",
-    )
-    .setFooter({
-      text: "banner by ao85 on artstation",
-    });
-
-  return embed;
-}
-
 
 export async function getVerifyEmbed() {
   const embed = new EmbedBuilder()
@@ -724,59 +730,87 @@ need a hint?
   return embed;
 }
 
-export async function getPostVerifyEmbed(user: string) {
-  const embed = new EmbedBuilder()
-    .setTitle(`a new trainer has enrolled in the academy!`)
-    .setColor("#9dcac0")
-    .setDescription(
-      `Right this way, <@${user}>! Feel free to look take a look around!
+async function getPostVerifyEmbed(client: Client, user: string) {
+  const person = await client.users.fetch(user);
 
-Grab some roles from <#> and introduce yourself in <#>!
-`,
+  const embed = new EmbedBuilder()
+    .setTitle(`a new trainer has passed their entrance exams!`)
+    .setColor("#288191")
+    .setDescription(
+      `Right this way, <@${user}>! Feel free to look take a look around! Be sure to make a <#1527299754143518891> and pick up some <#1527211403805724784>.
+
+Don't be afraid to say hi, and feel free to ask us about anything in <#1527299700699566162>!`,
     )
     .setImage(
-      "https://i.pinimg.com/originals/b2/2a/a2/b22aa22b2f3f55b6468361158d52e2e7.gif",
+      "https://i.pinimg.com/originals/8a/c0/64/8ac0643083af56becf469929d8a7df72.gif",
     )
     .setFooter({
-      text: "banner by @1041uuu on tumblr",
+      text: `welcome, ${person.username}! | banner by @setamo-arts on tumblr`,
     });
 
   return embed;
 }
 
-export async function getJoinEmbed(user: string) {
-  const embed = new EmbedBuilder()
-    .setTitle(`a new trainer has enrolled in the academy!`)
-    .setColor("#9dcac0")
-    .setDescription(
-      `Right this way, <@${user}>! Feel free to look take a look around!
+async function getJoinEmbed(client: Client, user: string) {
+  const person = await client.users.fetch(user);
+  const avatar = person.displayAvatarURL({ size: 1024 });
 
-Grab some roles from <#> and introduce yourself in <#>!
-`,
+  const embed = new EmbedBuilder()
+    .setTitle(`a new arrival has enrolled in the academy!`)
+    .setColor("#d1c488")
+    .setDescription(
+      `Hey there, <@${user}>! Welcome to the server!
+
+Before you jump in, please read over everything under the <#1527209676985471081>. Then, head over to <#1533778121889808485> to get yourself checked in.
+
+We hope you enjoy your stay here!`,
     )
     .setImage(
-      "https://i.pinimg.com/originals/b2/2a/a2/b22aa22b2f3f55b6468361158d52e2e7.gif",
+      "https://i.pinimg.com/originals/8e/c6/f1/8ec6f1630c1f40394878290b96c74e6f.gif",
     )
     .setFooter({
-      text: "banner by @1041uuu on tumblr",
-    });
+      text: `${person.username} landed! | banner by @tofupixel on bluesky`,
+    })
+    .setThumbnail(avatar);
 
   return embed;
 }
 
-export async function getLeaveEmbed(user: string) {
+async function getLeaveEmbed(client: Client, user: string) {
+  const person = await client.users.fetch(user);
+  const avatar = person.displayAvatarURL({ size: 1024 });
+
   const embed = new EmbedBuilder()
     .setTitle(`oh no!`)
-    .setColor("#9dcac0")
+    .setColor("#393b42")
     .setDescription(
-      `It seems <@${user}> didn't quite have the passion for being a trainer like we thought...`,
+      `It seems <@${user}> didn't quite have the passion for being a trainer like we thought... so long, <@${user}>! We hope you enjoyed your time here.`,
     )
     .setImage(
-      "https://i.pinimg.com/originals/b2/2a/a2/b22aa22b2f3f55b6468361158d52e2e7.gif",
+      "https://i.pinimg.com/originals/84/ae/ae/84aeaec6b6e64730b07610a8474022ca.gif",
     )
     .setFooter({
-      text: "banner by @1041uuu on tumblr",
-    });
+      text: `${person.username} left! | banner by @motocross_saito on tumblr`,
+    })
+    .setThumbnail(avatar);
+
+  return embed;
+}
+
+async function getBoostEmbed(client: Client, user: string) {
+  const person = await client.users.fetch(user);
+  const avatar = person.displayAvatarURL({ size: 1024 });
+
+  const embed = new EmbedBuilder()
+    .setTitle(`woah!`)
+    .setColor("#94ddcd")
+    .setDescription(`thanks for boosting!`)
+    .setImage(
+      "https://preview.redd.it/torii-to-another-time-me-pixel-art-2020-v0-zhgjmedjwii41.png?width=1080&crop=smart&auto=webp&s=e6a5e71970245ae20ee34eea290c189ab9bc9cbc",
+    )
+    .setFooter({
+      text: `${person.username} boosted! | banner by @16pxl on twitter`,
+    }).setThumbnail(avatar);
 
   return embed;
 }

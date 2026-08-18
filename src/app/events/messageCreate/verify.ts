@@ -2,6 +2,7 @@ import type { EventHandler } from "commandkit";
 
 const VERIFIED_ROLE_ID = process.env.MEMBER_ROLE;
 const UNVERIFIED_ROLE_ID = process.env.UNVERIFIED_ROLE;
+import * as embedHelper from "../../helpers/embedHelper";
 
 const KEYWORD = "starburst";
 
@@ -23,6 +24,7 @@ const handler: EventHandler<"messageCreate"> = async (message) => {
 
     // Optional
     await message.delete().catch(() => {});
+    embedHelper.sendWelcomeMsg(message.client, message.author.id)
   }
 };
 
