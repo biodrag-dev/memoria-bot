@@ -11,7 +11,6 @@ import {
 
 import * as pokehelper from "./pokeHelper";
 import * as submitHelper from "./submitHelper";
-import { diff } from "util";
 
 interface Partner {
   gender?: string;
@@ -47,6 +46,10 @@ export interface OocPartner {
   nature: string;
   experience: number;
   happiness: number;
+  prompt: number;
+  reset: Date;
+  canFeed: boolean;
+  canPlay: boolean;
 }
 
 interface Character {
@@ -101,6 +104,7 @@ const natures = [
   { value: "24", name: "Naive" },
   { value: "25", name: "Serious" },
 ];
+
 let charaDex: CharacterDex;
 
 interface personalBadge {
@@ -115,7 +119,7 @@ interface badgeData {
 }
 const badges: Record<string, badgeData> = {
   Normal: {
-    emoji: `<:ea_badge_hero:1536514177466638406>`,
+    emoji: `<:badge_hero:1539739717472485466>`,
     house: `Victini`,
     name: `Hero`,
   },
@@ -165,7 +169,7 @@ const badges: Record<string, badgeData> = {
     name: `Cataclysm`,
   },
   Grass: {
-    emoji: `<:ea_badge_panacea:1536514286564671588>`,
+    emoji: `<:badge_panacea:1539739719494144142>`,
     house: `Mew`,
     name: `Panacea`,
   },
@@ -175,7 +179,7 @@ const badges: Record<string, badgeData> = {
     name: `Endurance`,
   },
   Poison: {
-    emoji: `<:ea_badge_reagant:1536514217602064464>`,
+    emoji: `<:badge_reagant:1539739718478995476>`,
     house: `Mew`,
     name: `Reagent`,
   },
@@ -190,17 +194,17 @@ const badges: Record<string, badgeData> = {
     name: `Ego`,
   },
   Ghost: {
-    emoji: `<:ea_badge_hereafter:1536514601724674098>`,
+    emoji: `<:badge_hereafter:1539739716264534148>`,
     house: `Jirachi`,
     name: `Hereafter`,
   },
   Dragon: {
-    emoji: `<:ea_badge_defiant:1536514532456013845>`,
+    emoji: `<:badge_defiant:1539739714922217572>`,
     house: `Victini`,
     name: `Defiant`,
   },
   Dark: {
-    emoji: `<:ea_badge_quietude:1536515799328755812>`,
+    emoji: `<:badge_quietude:1539739712884056154>`,
     house: `Jirachi`,
     name: `Quietude`,
   },
@@ -633,7 +637,7 @@ export async function getPartnerEmbed(
     const species = `**Species** | ${pokehelper.displayName(partner.species)}`;
     const alphaCheck = pokehelper.getSize(partner.sizeMult);
     const shinyCheck =
-      partner.shiny == true ? `<:ea_shinyicon:1533355848217399419>` : ``;
+      partner.shiny == true ? `<:shiny:1539739147001012234>` : ``;
 
     const pokemon = await pokehelper.findPokemon(partner.species);
     const scaledHeight = pokemon!.height * partner.sizeMult;
@@ -1067,7 +1071,7 @@ export async function rerollOOC(
 
     embed
       .setDescription(
-        `🎲 **Result** | ${roll} ${roll === 20 ? `<:ea_alphaicon:1533355784769896459>` : ``}
+        `🎲 **Result** | ${roll} ${roll === 20 ? `<:alpha:1539739148586455162>` : ``}
 
 ${pokehelper.getSize(partner.sizeMult)} -> ${pokehelper.getSize(sizeMult)}`,
       )
@@ -1126,7 +1130,7 @@ export async function rerollIRP(
 
     embed
       .setDescription(
-        `🎲 **Result** | ${roll} ${roll === 20 ? `<:ea_alphaicon:1533355784769896459>` : ``}
+        `🎲 **Result** | ${roll} ${roll === 20 ? `<:alpha:1539739148586455162>` : ``}
 
 ${pokehelper.getSize(partner.sizeMult)} -> ${pokehelper.getSize(sizeMult)}`,
       )
@@ -1159,6 +1163,15 @@ export async function getOOCPartner(
   return charaDex[id]?.OocPartner;
 }
 
+export async function resetDailies(id: string, prompt: number) {
+  await loadUsers();
+  charaDex[id]!.OocPartner!.canFeed = true;
+  charaDex[id]!.OocPartner!.canPlay = true;
+  charaDex[id]!.OocPartner!.reset = new Date();
+  charaDex[id]!.OocPartner!.prompt = prompt;
+  await saveUsers();
+}
+
 export async function setOOCPartner(id: string, partner: OocPartner) {
   await loadUsers();
 
@@ -1176,17 +1189,20 @@ export async function increasedLevel(
   await loadUsers();
   const oldLevel = Math.min(
     100,
-    getLevelFromExp(charaDex[id]!.OocPartner!.experience + exp)
+    getLevelFromExp(charaDex[id]!.OocPartner!.experience),
   );
   const newLevel = Math.min(
     100,
-    getLevelFromExp(charaDex[id]!.OocPartner!.experience + exp)
+    getLevelFromExp(charaDex[id]!.OocPartner!.experience + exp),
   );
+
   return oldLevel != newLevel;
 }
+
 function getLevelFromExp(exp: number): number {
   return Math.min(100, Math.max(Math.floor(Math.cbrt(exp)), 1));
 }
+
 export function daysSince(date: Date) {
   const today = new Date();
   const prevDate = new Date(date);
@@ -1197,15 +1213,13 @@ export function daysSince(date: Date) {
 export async function addExpToPartner(id: string, exp: number) {
   await loadUsers();
   if (charaDex[id]?.OocPartner) {
+    //does level increase?
     if (await increasedLevel(id, exp)) {
       charaDex[id].OocPartner.happiness++;
     }
+    //decreases happiness if abandoned
     if (daysSince(charaDex[id].OocPartner.lastInteracted) != 0) {
-      charaDex[id].OocPartner.happiness = Math.max(
-        getLevelFromExp(charaDex[id].OocPartner.experience),
-        charaDex[id].OocPartner.happiness -
-          daysSince(charaDex[id].OocPartner.lastInteracted),
-      );
+      editHappiness(id, -daysSince(charaDex[id].OocPartner.lastInteracted));
     }
     charaDex[id].OocPartner.lastInteracted == new Date();
     charaDex[id].OocPartner.experience += exp;
@@ -1213,17 +1227,44 @@ export async function addExpToPartner(id: string, exp: number) {
   }
 }
 
-export async function feedPartner(id: string) {
+export async function setNick(id: string, nick: string | undefined) {
   await loadUsers();
-  await saveUsers();
+  if (charaDex[id]?.OocPartner) {
+    if (nick) {
+      charaDex[id]!.OocPartner.nickname = nick;
+    } else {
+      delete charaDex[id]!.OocPartner.nickname;
+    }
+    await saveUsers();
+  }
+}
+export async function editHappiness(id: string, affectionChange: number) {
+  await loadUsers();
+  if (charaDex[id]?.OocPartner) {
+    charaDex[id].OocPartner.happiness = Math.max(
+      getLevelFromExp(charaDex[id].OocPartner.experience),
+      charaDex[id].OocPartner.happiness + affectionChange,
+    );
+    await saveUsers();
+  }
+}
+
+export async function fedPartner(id: string, affection: number) {
+  await loadUsers();
+  if (charaDex[id]?.OocPartner) {
+    charaDex[id].OocPartner.canFeed = false;
+    charaDex[id].OocPartner.happiness += affection;
+    charaDex[id].OocPartner.lastInteracted == new Date();
+    await saveUsers();
+  }
 }
 
 export async function playWithPartner(id: string) {
   await loadUsers();
-  await saveUsers();
-}
-
-export async function partnerHangout(id: string) {
-  await loadUsers();
-  await saveUsers();
+  if (charaDex[id]?.OocPartner) {
+    charaDex[id].OocPartner.canPlay = false;
+    charaDex[id].OocPartner.happiness += 1;
+    charaDex[id].OocPartner.lastInteracted == new Date();
+    await saveUsers();
+  }
 }

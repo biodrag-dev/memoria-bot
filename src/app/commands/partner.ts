@@ -1,5 +1,7 @@
 import {
   ApplicationCommandOptionType,
+  Embed,
+  EmbedBuilder,
   InteractionContextType,
 } from "discord.js";
 
@@ -9,7 +11,7 @@ import type {
   CommandMetadata,
 } from "commandkit";
 import * as partnerHelper from "../helpers/partnerHelper";
-import * as starterQuizHelper from "../helpers/starterQuizHelper";
+import * as charaHelper from "../helpers/characterHelper";
 
 export const metadata: CommandMetadata = {
   guilds: [`${process.env.GUILD_ID}`],
@@ -27,18 +29,26 @@ export const command: CommandData = {
     },
     {
       name: "feed",
-      description: "play with your partner pokemon! (resets daily)",
+      description: "feed your partner pokemon! (resets daily)",
       type: ApplicationCommandOptionType.Subcommand,
     },
     {
       name: "play",
-      description: "play with your partner pokemon! (resets every 3 days)",
+      description: "play with your partner pokemon! (resets daily)",
       type: ApplicationCommandOptionType.Subcommand,
     },
     {
       name: "nick",
       description: "nickname your partner pokemon!",
       type: ApplicationCommandOptionType.Subcommand,
+      options: [
+        {
+          name: "nickname",
+          description:
+            "nicknames your pokemon (leave blank to remove nickname)",
+          type: ApplicationCommandOptionType.String,
+        },
+      ],
     },
   ],
 };
@@ -47,23 +57,18 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   const interaction = ctx.interaction;
   const sub = interaction.options.getSubcommand();
   const group = interaction.options.getSubcommandGroup();
-
+  const partner = await partnerHelper.getPartner(interaction.user.id);
   //if no pokemon
-  if ((await partnerHelper.getPartner(interaction.user.id)) === undefined) {
-    if (!starterQuizHelper.getSession(interaction.user.id)) {
-      // creates a session
-      starterQuizHelper.createSession(interaction.user.id);
-    } else if (
-      //continues the quiz if an instance already exists
-      starterQuizHelper.getSession(interaction.user.id)?.questionIndex == 10
-    ) {
-      return await interaction.reply(
-        // if quiz is completed, gives results
-        await partnerHelper.getProspects(interaction.user.id),
-      );
-    }
+  if (partner === undefined) {
     return await interaction.reply(
-      starterQuizHelper.createQuestionMessage(interaction.user.id),
+      await partnerHelper.generateStartingEmbed(interaction.user.id),
+    );
+  }
+
+  if (partnerHelper.isNewDate(partner.reset)) {
+    await charaHelper.resetDailies(
+      interaction.user.id,
+      partnerHelper.getRandomPrompt(),
     );
   }
 
@@ -75,10 +80,47 @@ export const chatInput: ChatInputCommand = async (ctx) => {
     return await interaction.reply({
       embeds: [embed],
     });
-  } else if (sub === "feed") {
-    
-  } else if (sub === "play") {
   } else if (sub === "nick") {
+    const name = interaction.options.getString("nickname", false)!;
+    await charaHelper.setNick(interaction.user.id, name);
+
+    const embed = new EmbedBuilder()
+      .setColor("Green")
+      .setDescription(
+        `Your partner has been nicknamed successfully! Check it out with **/partner view**!`,
+      );
+    return interaction.reply({
+      embeds: [embed],
+      ephemeral: true,
+    });
+  } else if (sub === "feed") {
+    if (partner?.canFeed) {
+      return interaction.reply(
+        await partnerHelper.generateFeedingPrompt(interaction.user.id),
+      );
+    } else {
+      const embed = new EmbedBuilder()
+        .setColor("Grey")
+        .setDescription(`You've already fed your partner today!`);
+      return interaction.reply({
+        embeds: [embed],
+        ephemeral: true,
+      });
+    }
+  } else if (sub === "play") {
+    if (partner?.canPlay) {
+      return interaction.reply(
+        await partnerHelper.playTime(interaction.user.id),
+      );
+    } else {
+      const embed = new EmbedBuilder()
+        .setColor("Grey")
+        .setDescription(`You've already played with your partner today!`);
+      return interaction.reply({
+        embeds: [embed],
+        ephemeral: true,
+      });
+    }
   }
   const embed = await partnerHelper.getPartnerEmbed(
     interaction.user.username,

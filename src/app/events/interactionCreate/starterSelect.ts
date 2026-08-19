@@ -9,6 +9,24 @@ export default async function handleStarterSelection(interaction: any) {
   if (ids[0] != "starter_select") {
     return;
   }
+  if (ids[2] == "begin") {
+    // creates a session
+    if (!starterQuizHelper.getSession(interaction.user.id)) {
+      starterQuizHelper.createSession(interaction.user.id);
+    } else if (
+      //continues the quiz if an instance already exists
+      starterQuizHelper.getSession(interaction.user.id)?.questionIndex == 10
+    ) {
+      // if quiz is completed, gives results
+      return await interaction.reply(
+        await partnerHelper.getProspects(interaction.user.id),
+      );
+    }
+    // else starts the quiz
+    return await interaction.reply(
+      starterQuizHelper.createQuestionMessage(interaction.user.id),
+    );
+  }
 
   const session = starterQuizHelper.getSession(ids[1]);
 

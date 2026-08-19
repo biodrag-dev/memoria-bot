@@ -87,7 +87,7 @@ export function createQuestionMessage(id: string) {
     .setTitle(
       `Starter Assessment | Question ${sessions.get(id)!.questionIndex + 1}`,
     )
-    .setDescription(question.question).setFooter({text: `quiz taken and modified from pokemon reborn`}).setAuthor({name: `You cannot change your starter after you choose one!`});
+    .setDescription(question.question);
 
   return {
     embeds: [embed],

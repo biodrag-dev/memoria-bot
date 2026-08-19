@@ -2,12 +2,14 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   EmbedBuilder,
+  StringSelectMenuBuilder,
 } from "@discordjs/builders";
 import * as charaHelper from "./characterHelper";
 import * as pokeHelper from "./pokeHelper";
 
 import { OocPartner } from "./characterHelper";
-import { ButtonStyle, Client, ColorResolvable, resolveColor } from "discord.js";
+import { ButtonStyle, ColorResolvable, resolveColor } from "discord.js";
+import { l } from "commandkit/dist/element-DeLvTMfZ";
 
 export const sessions = new Map<string, choices>();
 
@@ -47,7 +49,17 @@ export const professors: ProfessorData[] = [
       high: `You two sure get along great! That bond of trust between you and PARTNER... it's really cool to see!`,
       highest: `Woah... You and PARTNER are the best of friends, huh? I'm totally jealous!`,
     },
-    starter_dialogue: `Hey there, it looks like you don't have a partner yet! Why don't we help you find one? Let's see... where did I put that assessment?`,
+    starter_title: `Hey there, it looks like you don't have a partner yet!`,
+    starter_dialogue: `Why don't we help you find one? Let's see... where did I put that assessment?    
+...
+Oh, there we go! 
+
+Okay, so a couple things to keep in mind before we begin...
+> You can retake this assessment as many times as you'd like!
+> However, you can't change your starter once you pick 'em up.
+> There's a chance of shiny or alpha-sized pokemon, so you might wanna take your time searchin'!
+> 'Course, if you boost later, you could always reroll the shiny status or size! Though it's not really the same, y'know?
+Alrighty, as soon as you sign on the dotted line right there, we'll find you one in no time! C'mon!`,
   },
 ];
 
@@ -56,6 +68,7 @@ export interface ProfessorData {
   icon: string;
   thumbnail: string;
   hexcode: ColorResolvable;
+  starter_title: string;
   starter_dialogue: string;
   friendship: friendshipQuotes;
 }
@@ -69,6 +82,88 @@ export interface friendshipQuotes {
   high: string;
   highest: string;
 }
+const flavorNatures = [
+  { value: `1`, likes: `none`, dislikes: `none` },
+  { value: `2`, likes: `spicy`, dislikes: `sour` },
+  { value: `3`, likes: `spicy`, dislikes: `dry` },
+  { value: `4`, likes: `spicy`, dislikes: `bitter` },
+  { value: `5`, likes: `spicy`, dislikes: `sweet` },
+
+  { value: `6`, likes: `sour`, dislikes: `spicy` },
+  { value: `7`, likes: `none`, dislikes: `none` },
+  { value: `8`, likes: `sour`, dislikes: `dry` },
+  { value: `9`, likes: `sour`, dislikes: `bitter` },
+  { value: `10`, likes: `sour`, dislikes: `sweet` },
+
+  { value: `11`, likes: `dry`, dislikes: `spicy` },
+  { value: `12`, likes: `dry`, dislikes: `sour` },
+  { value: `13`, likes: `none`, dislikes: `none` },
+  { value: `14`, likes: `dry`, dislikes: `bitter` },
+  { value: `15`, likes: `dry`, dislikes: `sweet` },
+
+  { value: `16`, likes: `bitter`, dislikes: `spicy` },
+  { value: `17`, likes: `bitter`, dislikes: `sour` },
+  { value: `18`, likes: `bitter`, dislikes: `dry` },
+  { value: `19`, likes: `none`, dislikes: `none` },
+  { value: `20`, likes: `bitter`, dislikes: `sweet` },
+
+  { value: `21`, likes: `sweet`, dislikes: `spicy` },
+  { value: `22`, likes: `sweet`, dislikes: `sour` },
+  { value: `23`, likes: `sweet`, dislikes: `dry` },
+  { value: `24`, likes: `sweet`, dislikes: `bitter` },
+  { value: `25`, likes: `none`, dislikes: `none` },
+];
+
+const flavors = [
+  { value: `spicy`, name: `Cheri`, emoji: `1539734908832845864` },
+  { value: `dry`, name: `Chesto`, emoji: `1539734908057034873` },
+  { value: `sweet`, name: `Pecha`, emoji: `1539734907197325323` },
+  { value: `bitter`, name: `Rawst`, emoji: `1539734906345885828` },
+  { value: `sour`, name: `Aspear`, emoji: `1539734905494175836` },
+  { value: `spicy`, name: `Figy`, emoji: `1539735274588733501` },
+  { value: `dry`, name: `Wiki`, emoji: `1539735273393627207` },
+  { value: `sweet`, name: `Mago`, emoji: `1539735272156303360` },
+  { value: `bitter`, name: `Aguav`, emoji: `1539735270629314702` },
+  { value: `sour`, name: `Iapapa`, emoji: `1539735269715222528` },
+];
+
+const dislikedFlavor = [
+  `PARTNER spat out the berry with a vengeance! It didn't like the flavor...`,
+  `Oh dear... it seems like PARTNER is moping about after eating that berry...`,
+  `PARTNER is taking carefully measured nibbles of the berry. Doesn't seem like PARTNER liked that berry very much.`,
+];
+
+const okayFlavor = [
+  `PARTNER munched on the berry. It was satisfactory!`,
+  `PARTNER ate the berry. It's alright...`,
+];
+
+const lovedFlavor = [
+  `PARTNER chowed down with gusto, barely stopping to breathe in between bites!`,
+  `PARTNER nuzzled against your leg after eating that berry! Seems like they really liked it!`,
+];
+
+const prompts = [
+  `PARTNER found something shiny at the park today and gave it to you, expecting to be praised!`,
+  `PARTNER took a nap in the sun today. They're nice and toasty!`,
+  `PARTNER had a little adventure and got covered in mud. It's all over the place!`,
+  `PARTNER got really hungry and managed to find out where all the snacks are. Looks like more shopping's on the to-do list...`,
+  `PARTNER found a beautiful flower and brought it to you!`,
+  `PARTNER got scared by a spooky sound. They're huddling in your bed for comfort!`,
+  `PARTNER missed you while you were away. They made a mess in the meantime!`,
+  `PARTNER found a berry they really liked, but mustered up the generosity to share with you!`,
+];
+
+const playPrompts = [
+  `PARTNER had a fun day at the park! They weren't ready to go home, though...`,
+  `PARTNER got really excited when playtime started. A little too excited, though— they might've broken something in their eagerness to play...`,
+  `PARTNER wanted to play with you all day, so they got a little too competitive during playtime!`,
+  `PARTNER played with another Pokemon they met! Looks like they have a new friend!`,
+  `PARTNER celebrated after finally beating you at a game.`,
+  `PARTNER got sleepy after having so much fun, so they curled up next to you after playtime.`,
+  `PARTNER went on a little adventure with you! They almost got lost, though thankfully they found you in the end.`,
+  `PARTNER played until they could barely keep their eyes open. They rolled around in the grass and had a blast!`,
+];
 
 export async function getPartner(id: string) {
   return charaHelper.getOOCPartner(id);
@@ -79,8 +174,13 @@ function getRandomProfessor(): ProfessorData {
   return professors[rand]!;
 }
 
+export function getRandomPrompt(): number {
+  const rand = Math.floor(Math.random() * prompts.length);
+  return rand;
+}
+
 function getFriendshipLevel(professor: ProfessorData, friendship: number) {
-  if (friendship == 0) {
+  if (friendship <= 20) {
     return professor.friendship.none;
   } else if (friendship < 50) {
     return professor.friendship.wary;
@@ -132,6 +232,13 @@ export async function deleteProspects(id: string) {
   sessions.delete(id);
 }
 
+export function isNewDate(date: Date): boolean {
+  const lastDate = new Date(date);
+  const currentDate = new Date();
+
+  return lastDate.getDay() != currentDate.getDay();
+}
+
 export async function getProspects(id: string) {
   const prospects = sessions.get(id)!;
 
@@ -165,6 +272,30 @@ export async function getProspects(id: string) {
 
   return {
     embeds: [embed1, embed2, embed3],
+    components: [row],
+    ephemeral: true,
+  };
+}
+
+export async function generateStartingEmbed(id: string) {
+  const professor = getRandomProfessor();
+
+  const embed = new EmbedBuilder();
+  embed
+    .setColor(resolveColor(professor.hexcode))
+    .setTitle(professor.starter_title)
+    .setDescription(professor.starter_dialogue)
+    .setFooter({ text: `quiz taken and modified from pokemon reborn` })
+    .setThumbnail(professor.thumbnail);
+
+  const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    new ButtonBuilder()
+      .setCustomId(`starter_select:${id}:begin`)
+      .setLabel(`Let's go!`)
+      .setStyle(ButtonStyle.Primary),
+  );
+  return {
+    embeds: [embed],
     components: [row],
     ephemeral: true,
   };
@@ -219,6 +350,10 @@ export async function claimPartnerProspect(id: string, starter: string) {
     nature: partner.nature,
     experience: 0,
     happiness: 55,
+    prompt: getRandomPrompt(),
+    reset: new Date(),
+    canFeed: true,
+    canPlay: true,
   };
 
   await charaHelper.setOOCPartner(id, partnerProspect);
@@ -229,7 +364,7 @@ export async function getPartnerProspectEmbed(
 ): Promise<EmbedBuilder> {
   const alphaCheck = pokeHelper.getSize(prospect.sizeMult);
   const shinyCheck =
-    prospect.shiny == true ? `<:ea_shinyicon:1533355848217399419>` : ``;
+    prospect.shiny == true ? `<:shiny:1539739147001012234>` : ``;
   const species = `**Species** | ${pokeHelper.displayName(prospect.species)}`;
 
   const pokemon = await pokeHelper.findPokemon(prospect.species);
@@ -270,11 +405,13 @@ export async function getPartnerEmbed(username: string, id: string) {
     const professor = getRandomProfessor();
     const metOn = `**Met On** | <t:${Math.floor(new Date(partner.registeredOn).getTime() / 1000)}:D>\n`;
     const nick = partner.nickname ? `${partner.nickname} | ` : ``;
-    const friendship = `"${getFriendshipLevel(professor, partner.happiness).replace("PARTNER", `${partner.nickname ?? pokeHelper.displayName(partner.species)}`)}"`;
+    const nickname =
+      partner.nickname ?? pokeHelper.displayName(partner.species);
+    const friendship = `"${getFriendshipLevel(professor, partner.happiness).replace("PARTNER", `${nickname}`)}"`;
     const species = `**Species** | ${pokeHelper.displayName(partner.species)}`;
     const alphaCheck = pokeHelper.getSize(partner.sizeMult);
     const shinyCheck =
-      partner.shiny == true ? `<:ea_shinyicon:1533355848217399419>` : ``;
+      partner.shiny == true ? `<:shiny:1539739147001012234>` : ``;
 
     const pokemon = await pokeHelper.findPokemon(partner.species);
     const scaledHeight = pokemon!.height * partner.sizeMult;
@@ -298,6 +435,18 @@ export async function getPartnerEmbed(username: string, id: string) {
       partner.shiny,
     );
 
+    var feed = ``;
+    var play = ``;
+    var prompt = `${prompts[partner.prompt]!.replaceAll(`PARTNER`, nickname)}`;
+
+    console.log(partner.canFeed);
+    if (partner.canFeed === true) {
+      feed = `\n> ${nickname} is looking a little hungry... why not **\`/partner feed\`** them?`;
+    }
+    if (partner.canPlay === true) {
+      play = `\n> ${nickname} is bursting with energy! Let's burn it off with **\`/partner play\`**!`;
+    }
+
     const embed = new EmbedBuilder();
     embed
       .setTitle(
@@ -307,7 +456,7 @@ export async function getPartnerEmbed(username: string, id: string) {
       .setDescription(
         `${species} ${alphaCheck} ${shinyCheck}
     ${level}${gender}${ability}${nature}${metOn}-# ${color.bannerCreds!}
-`,
+${prompt}${feed}${play}`,
       )
       .setFooter({
         text: friendship!,
@@ -335,3 +484,122 @@ export async function getPartnerEmbed(username: string, id: string) {
   }
 }
 
+export async function generateFeedingPrompt(id: string) {
+  const partner = await charaHelper.getOOCPartner(id);
+  const embed = new EmbedBuilder();
+  embed
+    .setColor(resolveColor("#DBBC67"))
+    .setTitle(`It's mealtime!`)
+    .setDescription(
+      `What will you feed ${partner?.nickname ?? pokeHelper.displayName(partner!.species)} today?`,
+    )
+    .setThumbnail(
+      await pokeHelper.getSprite(
+        partner!.species,
+        partner!.gender,
+        partner!.shiny,
+      ),
+    );
+
+  const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+    new StringSelectMenuBuilder()
+      .setCustomId(`starter_feeding:${id}`)
+      .setPlaceholder(`select an option...`)
+      .addOptions(
+        flavors.map((option) => ({
+          label: `${option.name} Berry`,
+          value: option.name,
+          emoji: {
+            id: option.emoji,
+            name: `berry_${option.name.toLowerCase()}`,
+          },
+        })),
+      ),
+  );
+
+  return {
+    embeds: [embed],
+    components: [row],
+    ephemeral: false,
+  };
+}
+
+export async function feedBerry(id: string, berry: string) {
+  const partner = await charaHelper.getOOCPartner(id);
+  const flavor = flavors.find((flavor) => flavor.name === berry)!.value;
+  const nature = flavorNatures.find(
+    (nature) => nature.value === partner!.nature,
+  );
+  var baseValue = 1;
+  var prompt;
+  var color;
+  if (nature?.dislikes === flavor) {
+    baseValue -= 2;
+    color = resolveColor("#443333");
+    prompt = dislikedFlavor[Math.floor(Math.random() * dislikedFlavor.length)];
+  } else if (nature?.likes === flavor) {
+    baseValue++;
+    color = resolveColor("#a5e76f");
+    prompt = lovedFlavor[Math.floor(Math.random() * lovedFlavor.length)];
+  } else {
+    prompt = okayFlavor[Math.floor(Math.random() * okayFlavor.length)];
+    color = resolveColor("#a07f39");
+  }
+
+  await charaHelper.fedPartner(id, baseValue);
+
+  const embed = new EmbedBuilder();
+  embed
+    .setColor(color)
+    .setTitle(`Munch munch munch...`)
+    .setDescription(
+      prompt!.replaceAll(
+        "PARTNER",
+        partner?.nickname ?? pokeHelper.displayName(partner!.species),
+      ),
+    )
+    .setThumbnail(
+      await pokeHelper.getSprite(
+        partner!.species,
+        partner!.gender,
+        partner!.shiny,
+      ),
+    );
+
+  return {
+    embeds: [embed],
+    components: [],
+    ephemeral: false,
+  };
+}
+
+export async function playTime(id: string) {
+  const partner = await charaHelper.getOOCPartner(id);
+
+  await charaHelper.playWithPartner(id);
+
+  const prompt = playPrompts[Math.floor(Math.random() * playPrompts.length)];
+  const embed = new EmbedBuilder();
+  embed
+    .setColor(resolveColor("#e0a593"))
+    .setTitle(`What a day!`)
+    .setDescription(
+      prompt!.replaceAll(
+        "PARTNER",
+        partner?.nickname ?? pokeHelper.displayName(partner!.species),
+      ),
+    )
+    .setThumbnail(
+      await pokeHelper.getSprite(
+        partner!.species,
+        partner!.gender,
+        partner!.shiny,
+      ),
+    );
+
+  return {
+    embeds: [embed],
+    components: [],
+    ephemeral: false,
+  };
+}

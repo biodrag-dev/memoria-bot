@@ -439,7 +439,7 @@ export function getSize(sizeMult: number) {
   if (sizeMult < 1.05) return "(M)";
   if (sizeMult < 1.15) return "(L)";
   if (sizeMult <= 1.25) return "(XL)";
-  if (sizeMult <= 2) return "<:ea_alphaicon:1533355784769896459>";
+  if (sizeMult <= 2) return "<:alpha:1539739148586455162>";
 }
 
 export async function getPossibleGenders(pokemonName: string) {
