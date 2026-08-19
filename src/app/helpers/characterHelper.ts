@@ -32,13 +32,17 @@ interface CharacterData {
   artist_credits?: string;
 }
 
-interface OocPartner {
-  age?: string;
-  gender?: string;
-  bio?: string;
-  pronouns?: string;
-  img_link?: string;
-  artist_credits?: string;
+export interface OocPartner {
+  registeredOn: Date;
+  lastInteracted: Date;
+  gender: string;
+  ability: number;
+  nickname?: string;
+  sizeMult: number;
+  species: string;
+  shiny: boolean;
+  nature: string;
+  experience: number;
 }
 
 interface Character {
@@ -1008,7 +1012,7 @@ export async function boosterName(client: Client, id: string, name: string) {
     name: name,
   });
 }
-export async function getRerolls(id: string) : Promise<number>{
+export async function getRerolls(id: string): Promise<number> {
   await loadUsers();
   if (!charaDex[id]?.last_rolled) {
     // if never rolled
@@ -1041,7 +1045,10 @@ export async function rerollIRP(
 ): Promise<EmbedBuilder> {
   const roll = Math.floor(Math.random() * 20) + 1;
   const embed = new EmbedBuilder();
-
+  if (charaDex[id]!.monthly_rolled == 0) {
+    embed.setDescription(`You're out of monthly rerolls!`);
+    return embed;
+  }
   const partner = charaDex[id]!.characters[name]!.partner;
 
   if (field === "shiny") {
@@ -1071,7 +1078,7 @@ export async function rerollIRP(
 ${pokehelper.getSize(partner.sizeMult)} -> ${pokehelper.getSize(sizeMult)}`,
       )
       .setTitle(`Rolling for Alpha Status (1d20)...`);
-      partner.sizeMult = sizeMult;
+    partner.sizeMult = sizeMult;
     if (roll == 20) {
       embed.setColor("#f81a1a").setFooter({
         text: `Oh? Congratulations! It's an alpha!`,
@@ -1080,7 +1087,7 @@ ${pokehelper.getSize(partner.sizeMult)} -> ${pokehelper.getSize(sizeMult)}`,
       embed.setColor("#3c3d3c").setFooter({ text: `Better luck next time...` });
     }
   }
-  charaDex[id]!.monthly_rolled = await getRerolls(id) - 1;
+  charaDex[id]!.monthly_rolled = (await getRerolls(id)) - 1;
   charaDex[id]!.last_rolled = new Date();
   await saveUsers();
   embed.setThumbnail(await getPartnerSprite(id, name));
@@ -1088,7 +1095,23 @@ ${pokehelper.getSize(partner.sizeMult)} -> ${pokehelper.getSize(sizeMult)}`,
   return embed;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-//    BOOSTER ROLE
+//    PARTNER MONS
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export async function getOOCPartner(
+  id: string,
+): Promise<OocPartner | undefined> {
+  await loadUsers();
+  return charaDex[id]?.OocPartner;
+}
+
+export async function setOOCPartner(id: string, partner: OocPartner) {
+  await loadUsers();
+
+  if (!charaDex[id]) {
+    charaDex[id] = { characters: {} };
+  }
+  charaDex[id]!.OocPartner = partner;
+  await saveUsers();
+}

@@ -1,4 +1,4 @@
-import Pokedex, { Pokemon } from "pokedex-promise-v2";
+import Pokedex, { Pokemon, Type } from "pokedex-promise-v2";
 import { EmbedBuilder, ColorResolvable } from "discord.js";
 
 const P = new Pokedex();
@@ -9,7 +9,49 @@ interface ColorData {
   bannerCreds: string;
 }
 
-const colors: Record<string, ColorData> = {
+const PARADOX_POKEMON = new Set([
+  // Scarlet
+  "great-tusk",
+  "scream-tail",
+  "brute-bonnet",
+  "flutter-mane",
+  "slither-wing",
+  "sandy-shocks",
+  "roaring-moon",
+
+  // Violet
+  "iron-treads",
+  "iron-bundle",
+  "iron-hands",
+  "iron-jugulis",
+  "iron-moth",
+  "iron-thorns",
+  "iron-valiant",
+
+  // DLC
+  "walking-wake",
+  "gouging-fire",
+  "raging-bolt",
+  "iron-leaves",
+  "iron-boulder",
+  "iron-crown",
+]);
+
+const ULTRA_BEASTS = new Set([
+  "nihilego",
+  "buzzwole",
+  "pheromosa",
+  "xurkitree",
+  "celesteela",
+  "kartana",
+  "guzzlord",
+  "poipole",
+  "naganadel",
+  "stakataka",
+  "blacephalon",
+]);
+
+export const colors: Record<string, ColorData> = {
   red: {
     hexcode: "#ce1b1b",
     bannerLink:
@@ -88,7 +130,7 @@ export async function findPokemon(name: string) {
   }
 }
 
-export async function getEvolutionPath(dest: string){
+export async function getEvolutionPath(dest: string) {
   if (dest === "basculin-white-striped") return ["basculin-white-striped"];
   if (dest === "basculegion-female")
     return ["basculin-white-striped", "basculegion-female"];
@@ -99,6 +141,10 @@ export async function getEvolutionPath(dest: string){
   if (dest === "wormadam-plant") return ["burmy", "wormadam-plant"];
   if (dest === "wormadam-sandy") return ["burmy", "wormadam-sandy"];
   if (dest === "wormadam-trash") return ["burmy", "wormadam-trash"];
+  if (dest === "palafin-zero") return ["finizen", "palafin-zero"];
+  if (dest === "palafin-hero") return ["finizen", "palafin-hero"];
+  if (dest === "dudunsparce-two-segment") return ["dunsparce", "dudunsparce-two-segment"];
+  if (dest === "dudunsparce-three-segment") return ["dunsparce", "dudunsparce-three-segment"];
 
   try {
     const pokemon = await P.getPokemonByName(dest.toLowerCase());
@@ -167,13 +213,32 @@ export async function findRandomMon() {
   return await P.getPokemonByName(`${random}`);
 }
 
+export async function getRandomPokemonByType(type: String): Promise<Pokemon> {
+  const typedMons = await P.getResource(
+    `https://pokeapi.co/api/v2/type/${type.toLowerCase()}`,
+  );
+
+  var valid = false;
+  var pokemon;
+  while (valid === false) {
+    var random = Math.floor(Math.random() * typedMons.pokemon.length);
+    pokemon = await P.getResource(typedMons.pokemon[random].pokemon.url);
+    console.log("Rolled a", pokemon.name);
+    if (await isLegendOrMyth(pokemon.name) === false) {
+      valid = true;
+    }
+  }
+
+  return pokemon;
+}
+
 export async function getRandDexEntry(pokemonName: string): Promise<string> {
   const pokemon = await P.getPokemonByName(pokemonName);
 
   const species = await P.getResource(pokemon.species.url);
 
   const entries = species.flavor_text_entries.filter(
-    (entry : any) => entry.language.name === "en",
+    (entry: any) => entry.language.name === "en",
   );
 
   const random = Math.floor(Math.random() * entries.length);
@@ -190,6 +255,15 @@ export async function getGenera(pokemonName: string): Promise<string> {
 }
 
 export async function isLegendOrMyth(pokemonName: string): Promise<boolean> {
+  const name = pokemonName.toLowerCase();
+
+  if(pokemonName.includes("-mega") || pokemonName.includes("-gmax") || pokemonName.includes("-totem") || pokemonName.includes("-bloodmoon") || pokemonName.includes("-starter")){
+    return true;
+  }
+  if (PARADOX_POKEMON.has(name) || ULTRA_BEASTS.has(name)) {
+    return true;
+  }
+
   const pokemon = await P.getPokemonByName(pokemonName);
   const species = await P.getResource(pokemon.species.url);
   return species.is_legendary || species.is_mythical;
@@ -246,8 +320,6 @@ export function kgToPounds(kg: number) {
   return (kg * 2.20452262).toFixed(1);
 }
 
-export function getPokemonUrl(pokemonName: string) {}
-
 export function displayName(pokemonName: string) {
   var form = "";
   var name = pokemonName.toLowerCase();
@@ -273,6 +345,11 @@ export function displayName(pokemonName: string) {
   if (name.includes("-mega")) {
     form = "Mega ";
     name = name.replace("-mega", "");
+  }
+  
+  if (name.includes("-gmax")) {
+    form = "Gigantamax ";
+    name = name.replace("-gmax", "");
   }
 
   switch (name) {
@@ -424,4 +501,9 @@ export async function getPossibleAbilities(
       name: `Slot HA | ${getAbilityName(pokemon!, 3)}${!sameMon ? ` (${getAbilityName(destMon!, 3)})` : ``}`,
     },
   ];
+}
+
+export async function getColor(pokemon: any): Promise<ColorData> {
+  const species = await P.getResource(pokemon.species.url);
+  return colors[species.color.name]!;
 }

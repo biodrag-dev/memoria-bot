@@ -356,6 +356,5 @@ export async function getAllReserves(client: Client): Promise<any[]> {
         };
       }),
   );
-  console.log(reservations);
   return reservations;
 }
