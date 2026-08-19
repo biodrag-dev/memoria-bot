@@ -7,27 +7,21 @@ import * as charaHelper from "./characterHelper";
 import * as pokeHelper from "./pokeHelper";
 
 import { OocPartner } from "./characterHelper";
-import { ButtonStyle, Client, resolveColor } from "discord.js";
+import { ButtonStyle, Client, ColorResolvable, resolveColor } from "discord.js";
 
 export const sessions = new Map<string, choices>();
+
+export interface professorInfo {
+  starter1: partnerProspect;
+  starter2: partnerProspect;
+  starter3: partnerProspect;
+}
 
 export interface choices {
   starter1: partnerProspect;
   starter2: partnerProspect;
   starter3: partnerProspect;
 }
-
-// export interface OocPartner {
-//   registeredOn: Date;
-//   lastInteracted: Date;
-//   gender: string;
-//   ability: number;
-//   nickname?: string;
-//   sizeMult: number;
-//   species: string;
-//   shiny: boolean;
-//   nature: string;
-// }
 
 export interface partnerProspect {
   sizeMult: number;
@@ -38,8 +32,72 @@ export interface partnerProspect {
   nature: string;
 }
 
+export const professors: ProfessorData[] = [
+  {
+    name: `Anrui Tian`,
+    icon: `https://cdn.tupperbox.app/pfp/1074503972037075054/ZK_qZn6bS8-ym7jd.webp`,
+    thumbnail: `https://cdn.tupperbox.app/pfp/1074503972037075054/ZK_qZn6bS8-ym7jd.webp`,
+    hexcode: "#910b0b",
+    friendship: {
+      none: `Hey... You should treat PARTNER better. It seems like they don't really like how it's goin' right now.`,
+      wary: `PARTNER is pretty wary of you, so maybe you should change it up a lil'. Spend more time around 'em, play with 'em, you know the deal.`,
+      neutral: `Looks like PARTNER'll take some time to warm up to ya. Keep tryin', and you'll get it eventually, yeah?`,
+      low: `Hey, looks PARTNER's started to warm up to ya! I'm sure you'll be best friends in no time.`,
+      medium: `Oh, hey there, PARTNER! I see they've gotten quite friendly towards you now!`,
+      high: `You two sure get along great! That bond of trust between you and PARTNER... it's really cool to see!`,
+      highest: `Woah... You and PARTNER are the best of friends, huh? I'm totally jealous!`,
+    },
+    starter_dialogue: `Hey there, it looks like you don't have a partner yet! Why don't we help you find one? Let's see... where did I put that assessment?`,
+  },
+];
+
+export interface ProfessorData {
+  name: string;
+  icon: string;
+  thumbnail: string;
+  hexcode: ColorResolvable;
+  starter_dialogue: string;
+  friendship: friendshipQuotes;
+}
+
+export interface friendshipQuotes {
+  none: string;
+  wary: string;
+  neutral: string;
+  low: string;
+  medium: string;
+  high: string;
+  highest: string;
+}
+
 export async function getPartner(id: string) {
   return charaHelper.getOOCPartner(id);
+}
+
+function getRandomProfessor(): ProfessorData {
+  const rand = Math.floor(Math.random() * professors.length);
+  return professors[rand]!;
+}
+
+function getFriendshipLevel(professor: ProfessorData, friendship: number) {
+  if (friendship == 0) {
+    return professor.friendship.none;
+  } else if (friendship < 50) {
+    return professor.friendship.wary;
+  } else if (friendship < 100) {
+    return professor.friendship.neutral;
+  } else if (friendship < 150) {
+    return professor.friendship.low;
+  } else if (friendship < 200) {
+    return professor.friendship.medium;
+  } else if (friendship < 255) {
+    return professor.friendship.high;
+  }
+  return professor.friendship.highest;
+}
+
+function getLevelFromExp(exp: number): number {
+  return Math.min(100, Math.max(Math.floor(Math.cbrt(exp)), 1));
 }
 
 export async function generateChoices(
@@ -68,6 +126,10 @@ export async function generateChoices(
   };
 
   sessions.set(id, choices);
+}
+
+export async function deleteProspects(id: string) {
+  sessions.delete(id);
 }
 
 export async function getProspects(id: string) {
@@ -156,15 +218,11 @@ export async function claimPartnerProspect(id: string, starter: string) {
     species: partner.species,
     nature: partner.nature,
     experience: 0,
+    happiness: 55,
   };
 
   await charaHelper.setOOCPartner(id, partnerProspect);
 }
-
-export async function deleteProspects(id: string) {
-    sessions.delete(id);
-}
-
 
 export async function getPartnerProspectEmbed(
   prospect: partnerProspect,
@@ -205,17 +263,14 @@ export async function getPartnerProspectEmbed(
   }
   return embed;
 }
-function getLevelFromExp(exp: number): number {
-  return Math.min(100, Math.max(Math.floor(Math.cbrt(exp)), 1));
-}
-
 
 export async function getPartnerEmbed(username: string, id: string) {
   const partner = await charaHelper.getOOCPartner(id);
   if (partner) {
+    const professor = getRandomProfessor();
     const metOn = `**Met On** | <t:${Math.floor(new Date(partner.registeredOn).getTime() / 1000)}:D>\n`;
     const nick = partner.nickname ? `${partner.nickname} | ` : ``;
-
+    const friendship = `"${getFriendshipLevel(professor, partner.happiness).replace("PARTNER", `${partner.nickname ?? pokeHelper.displayName(partner.species)}`)}"`;
     const species = `**Species** | ${pokeHelper.displayName(partner.species)}`;
     const alphaCheck = pokeHelper.getSize(partner.sizeMult);
     const shinyCheck =
@@ -224,7 +279,7 @@ export async function getPartnerEmbed(username: string, id: string) {
     const pokemon = await pokeHelper.findPokemon(partner.species);
     const scaledHeight = pokemon!.height * partner.sizeMult;
     const scaledWeight = pokemon!.weight * Math.pow(partner.sizeMult, 3);
-    const level = `**Level** | ${getLevelFromExp(partner.experience)}\n`
+    const level = `**Level** | ${getLevelFromExp(partner.experience)}\n`;
     const height = `${(scaledHeight * 0.1).toFixed(1)} m | ${pokeHelper.cmToFeetConversion(scaledHeight * 10)}`;
     const weight = `${(scaledWeight * 0.1).toFixed(1)} kg | ${pokeHelper.kgToPounds(scaledWeight * 0.1)} lbs`;
 
@@ -236,7 +291,6 @@ export async function getPartnerEmbed(username: string, id: string) {
       ? `**Nature** | ${charaHelper.getNatureFromValue(partner.nature)}\n`
       : ``;
 
-    const dexEntry = await pokeHelper.getRandDexEntry(partner.species);
     const color = await pokeHelper.getColor(pokemon!);
     const image = await pokeHelper.getSprite(
       partner.species,
@@ -252,10 +306,12 @@ export async function getPartnerEmbed(username: string, id: string) {
       .setColor(resolveColor(color.hexcode))
       .setDescription(
         `${species} ${alphaCheck} ${shinyCheck}
-    ${level}${gender}${ability}${nature}${metOn}${dexEntry}`,
+    ${level}${gender}${ability}${nature}${metOn}-# ${color.bannerCreds!}
+`,
       )
       .setFooter({
-        text: color.bannerCreds!,
+        text: friendship!,
+        iconURL: professor.icon,
       })
       .addFields(
         {
@@ -278,3 +334,4 @@ export async function getPartnerEmbed(username: string, id: string) {
       .setColor(resolveColor("Red"));
   }
 }
+

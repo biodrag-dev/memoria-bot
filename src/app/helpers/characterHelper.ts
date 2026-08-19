@@ -11,6 +11,7 @@ import {
 
 import * as pokehelper from "./pokeHelper";
 import * as submitHelper from "./submitHelper";
+import { diff } from "util";
 
 interface Partner {
   gender?: string;
@@ -35,6 +36,8 @@ interface CharacterData {
 export interface OocPartner {
   registeredOn: Date;
   lastInteracted: Date;
+  lastPlayed?: Date;
+  lastFed?: Date;
   gender: string;
   ability: number;
   nickname?: string;
@@ -43,6 +46,7 @@ export interface OocPartner {
   shiny: boolean;
   nature: string;
   experience: number;
+  happiness: number;
 }
 
 interface Character {
@@ -1165,10 +1169,61 @@ export async function setOOCPartner(id: string, partner: OocPartner) {
   await saveUsers();
 }
 
+export async function increasedLevel(
+  id: string,
+  exp: number,
+): Promise<Boolean> {
+  await loadUsers();
+  const oldLevel = Math.min(
+    100,
+    getLevelFromExp(charaDex[id]!.OocPartner!.experience + exp)
+  );
+  const newLevel = Math.min(
+    100,
+    getLevelFromExp(charaDex[id]!.OocPartner!.experience + exp)
+  );
+  return oldLevel != newLevel;
+}
+function getLevelFromExp(exp: number): number {
+  return Math.min(100, Math.max(Math.floor(Math.cbrt(exp)), 1));
+}
+export function daysSince(date: Date) {
+  const today = new Date();
+  const prevDate = new Date(date);
+  const diffMs = today.getTime() - prevDate.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  return diffDays;
+}
 export async function addExpToPartner(id: string, exp: number) {
   await loadUsers();
   if (charaDex[id]?.OocPartner) {
+    if (await increasedLevel(id, exp)) {
+      charaDex[id].OocPartner.happiness++;
+    }
+    if (daysSince(charaDex[id].OocPartner.lastInteracted) != 0) {
+      charaDex[id].OocPartner.happiness = Math.max(
+        getLevelFromExp(charaDex[id].OocPartner.experience),
+        charaDex[id].OocPartner.happiness -
+          daysSince(charaDex[id].OocPartner.lastInteracted),
+      );
+    }
+    charaDex[id].OocPartner.lastInteracted == new Date();
     charaDex[id].OocPartner.experience += exp;
     await saveUsers();
   }
+}
+
+export async function feedPartner(id: string) {
+  await loadUsers();
+  await saveUsers();
+}
+
+export async function playWithPartner(id: string) {
+  await loadUsers();
+  await saveUsers();
+}
+
+export async function partnerHangout(id: string) {
+  await loadUsers();
+  await saveUsers();
 }

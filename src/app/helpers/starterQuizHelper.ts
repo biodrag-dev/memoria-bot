@@ -135,9 +135,7 @@ export function getResults(id: string) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const question1: Question = {
-  question: `Hey there, it looks like you don't have a partner yet! Why don't we help you find one?
-  
-Let's start it off simple. What's your favorite color?`,
+  question: `Let's start it off simple. What's your favorite color?`,
   options: [
     {
       label: `Red`,
@@ -197,7 +195,7 @@ const question2: Question = {
       value: `ice,ghost`,
     },
     {
-      label: `A relaxing overcast`,
+      label: `A relaxing overcast...`,
       value: `dark,bug`,
     },
     {
