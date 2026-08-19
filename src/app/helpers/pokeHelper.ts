@@ -223,7 +223,6 @@ export async function getRandomPokemonByType(type: String): Promise<Pokemon> {
   while (valid === false) {
     var random = Math.floor(Math.random() * typedMons.pokemon.length);
     pokemon = await P.getResource(typedMons.pokemon[random].pokemon.url);
-    console.log("Rolled a", pokemon.name);
     if (await isLegendOrMyth(pokemon.name) === false) {
       valid = true;
     }

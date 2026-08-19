@@ -18,8 +18,6 @@ export default async function handleQuizInteraction(interaction: any) {
       ephemeral: true,
     });
   }
-
-  console.log(interaction.customId);
   // Prevent old dropdowns from being used
   if (Number(ids[2]) !== session.questionIndex) {
     return interaction.reply({

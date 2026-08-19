@@ -31,7 +31,7 @@ export default async function handleStarterSelection(interaction: any) {
     );
   } else if (ids[2] == "retake") {
     await partnerHelper.deleteProspects(interaction.user.id);
-    await interaction.message.edit({
+    return await interaction.update({
       content: `Your results have been deleted. Run **/partner view** to take the quiz again!`,
       embeds: [],
       components: [],
@@ -43,8 +43,9 @@ export default async function handleStarterSelection(interaction: any) {
     interaction.user.username,
     interaction.user.id,
   );
-  await interaction.update({content: `Congrats on your new partner!`,
-        embeds: [embed],
-        components: []
-      });
+  await interaction.update({
+    content: `Congrats on your new partner!`,
+    embeds: [embed],
+    components: [],
+  });
 }

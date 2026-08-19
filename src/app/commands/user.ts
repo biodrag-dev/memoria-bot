@@ -260,7 +260,6 @@ export const autocomplete = async (ctx: any) => {
     if (focused.name === "data") {
       const fieldName = interaction.options.getString("field", false);
       if (!characterId || !fieldName) {
-        console.log("Nothing");
         return await interaction.respond([]);
       } else {
         switch (fieldName) {

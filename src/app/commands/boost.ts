@@ -17,6 +17,8 @@ export const metadata: CommandMetadata = {
 };
 
 import * as characterHelper from "../helpers/characterHelper";
+import * as partnerHelper from "../helpers/partnerHelper";
+import * as pokeHelper from "../helpers/pokeHelper";
 
 const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
   new ButtonBuilder()
@@ -137,6 +139,59 @@ export const chatInput: ChatInputCommand = async (ctx) => {
 
   if (group === "reroll") {
     if (sub === "ooc") {
+      var rerolls = await characterHelper.getRerolls(interaction.user.id);
+
+      if ((await partnerHelper.getPartner(interaction.user.id)) === undefined) {
+        var embed = new EmbedBuilder()
+          .setTitle(`${interaction.user.username} | Booster Perks`)
+          .setDescription(
+            `**Remaining Monthly Rerolls** | ${rerolls}/3
+
+You don't have a partner pokemon yet! Use **/partner view** to get one!`,
+          )
+          .setColor("Red");
+        return await interaction.reply({
+          embeds: [embed],
+          components: [],
+          ephemeral: true,
+        });
+      }
+      const partner = await characterHelper.getOOCPartner(interaction.user.id);
+      const img = await pokeHelper.getSprite(
+        partner?.species!,
+        partner?.gender,
+        partner?.shiny!,
+      );
+      var embed = new EmbedBuilder()
+        .setTitle(`${interaction.user.username} | Booster Perks`)
+        .setDescription(
+          `**Remaining Monthly Rerolls** | ${rerolls}/3
+
+${rerolls === 0 ? `You're all out of rerolls for the month!` : `Would you like to reroll an aspect of your partner?`}`,
+        )
+        .setColor("Yellow")
+        .setThumbnail(img);
+
+      const msg = await interaction.reply({
+        embeds: [embed],
+        components: rerolls === 0 ? [] : [row],
+        ephemeral: true,
+      });
+      const collector = msg.createMessageComponentCollector({
+        time: 30_000,
+      });
+      collector.on("collect", async (button) => {
+        const rerollEmbed = await characterHelper.rerollOOC(
+          interaction.user.id,
+          button.customId,
+        );
+        await button.update({
+          content: ``,
+          embeds: [rerollEmbed],
+          components: [],
+        });
+        collector.stop();
+      });
     } else if (sub === "irp") {
       const character = interaction.options.getString("name", true);
 
@@ -144,9 +199,11 @@ export const chatInput: ChatInputCommand = async (ctx) => {
       var embed = new EmbedBuilder();
       embed
         .setTitle(`${character} | Booster Perks`)
-        .setDescription(`**Remaining Monthly Rerolls** | ${rerolls}/3
+        .setDescription(
+          `**Remaining Monthly Rerolls** | ${rerolls}/3
 
-${rerolls === 0 ? `You're all out of rerolls for the month!` : `Would you like to reroll an aspect of your partner?`}`)
+${rerolls === 0 ? `You're all out of rerolls for the month!` : `Would you like to reroll an aspect of your partner?`}`,
+        )
         .setColor("Yellow")
         .setThumbnail(
           await characterHelper.getPartnerSprite(
@@ -165,7 +222,6 @@ ${rerolls === 0 ? `You're all out of rerolls for the month!` : `Would you like t
       });
       collector.on("collect", async (button) => {
         const rerollEmbed = await characterHelper.rerollIRP(
-          interaction.client,
           interaction.user.id,
           character,
           button.customId,

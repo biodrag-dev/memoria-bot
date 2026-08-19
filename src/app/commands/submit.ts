@@ -162,7 +162,6 @@ export const chatInput: ChatInputCommand = async (ctx) => {
       interaction.options.getString("species", true).toLowerCase(),
     );
 
-    console.log(verifyCanReserve);
     switch (verifyCanReserve) {
       case -3:
         failEmbed

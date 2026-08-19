@@ -205,6 +205,10 @@ export async function getPartnerProspectEmbed(
   }
   return embed;
 }
+function getLevelFromExp(exp: number): number {
+  return Math.min(100, Math.max(Math.floor(Math.cbrt(exp)), 1));
+}
+
 
 export async function getPartnerEmbed(username: string, id: string) {
   const partner = await charaHelper.getOOCPartner(id);
@@ -220,7 +224,7 @@ export async function getPartnerEmbed(username: string, id: string) {
     const pokemon = await pokeHelper.findPokemon(partner.species);
     const scaledHeight = pokemon!.height * partner.sizeMult;
     const scaledWeight = pokemon!.weight * Math.pow(partner.sizeMult, 3);
-
+    const level = `**Level** | ${getLevelFromExp(partner.experience)}\n`
     const height = `${(scaledHeight * 0.1).toFixed(1)} m | ${pokeHelper.cmToFeetConversion(scaledHeight * 10)}`;
     const weight = `${(scaledWeight * 0.1).toFixed(1)} kg | ${pokeHelper.kgToPounds(scaledWeight * 0.1)} lbs`;
 
@@ -248,7 +252,7 @@ export async function getPartnerEmbed(username: string, id: string) {
       .setColor(resolveColor(color.hexcode))
       .setDescription(
         `${species} ${alphaCheck} ${shinyCheck}
-    ${gender}${ability}${nature}${metOn}${dexEntry}`,
+    ${level}${gender}${ability}${nature}${metOn}${dexEntry}`,
       )
       .setFooter({
         text: color.bannerCreds!,

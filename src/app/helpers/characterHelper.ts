@@ -1030,15 +1030,64 @@ export async function getRerolls(id: string): Promise<number> {
 }
 
 export async function rerollOOC(
-  client: Client,
   id: string,
   field: string,
 ): Promise<EmbedBuilder> {
-  return new EmbedBuilder();
+  const roll = Math.floor(Math.random() * 20) + 1;
+  const embed = new EmbedBuilder();
+  if (charaDex[id]!.monthly_rolled == 0) {
+    embed.setDescription(`You're out of monthly rerolls!`);
+    return embed;
+  }
+  const partner = charaDex[id]!.OocPartner!;
+
+  if (field === "shiny") {
+    embed
+      .setDescription(`🎲 **Result** | ${roll}`)
+      .setTitle(`Rolling for Shiny Status (1d20)...`);
+    if (roll == 20) {
+      embed
+        .setColor("#f0ed4c")
+        .setFooter({ text: `Oh? Congratulations! It's a shiny!` });
+    } else {
+      embed.setColor("#3c3d3c").setFooter({ text: "Better luck next time..." });
+    }
+    partner.shiny = roll == 20;
+  } else if (field === "size") {
+    var sizeMult;
+    if (roll == 20) {
+      sizeMult = 2;
+    } else {
+      sizeMult = Math.random() / 2 + 0.75;
+    }
+
+    embed
+      .setDescription(
+        `🎲 **Result** | ${roll} ${roll === 20 ? `<:ea_alphaicon:1533355784769896459>` : ``}
+
+${pokehelper.getSize(partner.sizeMult)} -> ${pokehelper.getSize(sizeMult)}`,
+      )
+      .setTitle(`Rolling for Size (1d20)...`);
+    partner.sizeMult = sizeMult;
+    if (roll == 20) {
+      embed.setColor("#f81a1a").setFooter({
+        text: `Oh? Congratulations! It's an alpha!`,
+      });
+    } else {
+      embed.setColor("#3c3d3c").setFooter({ text: `Better luck next time...` });
+    }
+  }
+  charaDex[id]!.monthly_rolled = (await getRerolls(id)) - 1;
+  charaDex[id]!.last_rolled = new Date();
+  await saveUsers();
+  embed.setThumbnail(
+    await pokehelper.getSprite(partner.species, partner.gender, partner.shiny),
+  );
+
+  return embed;
 }
 
 export async function rerollIRP(
-  client: Client,
   id: string,
   name: string,
   field: string,
@@ -1114,4 +1163,12 @@ export async function setOOCPartner(id: string, partner: OocPartner) {
   }
   charaDex[id]!.OocPartner = partner;
   await saveUsers();
+}
+
+export async function addExpToPartner(id: string, exp: number) {
+  await loadUsers();
+  if (charaDex[id]?.OocPartner) {
+    charaDex[id].OocPartner.experience += exp;
+    await saveUsers();
+  }
 }
