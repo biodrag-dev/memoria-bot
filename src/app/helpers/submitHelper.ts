@@ -199,7 +199,6 @@ export async function deleteSubmit(id: string) {
 }
 
 export async function clearTemporary() {
-  console.log("Temporary submissions cleared!");
   await loadSubmissions();
   await loadEvos();
   const tempSubs = Object.entries(submitDex)

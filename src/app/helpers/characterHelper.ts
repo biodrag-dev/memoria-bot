@@ -7,6 +7,7 @@ import {
   Client,
   ColorResolvable,
   EmbedBuilder,
+  resolveColor,
 } from "discord.js";
 
 import * as pokehelper from "./pokeHelper";
@@ -379,6 +380,7 @@ export async function registerCharacter(user: string, client: Client) {
     `${submission.name}`,
     submission.house,
     client,
+    submission.docLink == "STAFF NPC",
   );
 }
 
@@ -488,9 +490,12 @@ export function getCharacterEmbed(id: string, name: string) {
   const house = `**House** | ${character.house}\n`;
   const docuLink =
     character.docLink === "STAFF NPC"
-      ? `**Doc** | STAFF NPC`
+      ? `**Doc** | STAFF NPC\n`
       : `**Doc** | [Link](${character.docLink})\n`;
-  const partnerDestination = `**Partner Destination** | ${pokehelper.displayName(character.destination)}\n`;
+  const partnerDestination = 
+      character.docLink === "STAFF NPC"
+      ? character.name === "Anrui Tian"? `**Partner** | N/A\n` : `**Partner** | ${pokehelper.displayName(character.destination)}\n` 
+      : `**Partner Destination** | ${pokehelper.displayName(character.destination)}\n`;
   const roleplayer = `**Roleplayer** | <@${id}>\n`;
 
   const age = charaData.age ? `**Age** | ${charaData.age}\n` : ``;
@@ -556,6 +561,7 @@ export async function createNewForumPost(
   name: string,
   house: string,
   client: Client,
+  npc: boolean,
 ) {
   loadUsers();
   if (!charaDex?.[id]?.characters[name]) {
@@ -564,9 +570,17 @@ export async function createNewForumPost(
     const embed = getCharacterEmbed(id, name);
     const embed2 = await getPartnerEmbed(id, name);
 
-    const forumChannel = await client.channels.fetch(
-      `${process.env.APPROVED_CHANNEL}`,
-    );
+    var forumChannel;
+
+    if (npc == false) {
+      forumChannel = await client.channels.fetch(
+        `${process.env.APPROVED_CHANNEL}`,
+      );
+    } else {
+      forumChannel = await client.channels.fetch(
+        `${process.env.STAFF_NPC_CHANNEL}`,
+      );
+    }
 
     if (!forumChannel || forumChannel.type !== ChannelType.GuildForum) {
       console.log(
@@ -622,10 +636,60 @@ export async function updateCharaForumPost(
   saveUsers();
 }
 
+
+export  function getAnruiPartnerEmbed(): EmbedBuilder {
+  const embed = new EmbedBuilder();
+    const houseInfo = houseData["Victini"]!;
+
+    const species = `**Species** | N/A`;
+
+    const height = `? m | ?'?"`;
+    const weight = `? kg | ? lbs`;
+    const metOn = `**Met On** | N/A\n`;
+
+    const bio = `Interestingly enough, Champion Anrui lacks a pokemon partner. Or, well— a consistent one, at least. They have worked together with pokemon, yes, but there's never been one that's been there long enough to call 'partner.'
+    
+A mystery for the ages, one supposes.`;
+    
+    embed
+      .setTitle(
+        `N/A | ERROR 404: NOT FOUND.`,
+      )
+      .setColor(resolveColor(houseInfo?.hexcode))
+      .setDescription(
+        `${species}
+${metOn}${bio}`,
+      )
+      .setFooter({
+        text: houseInfo.artist_credits,
+        iconURL: `${houseInfo.iconLink}`,
+      })
+      .addFields(
+        {
+          name: `Height`,
+          value: `${height}`,
+          inline: true,
+        },
+        {
+          name: `Weight`,
+          value: `${weight}`,
+          inline: true,
+        },
+      )
+      .setThumbnail(`https://archives.bulbagarden.net/media/upload/0/03/Missingno_Y.png`)
+      .setImage(houseInfo.banner);
+  
+  return embed;
+}
+
 export async function getPartnerEmbed(
   id: string,
   name: string,
 ): Promise<EmbedBuilder> {
+
+  if(name == "Anrui Tian"){
+    return getAnruiPartnerEmbed();
+  }
   loadUsers();
 
   const embed = new EmbedBuilder();

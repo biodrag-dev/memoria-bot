@@ -3,13 +3,15 @@ import { Client, EmbedBuilder, Interaction, TextChannel } from "discord.js";
 import * as submitHelper from "./submitHelper";
 
 export async function updateAllEmbeds(client: Client) {
-  await updateReservesEmbed(client);
-  await updateServerRulesEmbed(client);
-  await updateCharacterRulesEmbed(client);
-  await updateVerificationEmbed(client);
-  await updateRolesEmbed(client);
-  await updateRoleplayRules(client);
-  await updateFaqEmbed(client);
+   updateReservesEmbed(client);
+   updateServerRulesEmbed(client);
+   updateCharacterRulesEmbed(client);
+   updateVerificationEmbed(client);
+   updateRolesEmbed(client);
+   updateRoleplayRules(client);
+   updateFaqEmbed(client);
+   //updatePartnershipRules(client);
+   updateTemplateEmbed(client);
 }
 
 export async function updateEmbed(
@@ -111,6 +113,18 @@ export async function updateFaqEmbed(client: Client) {
   await msgFour.edit({
     content: ``,
     embeds: [embedFour],
+  });
+}
+
+export async function updatePartnershipRules(client: Client) {
+  const channel = (await client.channels.fetch(
+    `${process.env.PARTNERSHIP_RULES_CHANNEL}`,
+  )) as TextChannel;
+  const msgOne = await channel.messages.fetch(`${process.env.PARTNERSHIP_RULES_MSG_ONE}`);
+  const embedOne = await getPartnershipRulesEmbed();
+  await msgOne.edit({
+    content: ``,
+    embeds: [embedOne],
   });
 }
 
@@ -234,6 +248,21 @@ export async function updateRoleplayRules(client: Client) {
     embeds: [embedOne],
   });
 }
+
+export async function updateTemplateEmbed(client: Client) {
+  const channel = (await client.channels.fetch(
+    `${process.env.TEMPLATE_CHANNEL}`,
+  )) as TextChannel;
+  const msgOne = await channel.messages.fetch(
+    `${process.env.TEMPLATE_MSG_ONE}`,
+  );
+  const embedOne = await getTemplateEmbed();
+  await msgOne.edit({
+    content: ``,
+    embeds: [embedOne],
+  });
+}
+
 
 export async function updateCharacterRulesEmbed(client: Client) {
   const channel = (await client.channels.fetch(
@@ -578,7 +607,8 @@ async function getRolesSixEmbed() {
       `**　　**◌　　⏖　　ꜜ🍇　　<@&1534631480373018655>
 　　◌　　⏖　　ꜜ👾　　<@&1534631563906777099>
 　　◌　　⏖　　ꜜ🔮　　<@&1534631736124772586>
-　　◌　　⏖　　ꜜ☂️　　<@&1534631779061727412>`,
+　　◌　　⏖　　ꜜ☂️　　<@&1534631779061727412>
+　　◌　　⏖　　ꜜ💜　　<@&1539913483653746748>`,
     )
     .setImage(
       "https://i.pinimg.com/originals/56/3a/b1/563ab15230f5bf4259f11125fd1f9c0e.gif",
@@ -729,6 +759,86 @@ need a hint?
 
   return embed;
 }
+
+export async function getPartnershipRulesEmbed() {
+  const embed = new EmbedBuilder()
+    .setTitle(`𝐏𝐀𝐑𝐓𝐍𝐄𝐑𝐒𝐇𝐈𝐏 𝐑𝐔𝐋𝐄𝐒`)
+    .setColor("#638b92")
+    .setDescription(
+      `We'd love to partner with servers who follow these rules:
+1. Friendly Environment.
+> Cannot be racist, homophobic, transphobic, ableist, etc.
+2. No Slurs.
+> Self-explanatory. Server must have a rule against slurs.
+3. No NSFW.
+> No NSFW content, whether in visual or auditory form, is allowed.
+4. Keep our ad up.
+> You must keep our advertisement up as long as the partnership lasts. If it is taken down or the ambassador representing the server leaves, then the partnership is considered over!
+
+Please create a ticket in <#1533686056019300452> with the keyword **\`moonshine\`** (to prove you have read these rules) if you're interested in a partnership! Please do not DM staff or server members. We will ping <@&1539913483653746748> for partnership announcements!`
+    )
+    .setImage(
+      "https://cdna.artstation.com/p/assets/images/images/056/215/680/original/ryan-haight-eastlake-hway-large.gif?1668708925",
+    )
+    .setFooter({
+      text: "banner by ryan haight on artstation",
+    });
+
+  return embed;
+}
+
+
+export async function getResourcesEmbed() {
+  const embed = new EmbedBuilder()
+    .setTitle(`𝐏𝐀𝐑𝐓𝐍𝐄𝐑𝐒𝐇𝐈𝐏 𝐑𝐔𝐋𝐄𝐒`)
+    .setColor("#638b92")
+    .setDescription(
+      `Hey there, feelin' alright?
+      
+List of International Suicide Hotlines
+> https://blog.opencounseling.com/suicide-hotlines/
+ 
+Mental Health Resources
+ > `
+    )
+    .setImage(
+      "https://cdna.artstation.com/p/assets/images/images/056/215/680/original/ryan-haight-eastlake-hway-large.gif?1668708925",
+    )
+    .setFooter({
+      text: "banner by ryan haight on artstation",
+    });
+
+  return embed;
+}
+
+export async function getTemplateEmbed() {
+  const embed = new EmbedBuilder()
+    .setTitle(`𝐓𝐄𝐌𝐏𝐋𝐀𝐓𝐄`)
+    .setColor("#83c79d")
+    .setDescription(
+      `Submissions require two reviewer's go-ahead to be approved! This is to make sure we're thorough with the reviewer process. Staff is not exempt from this rule for personal characters.
+
+**Google Docs**
+> https://docs.google.com/document/d/1YdzP9YNijiAENToGsy2p_EMaYGcozV6Mz0PPuPdWDuY/edit
+
+**Ellipsus (Alternative to Google Docs)**
+> https://ellipsus.com/read/33JEXtRO9qpwLR6yNTLHLY/Template
+
+-# You're welcome to edit the document however you like, but please do not change the credits!`
+
+    )
+    .setImage(
+      "https://i.pinimg.com/originals/21/e2/8f/21e28fc14365924f2e4b46ef56fe3f7a.gif",
+    )
+    .setFooter({
+      text: "banner by soterio-px on tumblr",
+    });
+
+  return embed;
+}
+
+
+
 
 async function getPostVerifyEmbed(client: Client, user: string) {
   const person = await client.users.fetch(user);

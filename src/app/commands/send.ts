@@ -1,11 +1,10 @@
 import {
   ApplicationCommandOptionType,
-  ChannelType,
   InteractionContextType,
-  TextChannel,
 } from "discord.js";
 
 import type { CommandData, ChatInputCommand, CommandMetadata } from "commandkit";
+
 export const metadata: CommandMetadata = {
   guilds: [`${process.env.GUILD_ID}`],
 };
@@ -25,7 +24,6 @@ export const command: CommandData = {
           description: "Where to send the message",
           type: ApplicationCommandOptionType.Channel,
           required: true,
-          channel_types: [ChannelType.GuildText],
         },
         {
           name: "text",
@@ -41,23 +39,21 @@ export const command: CommandData = {
 export const chatInput: ChatInputCommand = async (ctx) => {
   const interaction = ctx.interaction;
 
-  const channel = interaction.options.getChannel(
-    "channel",
-    true,
-  ) as TextChannel;
+  const channel = interaction.options.getChannel("channel", true);
 
-  if (!channel?.isTextBased()) {
+  if (!channel.isTextBased()) {
     return interaction.reply({
-      content: "That isn't a text channel.",
+      content: "That isn't a channel I can send messages to.",
       ephemeral: true,
     });
   }
-  const msg = await channel.send({
-    content: `${interaction.options.getString("text", true)}`,
+
+  await channel.send({
+    content: interaction.options.getString("text", true),
   });
 
   await interaction.reply({
-    content: `Message has been sent!`,
+    content: "Message has been sent!",
     ephemeral: true,
   });
 };

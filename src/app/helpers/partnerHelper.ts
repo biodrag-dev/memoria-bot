@@ -61,6 +61,32 @@ Okay, so a couple things to keep in mind before we begin...
 > 'Course, if you boost later, you could always reroll the shiny status or size! Though it's not really the same, y'know?
 Alrighty, as soon as you sign on the dotted line right there, we'll find you one in no time! C'mon!`,
   },
+  {
+    name: `Liyuan Yin`,
+    icon: `https://i.ibb.co/mrZnDm3F/FBD20-B6-E-D3-D3-47-F7-B0-FA-14-F87355-FFD3.png`,
+    thumbnail: `https://i.ibb.co/mrZnDm3F/FBD20-B6-E-D3-D3-47-F7-B0-FA-14-F87355-FFD3.png`,
+    hexcode: "#48CAE4",
+    friendship: {
+      none: `WHAT!? …What’re you trying to do with PARTNER? They don’t seem to like you at all!`,
+      wary: `Huh. Seems like PARTNER is a bit wary of you. Try spending more time with them! Get to know them! Stuff like that!`,
+      neutral: `Hey! Looks like you guys are getting acquainted! PARTNER still needs to warm up a bit, but you’ll get there!`,
+      low: `PARTNER’s warming up to you! Can’t wait to see where this friendship goes!`,
+      medium: `Awww, looks like PARTNER’s warmed up to you!!`,
+      high: `Heyyy! Seems like you guys have become pretty good friends! That’s the cutest ever!`,
+      highest: `WHAT!!! You and PARTNER are basically BEST FRIENDS FOREVER! …So awesome…`,
+    },
+    starter_title: `Hey! You don’t have a partner yet!?`,
+    starter_dialogue: `Hold on — let’s get you an assessment…!
+…
+Here — take this!
+
+Now, before you take this awesome test, there are a couple of things you gotta keep in mind!
+> If you didn’t like how you answered, you can retake the assessment however many times you want!
+> Once you choose your starter, you can’t change them! That’d be plain mean!!
+> You might find a shiny or an alpha ‘mon, so take your time looking!
+> Psst… there’s also this thing called boosting… if you boost, you could always reroll for shiny status or size if you don’t get it the first time!
+Got that? Great! Awesome! Amazing! Get over here and step riiiight up, and we’ll find you your partner!`,
+  },
 ];
 
 export interface ProfessorData {
@@ -438,8 +464,6 @@ export async function getPartnerEmbed(username: string, id: string) {
     var feed = ``;
     var play = ``;
     var prompt = `${prompts[partner.prompt]!.replaceAll(`PARTNER`, nickname)}`;
-
-    console.log(partner.canFeed);
     if (partner.canFeed === true) {
       feed = `\n> ${nickname} is looking a little hungry... why not **\`/partner feed\`** them?`;
     }
@@ -455,7 +479,7 @@ export async function getPartnerEmbed(username: string, id: string) {
       .setColor(resolveColor(color.hexcode))
       .setDescription(
         `${species} ${alphaCheck} ${shinyCheck}
-    ${level}${gender}${ability}${nature}${metOn}-# ${color.bannerCreds!}
+${level}${gender}${ability}${nature}${metOn}-# ${color.bannerCreds!}
 ${prompt}${feed}${play}`,
       )
       .setFooter({
