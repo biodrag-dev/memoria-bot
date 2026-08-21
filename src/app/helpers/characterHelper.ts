@@ -222,7 +222,9 @@ interface houseData {
   thumbnail: string;
   banner: string;
   tagid: string;
+  stafftagid: string;
   artist_credits: string;
+  roleid: string;
 }
 
 const houseData: Record<string, houseData> = {
@@ -235,6 +237,8 @@ const houseData: Record<string, houseData> = {
       "https://64.media.tumblr.com/4c989428ba947bc4966e07e76d36bd28/118ec01107834a73-07/s540x810/5c2aa6ffdba2c64d3deb6fb0a646313eb247c561.gif",
     artist_credits: "banner by @waneella on tumblr",
     tagid: "1536506597579292803",
+    stafftagid: `1540434054187327620`,
+    roleid: `1534651799816900618`,
   },
 
   Mew: {
@@ -246,6 +250,8 @@ const houseData: Record<string, houseData> = {
     banner:
       "https://i.pinimg.com/originals/33/00/37/330037e99d9692d6b6a290296a33bdca.gif",
     artist_credits: "banner by @1041uuu on tumblr",
+    stafftagid: `1540434113197248552`,
+    roleid: `1534651892024737893`,
   },
 
   Jirachi: {
@@ -257,6 +263,8 @@ const houseData: Record<string, houseData> = {
     banner:
       "https://i.pinimg.com/originals/82/19/ad/8219adaa7148d1dcd477a4d728f97b85.gif",
     artist_credits: "banner by @anasabdin on tumblr",
+    stafftagid: `1540434069483950171`,
+    roleid: `1534651864111513792`,
   },
 };
 
@@ -355,16 +363,8 @@ export async function registerCharacter(user: string, client: Client) {
   const member = await guild!.members.fetch(user);
   await member.roles.add(`${process.env.ROLEPLAYER_ROLE}`);
 
-  switch (submission.house) {
-    case "Victini":
-      await member.roles.add(`${process.env.VICTINI_ROLE}`);
-      break;
-    case "Jirachi":
-      await member.roles.add(`${process.env.JIRACHI_ROLE}`);
-      break;
-    case "Mew":
-      await member.roles.add(`${process.env.MEW_ROLE}`);
-      break;
+  if(submission.docLink != "STAFF NPC"){
+    await member.roles.add(houseData[submission.house]?.roleid!);
   }
 
   if (!charaDex[user]) {
@@ -487,14 +487,16 @@ export function getCharacterEmbed(id: string, name: string) {
   const charaData = character.optional;
   const houseInfo = houseData[character.house]!;
 
-  const house = `**House** | ${character.house}\n`;
+  const house = `**House** | <@&${houseInfo.roleid}>\n`;
   const docuLink =
     character.docLink === "STAFF NPC"
       ? `**Doc** | STAFF NPC\n`
       : `**Doc** | [Link](${character.docLink})\n`;
-  const partnerDestination = 
-      character.docLink === "STAFF NPC"
-      ? character.name === "Anrui Tian"? `**Partner** | N/A\n` : `**Partner** | ${pokehelper.displayName(character.destination)}\n` 
+  const partnerDestination =
+    character.docLink === "STAFF NPC"
+      ? character.name === "Anrui Tian"
+        ? `**Partner** | N/A\n`
+        : `**Partner** | ${pokehelper.displayName(character.destination)}\n`
       : `**Partner Destination** | ${pokehelper.displayName(character.destination)}\n`;
   const roleplayer = `**Roleplayer** | <@${id}>\n`;
 
@@ -514,7 +516,7 @@ export function getCharacterEmbed(id: string, name: string) {
     .setTitle(`${name}`)
     .setColor(houseInfo.hexcode)
     .setDescription(
-      `${roleplayer}${house}${age}${gender}${pronouns}${partnerDestination}${docuLink}${artist_credits}${bio}${badges === "" ? `` : `\n**Badges**\n${badges}`}`,
+      `${house}${roleplayer}${age}${gender}${pronouns}${partnerDestination}${docuLink}${artist_credits}${bio}${badges === "" ? `` : `\n**Badges**\n${badges}`}`,
     )
     .setFooter({
       text: `Want to add more to your OC's profile? Try /character edit!`,
@@ -591,7 +593,9 @@ export async function createNewForumPost(
 
     const thread = await forumChannel!.threads.create({
       name: `${name}`,
-      appliedTags: [`${houseData[house]?.tagid}`],
+      appliedTags: [
+        `${npc ? houseData[house]?.stafftagid : houseData[house]?.tagid}`,
+      ],
       message: {
         embeds: [embed, embed2],
       },
@@ -636,49 +640,48 @@ export async function updateCharaForumPost(
   saveUsers();
 }
 
-
-export  function getAnruiPartnerEmbed(): EmbedBuilder {
+export function getAnruiPartnerEmbed(): EmbedBuilder {
   const embed = new EmbedBuilder();
-    const houseInfo = houseData["Victini"]!;
+  const houseInfo = houseData["Victini"]!;
 
-    const species = `**Species** | N/A`;
+  const species = `**Species** | N/A`;
 
-    const height = `? m | ?'?"`;
-    const weight = `? kg | ? lbs`;
-    const metOn = `**Met On** | N/A\n`;
+  const height = `? m | ?'?"`;
+  const weight = `? kg | ? lbs`;
+  const metOn = `**Met On** | N/A\n`;
 
-    const bio = `Interestingly enough, Champion Anrui lacks a pokemon partner. Or, well— a consistent one, at least. They have worked together with pokemon, yes, but there's never been one that's been there long enough to call 'partner.'
+  const bio = `Interestingly enough, Champion Anrui lacks a pokemon partner. Or, well— a consistent one, at least. They have worked together with pokemon, yes, but there's never been one that's been there long enough to call 'partner.'
     
 A mystery for the ages, one supposes.`;
-    
-    embed
-      .setTitle(
-        `N/A | ERROR 404: NOT FOUND.`,
-      )
-      .setColor(resolveColor(houseInfo?.hexcode))
-      .setDescription(
-        `${species}
+
+  embed
+    .setTitle(`N/A | ERROR 404: NOT FOUND.`)
+    .setColor(resolveColor(houseInfo?.hexcode))
+    .setDescription(
+      `${species}
 ${metOn}${bio}`,
-      )
-      .setFooter({
-        text: houseInfo.artist_credits,
-        iconURL: `${houseInfo.iconLink}`,
-      })
-      .addFields(
-        {
-          name: `Height`,
-          value: `${height}`,
-          inline: true,
-        },
-        {
-          name: `Weight`,
-          value: `${weight}`,
-          inline: true,
-        },
-      )
-      .setThumbnail(`https://archives.bulbagarden.net/media/upload/0/03/Missingno_Y.png`)
-      .setImage(houseInfo.banner);
-  
+    )
+    .setFooter({
+      text: houseInfo.artist_credits,
+      iconURL: `${houseInfo.iconLink}`,
+    })
+    .addFields(
+      {
+        name: `Height`,
+        value: `${height}`,
+        inline: true,
+      },
+      {
+        name: `Weight`,
+        value: `${weight}`,
+        inline: true,
+      },
+    )
+    .setThumbnail(
+      `https://archives.bulbagarden.net/media/upload/0/03/Missingno_Y.png`,
+    )
+    .setImage(houseInfo.banner);
+
   return embed;
 }
 
@@ -686,8 +689,7 @@ export async function getPartnerEmbed(
   id: string,
   name: string,
 ): Promise<EmbedBuilder> {
-
-  if(name == "Anrui Tian"){
+  if (name == "Anrui Tian") {
     return getAnruiPartnerEmbed();
   }
   loadUsers();

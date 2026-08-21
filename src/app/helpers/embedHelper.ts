@@ -820,11 +820,13 @@ export async function getTemplateEmbed() {
 
 **Google Docs**
 > https://docs.google.com/document/d/1YdzP9YNijiAENToGsy2p_EMaYGcozV6Mz0PPuPdWDuY/edit
+To make a copy, go to **File > Make a copy**!
 
 **Ellipsus (Alternative to Google Docs)**
-> https://ellipsus.com/read/33JEXtRO9qpwLR6yNTLHLY/Template
+> https://ellipsus.com/read/33JEXtRO9qpwLR6yNTLHLY/Evernight-Academy-Template
+To make a copy, simply copy all of it and then paste into your own ellipsus document!
 
--# You're welcome to edit the document however you like, but please do not change the credits!`
+-# You're welcome to edit the documents however you like, but please do not change the credits!`
 
     )
     .setImage(
