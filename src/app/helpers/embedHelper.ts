@@ -3,18 +3,19 @@ import { Client, EmbedBuilder, Interaction, TextChannel } from "discord.js";
 import * as submitHelper from "./submitHelper";
 
 export async function updateAllEmbeds(client: Client) {
-  updateReservesEmbed(client);
-  updateServerRulesEmbed(client);
-  updateCharacterRulesEmbed(client);
-  updateVerificationEmbed(client);
-  updateRolesEmbed(client);
-  updateRoleplayRules(client);
-  updateFaqEmbed(client);
-  //thread is archived
-  //updatePartnershipRules(client);
-  updateTemplateEmbed(client);
-    //thread is archived
-  updateStaffNpcEmbed(client);
+  // updateReservesEmbed(client);
+  // updateServerRulesEmbed(client);
+  // updateCharacterRulesEmbed(client);
+  // updateVerificationEmbed(client);
+  // updateRolesEmbed(client);
+  // updateRoleplayRules(client);
+  // updateFaqEmbed(client);
+  // //thread is archived
+  // //updatePartnershipRules(client);
+  // updateTemplateEmbed(client);
+  //   //thread is archived
+  // updateStaffNpcEmbed(client);
+  updateResourcesEmbed(client)
 }
 
 export async function updateEmbed(
@@ -130,6 +131,20 @@ export async function updateFaqEmbed(client: Client) {
   await msgFour.edit({
     content: ``,
     embeds: [embedFour],
+  });
+}
+
+export async function updateResourcesEmbed(client: Client) {
+  const channel = (await client.channels.fetch(
+    `${process.env.RESOURCES_CHANNEL}`,
+  )) as TextChannel;
+  const msgOne = await channel.messages.fetch(
+    `${process.env.RESOURCES_MSG_ONE}`,
+  );
+  const embedOne = await getResourcesEmbed();
+  await msgOne.edit({
+    content: ``,
+    embeds: [embedOne],
   });
 }
 
@@ -807,22 +822,29 @@ Please create a ticket in <#1533686056019300452> with the keyword **\`moonshine\
 
 export async function getResourcesEmbed() {
   const embed = new EmbedBuilder()
-    .setTitle(`𝐏𝐀𝐑𝐓𝐍𝐄𝐑𝐒𝐇𝐈𝐏 𝐑𝐔𝐋𝐄𝐒`)
-    .setColor("#638b92")
+    .setTitle(`𝐑𝐄𝐒𝐎𝐔𝐑𝐂𝐄𝐒`)
+    .setColor("#9b3a36")
     .setDescription(
-      `Hey there, feelin' alright?
-      
-List of International Suicide Hotlines
-> https://blog.opencounseling.com/suicide-hotlines/
- 
-Mental Health Resources
- > `,
+`[International Suicide Hotlines](<https://blog.opencounseling.com/suicide-hotlines/>)
+> A list of hotlines for different countries, including emergency numbers and in-person counseling options.
+
+[Mental Health Resources](<https://wellbeingtrust.org/mental-health-resources/>)
+> A list of resources that can be filtered by need or case, such as depression, anxiety, stress, etc.
+
+[Mental Health Resources for People of Color](<https://www.onlinemswprograms.com/resources/mental-health-resources-racial-ethnic-groups/>)
+> A collection of organizations, directories, and resources aimed at helping and focusing on the needs of people of color and marginalized groups. Both nationwide and virtual options are available, providing services that aim to acknowledge and understand different lived realities.
+
+[Mental and Substance Use Disorder Treatment](<https://findtreatment.gov/>)
+> This is a confidential and anonymous resource for those seeking treatment for mental and substance use disorders in the US and its territories. Alternatively, you can connect with SAMHSA's National Helpline by calling 1-800-662-HELP (4357).
+
+[LGBTQ+ Resource Library](<https://www.thementalhealthcoalition.org/resource-library/?resources_category=lgbtq>)
+> A database filtered to help learn about mental health, help loved ones, learn coping skills, and ways to seek support near you.`,
     )
     .setImage(
-      "https://cdna.artstation.com/p/assets/images/images/056/215/680/original/ryan-haight-eastlake-hway-large.gif?1668708925",
+      "https://i.pinimg.com/originals/43/93/8a/43938a18ca65b8dca70abd0bada8e1ec.gif",
     )
     .setFooter({
-      text: "banner by ryan haight on artstation",
+      text: "banner by @waneella on tumblr",
     });
 
   return embed;
@@ -840,7 +862,7 @@ export async function getTemplateEmbed() {
 To make a copy, go to **File > Make a copy**!
 
 **Ellipsus (Alternative to Google Docs)**
-> https://ellipsus.com/read/33JEXtRO9qpwLR6yNTLHLY/Evernight-Academy-Template
+> https://ellipsus.com/read/33JEXtRO9qpwLR6yNTLHLY/Dexlight-Academy-Template
 To make a copy, simply copy all of it and then paste into your own ellipsus document!
 
 -# You're welcome to edit the documents however you like, but please do not change the credits!`,
@@ -854,6 +876,7 @@ To make a copy, simply copy all of it and then paste into your own ellipsus docu
 
   return embed;
 }
+
 
 async function getStaffNpcEmbed() {
   const embed = new EmbedBuilder()
