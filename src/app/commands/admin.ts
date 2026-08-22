@@ -275,6 +275,12 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         )
         .setColor("Red");
     }
+    characterHelper.updateCharaForumPost(
+      interaction.options.getUser("roleplayer")!.id,
+      interaction.options.getString("character", true),
+      interaction.client,
+    );
+
     return interaction.reply({
       embeds: [embed],
       ephemeral: true,
@@ -320,7 +326,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
 
         if (button.customId === "admin-delete-accept") {
           embed.setDescription(
-            `All of <@${interaction.options.getUser("roleplayer")!.id}>'s server data has been deleted.`,
+            `All of <@${interaction.options.getUser("roleplayer")!.id}>'s character data has been deleted.`,
           );
 
           await button.update({

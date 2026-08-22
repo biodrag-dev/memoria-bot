@@ -125,47 +125,47 @@ const badges: Record<string, badgeData> = {
     name: `Hero`,
   },
   Fire: {
-    emoji: `<:ea_badge_ember:1536602424662298675>`,
+    emoji: `<:badge_ember:1540529540135125083>`,
     house: `Jirachi`,
     name: `Ember`,
   },
   Water: {
-    emoji: `<:ea_badge_polaris:1538306037877047386>`,
+    emoji: `<:badge_polaris:1540504883629654158>`,
     house: `Jirachi`,
     name: `Polaris`,
   },
 
   Ice: {
-    emoji: `<:ea_badge_anachronism:1538306091681710121>`,
+    emoji: `<:badge_anachronism:1540504888956682261>`,
     house: `Victini`,
     name: `Anachronism`,
   },
 
   Ground: {
-    emoji: `<:ea_badge_origin:1538306279867555911>`,
+    emoji: `<:badge_origin:1540504886481920080>`,
     house: `Victini`,
     name: `Origin`,
   },
 
   Bug: {
-    emoji: `<:ea_badge_exuviae:1538306151547142275>`,
+    emoji: `<:badge_exuviae:1540504884468514877>`,
     house: `Mew`,
     name: `Exuviae`,
   },
 
   Rock: {
-    emoji: `<:ea_badge_altar:1538306224507060304>`,
+    emoji: `<:badge_altar:1540504885429272697>`,
     house: `Mew`,
     name: `Altar`,
   },
 
   Fairy: {
-    emoji: `<:ea_badge_halcyon:1538306344619221106>`,
+    emoji: `<:badge_halcyon:1540504887454863430>`,
     house: `Jirachi`,
     name: `Halcyon`,
   },
   Electric: {
-    emoji: `<:ea_badge_cataclysm:1538101885544824832>`,
+    emoji: `<:badge_cataclysm:1540529542983319562>`,
     house: `Victini`,
     name: `Cataclysm`,
   },
@@ -175,7 +175,7 @@ const badges: Record<string, badgeData> = {
     name: `Panacea`,
   },
   Fighting: {
-    emoji: `<:ea_badge_reagant:1536596517425774622>`,
+    emoji: `<:badge_endurance:1540529539367571626>`,
     house: `Jirachi`,
     name: `Endurance`,
   },
@@ -185,12 +185,12 @@ const badges: Record<string, badgeData> = {
     name: `Reagent`,
   },
   Flying: {
-    emoji: `<:ea_badge_contrivance:1538101905513914459>`,
+    emoji: `<:badge_contrivance:1540529540886044672>`,
     house: `Mew`,
     name: `Contrivance`,
   },
   Psychic: {
-    emoji: `<:ea_badge_ego:1536597936178204743>`,
+    emoji: `<:badge_ego:1540529541628305598>`,
     house: `Mew`,
     name: `Ego`,
   },
@@ -210,7 +210,7 @@ const badges: Record<string, badgeData> = {
     name: `Quietude`,
   },
   Steel: {
-    emoji: `<:ea_badge_gilded:1536599347200921610>`,
+    emoji: `<:badge_gilded:1540529544283553922>`,
     house: `Victini`,
     name: `Gilded`,
   },
@@ -358,13 +358,13 @@ export async function registerCharacter(user: string, client: Client) {
     docLink: submission.docLink,
     optional: charaData,
   };
-  await submitHelper.approveDestination(submission.partner.toLowerCase());
   const guild = client.guilds.cache.get(`${process.env.GUILD_ID}`);
   const member = await guild!.members.fetch(user);
   await member.roles.add(`${process.env.ROLEPLAYER_ROLE}`);
 
-  if(submission.docLink != "STAFF NPC"){
+  if (submission.docLink != "STAFF NPC") {
     await member.roles.add(houseData[submission.house]?.roleid!);
+    await submitHelper.approveDestination(submission.partner.toLowerCase());
   }
 
   if (!charaDex[user]) {
@@ -419,7 +419,9 @@ export async function deleteCharacter(
   await deleteThread(id, name, client);
 
   const evoDestination = character.destination;
-  await submitHelper.deleteDestination(evoDestination);
+  if (character.docLink != "STAFF NPC") {
+    await submitHelper.deleteDestination(evoDestination);
+  }
 
   delete user.characters[name];
 

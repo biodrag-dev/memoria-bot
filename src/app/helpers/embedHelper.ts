@@ -3,15 +3,18 @@ import { Client, EmbedBuilder, Interaction, TextChannel } from "discord.js";
 import * as submitHelper from "./submitHelper";
 
 export async function updateAllEmbeds(client: Client) {
-   updateReservesEmbed(client);
-   updateServerRulesEmbed(client);
-   updateCharacterRulesEmbed(client);
-   updateVerificationEmbed(client);
-   updateRolesEmbed(client);
-   updateRoleplayRules(client);
-   updateFaqEmbed(client);
-   //updatePartnershipRules(client);
-   updateTemplateEmbed(client);
+  updateReservesEmbed(client);
+  updateServerRulesEmbed(client);
+  updateCharacterRulesEmbed(client);
+  updateVerificationEmbed(client);
+  updateRolesEmbed(client);
+  updateRoleplayRules(client);
+  updateFaqEmbed(client);
+  //thread is archived
+  //updatePartnershipRules(client);
+  updateTemplateEmbed(client);
+    //thread is archived
+  updateStaffNpcEmbed(client);
 }
 
 export async function updateEmbed(
@@ -25,6 +28,7 @@ export async function updateEmbed(
     embeds: [embed],
   });
 }
+
 
 export async function sendEnterMsg(client: Client, user: string) {
   const channel = (await client.channels.fetch(
@@ -70,6 +74,19 @@ export async function sendWelcomeMsg(client: Client, user: string) {
     embeds: [embedOne],
   });
 }
+
+export async function updateStaffNpcEmbed(client: Client) {
+  const channel = (await client.channels.fetch(
+    `${process.env.STORY_NPC_CHANNEL}`,
+  )) as TextChannel;
+  const msgOne = await channel.messages.fetch(`${process.env.STORY_NPC_MSG_ONE}`);
+  const embedOne = await getStaffNpcEmbed();
+  await msgOne.edit({
+    content: ``,
+    embeds: [embedOne],
+  });
+}
+
 
 export async function updateVerificationEmbed(client: Client) {
   const channel = (await client.channels.fetch(
@@ -120,7 +137,9 @@ export async function updatePartnershipRules(client: Client) {
   const channel = (await client.channels.fetch(
     `${process.env.PARTNERSHIP_RULES_CHANNEL}`,
   )) as TextChannel;
-  const msgOne = await channel.messages.fetch(`${process.env.PARTNERSHIP_RULES_MSG_ONE}`);
+  const msgOne = await channel.messages.fetch(
+    `${process.env.PARTNERSHIP_RULES_MSG_ONE}`,
+  );
   const embedOne = await getPartnershipRulesEmbed();
   await msgOne.edit({
     content: ``,
@@ -262,7 +281,6 @@ export async function updateTemplateEmbed(client: Client) {
     embeds: [embedOne],
   });
 }
-
 
 export async function updateCharacterRulesEmbed(client: Client) {
   const channel = (await client.channels.fetch(
@@ -775,7 +793,7 @@ export async function getPartnershipRulesEmbed() {
 4. Keep our ad up.
 > You must keep our advertisement up as long as the partnership lasts. If it is taken down or the ambassador representing the server leaves, then the partnership is considered over!
 
-Please create a ticket in <#1533686056019300452> with the keyword **\`moonshine\`** (to prove you have read these rules) if you're interested in a partnership! Please do not DM staff or server members. We will ping <@&1539913483653746748> for partnership announcements!`
+Please create a ticket in <#1533686056019300452> with the keyword **\`moonshine\`** (to prove you have read these rules) if you're interested in a partnership! Please do not DM staff or server members. We will ping <@&1539913483653746748> for partnership announcements!`,
     )
     .setImage(
       "https://cdna.artstation.com/p/assets/images/images/056/215/680/original/ryan-haight-eastlake-hway-large.gif?1668708925",
@@ -786,7 +804,6 @@ Please create a ticket in <#1533686056019300452> with the keyword **\`moonshine\
 
   return embed;
 }
-
 
 export async function getResourcesEmbed() {
   const embed = new EmbedBuilder()
@@ -799,7 +816,7 @@ List of International Suicide Hotlines
 > https://blog.opencounseling.com/suicide-hotlines/
  
 Mental Health Resources
- > `
+ > `,
     )
     .setImage(
       "https://cdna.artstation.com/p/assets/images/images/056/215/680/original/ryan-haight-eastlake-hway-large.gif?1668708925",
@@ -826,8 +843,7 @@ To make a copy, go to **File > Make a copy**!
 > https://ellipsus.com/read/33JEXtRO9qpwLR6yNTLHLY/Evernight-Academy-Template
 To make a copy, simply copy all of it and then paste into your own ellipsus document!
 
--# You're welcome to edit the documents however you like, but please do not change the credits!`
-
+-# You're welcome to edit the documents however you like, but please do not change the credits!`,
     )
     .setImage(
       "https://i.pinimg.com/originals/21/e2/8f/21e28fc14365924f2e4b46ef56fe3f7a.gif",
@@ -839,8 +855,22 @@ To make a copy, simply copy all of it and then paste into your own ellipsus docu
   return embed;
 }
 
+async function getStaffNpcEmbed() {
+  const embed = new EmbedBuilder()
+    .setTitle(`𝐒𝐓𝐎𝐑𝐘 𝐍𝐏𝐂𝐒`)
+    .setColor("#535a75")
+    .setDescription(
+      `Only story/event planners and event hosters are able to make [**Story NPCs**]. While they do not take up an OC slot, they are not a way to bypass the extra character rules! These are created for the express purpose of helping the story along, and as such, they cannot be used outside of events where they're supposed to be there.`,
+    )
+    .setImage(
+      "https://i.pinimg.com/1200x/d1/a8/59/d1a859d7445b6e46e5f1a407c3114ec1.jpg",
+    )
+    .setFooter({
+      text: `banner by @waneella on tumblr`,
+    });
 
-
+  return embed;
+}
 
 async function getPostVerifyEmbed(client: Client, user: string) {
   const person = await client.users.fetch(user);
@@ -922,7 +952,8 @@ async function getBoostEmbed(client: Client, user: string) {
     )
     .setFooter({
       text: `${person.username} boosted! | banner by @16pxl on twitter`,
-    }).setThumbnail(avatar);
+    })
+    .setThumbnail(avatar);
 
   return embed;
 }

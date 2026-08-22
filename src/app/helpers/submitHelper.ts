@@ -160,7 +160,7 @@ export async function createSubmit(
 
   submitDex[`${id}`] = submitData;
 
-  if (!evoDex[`${partner}`]) {
+  if (!evoDex[`${partner}`] && docLink != "STAFF NPC") {
     const evoData: EvoData = {
       user: id,
       status: "Temporary",
@@ -175,7 +175,9 @@ export async function createSubmit(
 export async function continueSubmit(id: string) {
   await loadSubmissions();
   submitDex[`${id}`]!.status = "Reviewing";
-  await createDestination(id, submitDex[`${id}`]!.partner);
+  if (submitDex[`${id}`]!.docLink != "STAFF NPC") {
+    await createDestination(id, submitDex[`${id}`]!.partner);
+  }
 
   await saveSubmissions();
 }
@@ -189,7 +191,7 @@ export async function deleteSubmit(id: string) {
   await loadSubmissions();
   await loadEvos();
   const partner = submitDex[`${id}`]!.partner;
-  if (evoDex[`${partner}`]!.status == "Temporary") {
+  if (submitDex[`${id}`]?.docLink != "STAFF NPC" && evoDex[`${partner}`]!.status == "Temporary") {
     delete evoDex[`${partner}`];
     await saveEvos();
   }
