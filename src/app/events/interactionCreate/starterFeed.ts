@@ -21,6 +21,14 @@ export default async function handleQuizInteraction(interaction: any) {
     });
   }
 
+  if (!interaction.member.id == ids[1]) {
+    await interaction.reply({
+      content: "Hey! Don't feed other trainer's pokemon without their permission, that's rude!",
+      ephemeral: true,
+    });
+    return;
+  }
+
   const berry = interaction.values[0];
   const msg = await partnerHelper.feedBerry(interaction.user.id, berry);
 
