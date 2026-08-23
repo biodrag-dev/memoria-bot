@@ -87,6 +87,32 @@ Now, before you take this awesome test, there are a couple of things you gotta k
 > Psst… there’s also this thing called boosting… if you boost, you could always reroll for shiny status or size if you don’t get it the first time!
 Got that? Great! Awesome! Amazing! Get over here and step riiiight up, and we’ll find you your partner!`,
   },
+  {
+    name: `Ruyi Qiu`,
+    icon: `https://images-ext-1.discordapp.net/external/2MMTHH-zunL_AXgfkywXqE4Wm0rpjIAa0_UruDmFPVc/https/cdn.tupperbox.app/pfp/350614938722500608/zDaEkqyi8BQqitv8.webp?format=webp`,
+    thumbnail: `https://images-ext-1.discordapp.net/external/2MMTHH-zunL_AXgfkywXqE4Wm0rpjIAa0_UruDmFPVc/https/cdn.tupperbox.app/pfp/350614938722500608/zDaEkqyi8BQqitv8.webp?format=webp`,
+    hexcode: "#ffe998",
+    friendship: {
+      none: `Oh dear… On the bright side, you and your companion are still together, but even that seems like nothing short of a miracle. Please take care of PARTNER and spend more time with them, we wouldn’t want them to run away, right?`,
+      wary: `Looks like PARTNER is still wary of you, hm? No need to worry, bonds can’t be forced but they can improve as you two create more memories together!`,
+      neutral: `I give you a passing mark, I suppose. PARTNER isn’t ready to open up to you yet, but don’t rush it. Coexistence is good too, don’t you think?`,
+      low: `The first hurdle is oftentimes the most difficult, but you've done well in getting PARTNER to warm up to you a little. I have no doubt that the two of you will continue to reach greater heights.`,
+      medium: `My, you've come a long way! You and PARTNER are on friendly terms now. I can't say I'm not a little surprised, seeing where the two of you started out.`,
+      high: `Your bond with PARTNER is quite envious, I must admit. The two of you have an unspoken connection that will carry you both great lengths. Lifelong companions, truly.`,
+      highest: `Hah, I have a feeling you and PARTNER don't need my opinion. Just look at you two, souls that have essentially bound themselves together no matter what challenges come your way.`,
+    },
+    starter_title: `Oh? It seems you don't have a partner yet.`,
+    starter_dialogue: `Well, let's not waste our breath stating the obvious.   
+...
+Here, take this assessment for me, will you?
+
+But allow me to brief you on a few things first...
+> Take this assessment as many times as you please, I won't judge.
+> Choose wisely. Once your partner is set in stone, there's no changing it.
+> It is possible to obtain Shiny and Alpha Pokémon, if those suit your tastes more.
+> If you're feeling generous, a boost allows you to reroll their shiny status and size, even after you've locked in a decision.
+But hearing it from me only does so much, wouldn't you say so too? Read the fine print before you sign and let's see what fate has in store for you.`,
+  },
 ];
 
 export interface ProfessorData {

@@ -825,7 +825,9 @@ export async function getResourcesEmbed() {
     .setTitle(`𝐑𝐄𝐒𝐎𝐔𝐑𝐂𝐄𝐒`)
     .setColor("#9b3a36")
     .setDescription(
-`[International Suicide Hotlines](<https://blog.opencounseling.com/suicide-hotlines/>)
+`Please know that you are not alone! Here are some helpful resources that we’ve gathered below to help you! If there are any other links you believe we should include, feel free to let us know so we can add them.
+
+[International Suicide Hotlines](<https://blog.opencounseling.com/suicide-hotlines/>)
 > A list of hotlines for different countries, including emergency numbers and in-person counseling options.
 
 [Mental Health Resources](<https://wellbeingtrust.org/mental-health-resources/>)
