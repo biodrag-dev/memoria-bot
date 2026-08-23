@@ -87,6 +87,27 @@ export default async function (interaction: Interaction) {
       return;
     }
 
+
+    
+        const verifyCanReserve = await submitHelper.verifyCanReserve(
+          interaction.user.id,
+          dest,
+        );
+        const failEmbed = new EmbedBuilder().setColor("#ce1b1b");
+
+        if(verifyCanReserve == -3){
+          failEmbed
+              .setDescription(
+                `Species **${pokehelper.displayName(dest)}** is legendary, mythical, or restricted!`,
+              )
+              .setThumbnail(
+                await pokehelper.getSprite(pokemon.name, "Genderless", false),
+              );
+            return await interaction.editReply({
+              embeds: [failEmbed],
+            });
+    
+        }
     const color = houseColors[house!] ?? "#221e1e";
 
     const embed = new EmbedBuilder()
