@@ -256,7 +256,7 @@ export async function getGenera(pokemonName: string): Promise<string> {
 export async function isLegendOrMyth(pokemonName: string): Promise<boolean> {
   const name = pokemonName.toLowerCase();
 
-  if(pokemonName.includes("-mega") || pokemonName.includes("-gmax") || pokemonName.includes("-totem") || pokemonName.includes("-bloodmoon") || pokemonName.includes("-starter")){
+  if(pokemonName.includes("-mega") || pokemonName.includes("-gmax") || pokemonName.includes("-totem") || pokemonName.includes("-eternal") || pokemonName.includes("-bloodmoon") || pokemonName.includes("-starter")){
     return true;
   }
   if (PARADOX_POKEMON.has(name) || ULTRA_BEASTS.has(name)) {

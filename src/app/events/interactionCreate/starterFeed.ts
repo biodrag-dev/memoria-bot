@@ -10,6 +10,15 @@ export default async function handleQuizInteraction(interaction: any) {
     return;
   }
 
+  if (interaction.member.id != ids[1]) {
+    await interaction.reply({
+      content:
+        "Hey! Don't feed other trainer's pokemon without their permission, that's rude!",
+      ephemeral: true,
+    });
+    return;
+  }
+
   const partner = await partnerHelper.getPartner(ids[1]);
 
   // Prevent old dropdowns from being used
@@ -19,14 +28,6 @@ export default async function handleQuizInteraction(interaction: any) {
       embed: [],
       ephemeral: true,
     });
-  }
-
-  if (!interaction.member.id == ids[1]) {
-    await interaction.reply({
-      content: "Hey! Don't feed other trainer's pokemon without their permission, that's rude!",
-      ephemeral: true,
-    });
-    return;
   }
 
   const berry = interaction.values[0];
