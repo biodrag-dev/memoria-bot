@@ -130,12 +130,4 @@ export const chatInput: ChatInputCommand = async (ctx) => {
     embeds: [embed],
   });
 
-  //   const pokemon = await pokeHelper.getRandomPokemonByType(type);
-  //   const basemon = await pokeHelper.findBaseMon(pokemon);
-  //   const prospect = await partnerHelper.generatePartnerProspect(basemon.name);
-  //   const prospectEmbed = await partnerHelper.getPartnerProspectEmbed(prospect);
-  //   await interaction.reply({
-  //     embeds: [prospectEmbed],
-  //     ephemeral: true,
-  //   });
 };

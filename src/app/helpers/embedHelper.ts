@@ -31,6 +31,17 @@ export async function updateEmbed(
 }
 
 
+export async function sendOOCBirthdayEmbed(client: Client, user: string) {
+  const channel = (await client.channels.fetch(
+    `${process.env.GEN_CHAT_CHANNEL}`,
+  )) as TextChannel;
+
+  const embedOne = await getBoostEmbed(client, user);
+  await channel.send({
+    embeds: [embedOne],
+  });
+}
+
 export async function sendEnterMsg(client: Client, user: string) {
   const channel = (await client.channels.fetch(
     `${process.env.DOOR_CHANNEL}`,
@@ -964,14 +975,41 @@ async function getLeaveEmbed(client: Client, user: string) {
   return embed;
 }
 
-async function getBoostEmbed(client: Client, user: string) {
+
+async function getBirthdayEmbed(client: Client, user: string) {
   const person = await client.users.fetch(user);
   const avatar = person.displayAvatarURL({ size: 1024 });
 
   const embed = new EmbedBuilder()
-    .setTitle(`woah!`)
-    .setColor("#94ddcd")
+    .setTitle(`happy birthday!`)
+    .setColor("#d3584d")
     .setDescription(`thanks for boosting!`)
+    .setImage(
+      "https://preview.redd.it/torii-to-another-time-me-pixel-art-2020-v0-zhgjmedjwii41.png?width=1080&crop=smart&auto=webp&s=e6a5e71970245ae20ee34eea290c189ab9bc9cbc",
+    )
+    .setFooter({
+      text: `${person.username} boosted! | banner by @16pxl on twitter`,
+    })
+    .setThumbnail(avatar);
+
+  return embed;
+}
+
+
+async function getBoostEmbed(client: Client, user: string) {
+  const person = await client.users.fetch(user);
+  const avatar = person.displayAvatarURL({ size: 1024 });
+  const guild = client.guilds.cache.get(`${process.env.GUILD_ID}`);
+
+  const embed = new EmbedBuilder()
+    .setTitle(`thank you so much!`)
+    .setColor("#ae281c")
+    .setDescription(`We appreciate the support, <@${user}>! You've unlocked the following perks:
+- The monthly ability to reroll minor characteristics of your partner pokemon three times (both OOC and IRP)!
+> -# **/booster reroll**
+- A custom color role using hexcodes!
+> -# **/booster role**
+With your contribution, we are now at ${guild?.premiumSubscriptionCount} server boost(s)!`)
     .setImage(
       "https://preview.redd.it/torii-to-another-time-me-pixel-art-2020-v0-zhgjmedjwii41.png?width=1080&crop=smart&auto=webp&s=e6a5e71970245ae20ee34eea290c189ab9bc9cbc",
     )

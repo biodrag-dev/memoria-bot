@@ -1,6 +1,8 @@
 import cron from "node-cron";
 import * as submitHelper from "./app/helpers/submitHelper";
 import * as embedHelper from "./app/helpers/embedHelper";
+import * as characterHelper from "./app/helpers/characterHelper";
+
 import type { Client } from "commandkit";
 
 export async function startScheduler(client: Client) {
@@ -15,5 +17,14 @@ export async function startScheduler(client: Client) {
     // if (!channel?.isTextBased()) return;
 
     // await channel.send("test.");
+  });
+
+  cron.schedule("*/1 * * * *", async () => {
+    const date = new Date();
+    const bdays = await characterHelper.getOOCBirthdays(date.getMonth(), date.getDate());
+    for(const id of bdays){
+      await embedHelper.sendOOCBirthdayEmbed(client, id);
+    }
+    console.log("Bdays: ", bdays)
   });
 }

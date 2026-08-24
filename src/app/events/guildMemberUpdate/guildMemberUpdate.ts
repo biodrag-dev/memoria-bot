@@ -8,8 +8,7 @@ const handler: EventHandler<"guildMemberUpdate"> = async (
 ) => {
   // User started boosting
   if (!oldMember.premiumSince && newMember.premiumSince) {
-    await embedHelper.sendBoostMsg(newMember.client, newMember.user.id);
-    
+    await embedHelper.sendBoostMsg(newMember.client, newMember.user.id);    
   }
 
   // User stopped boosting

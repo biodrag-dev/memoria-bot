@@ -63,6 +63,8 @@ interface Character {
   destination: string;
   partner: Partner;
   optional: CharacterData;
+  birthday?: Date;
+
 }
 
 interface UserData {
@@ -71,6 +73,7 @@ interface UserData {
   monthly_rolled?: number;
   booster_role?: string;
   characters: Record<string, Character>;
+  birthday?: Date;
 }
 
 type CharacterDex = Record<string, UserData>;
@@ -608,7 +611,7 @@ export async function createNewForumPost(
     const message = await thread.send(`<@${id}>`);
 
     setTimeout(async () => {
-      await message.delete().catch(() => {});
+      await message.delete().catch(() => { });
     }, 5000);
   }
   saveUsers();
@@ -1334,5 +1337,49 @@ export async function playWithPartner(id: string) {
     charaDex[id].OocPartner.happiness += 1;
     charaDex[id].OocPartner.lastInteracted == new Date();
     await saveUsers();
+  }
+}
+
+export async function getOOCBirthdays(month: number, day: number): Promise<string[]> {
+  await loadUsers();
+  const bdays = Object.entries(charaDex)
+    .filter(([_, info]) => {
+      if (info.birthday) {
+        const date = new Date(info.birthday);
+        return (date.getMonth() === month) && (date.getDate() === day);
+      }
+    }).map(([key, _]) => (key));
+
+  return bdays;
+}
+
+
+export async function setBday(id: string, month: number, day: number) {
+  await loadUsers();
+  try {
+    const bday = new Date(0);
+    bday.setMonth(month, day);
+
+    if (!charaDex[id]) {
+      charaDex[id] = {
+        characters: {},
+      };
+    }
+
+    charaDex[id].birthday = bday;
+    await saveUsers();
+    const embed = new EmbedBuilder()
+      .setColor("Green")
+      .setDescription(
+        `Your Birthday has been set!`,
+      );
+    return embed;
+  } catch {
+    const embed = new EmbedBuilder()
+      .setColor("Red")
+      .setDescription(
+        `Error: Invalid Date!`,
+      );
+    return embed;
   }
 }
