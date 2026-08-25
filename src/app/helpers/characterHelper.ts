@@ -301,6 +301,22 @@ async function saveUsers() {
   );
 }
 
+export async function getAllInactive(client: Client): Promise<string[]> {
+  await loadUsers();
+  const inactiveUsers: string[] = []
+  const guild = client.guilds.cache.get(`${process.env.GUILD_ID}`);
+
+  if (guild) {
+    for(const user of Object.keys(charaDex)){
+      if(!guild.members.cache.has(user)){
+        inactiveUsers.push(user);
+      }
+    }
+  }
+
+  return inactiveUsers;
+}
+
 export async function getCharactersObj(id: string): Promise<Character[]> {
   await loadUsers();
 
@@ -482,7 +498,10 @@ export async function deleteAll(
     role?.delete();
   }
   delete charaDex[id];
-
+  const reserve = await submitHelper.getReserveOfUser(id);
+  if(reserve.length != 0){
+    submitHelper.deleteDestination(reserve[0]!);
+  }
   await saveUsers();
 
   return new EmbedBuilder()
@@ -625,7 +644,7 @@ export async function createNewForumPost(
     const message = await thread.send(`<@${id}>`);
 
     setTimeout(async () => {
-      await message.delete().catch(() => {});
+      await message.delete().catch(() => { });
     }, 5000);
   }
   saveUsers();
@@ -1468,9 +1487,9 @@ export async function getOOCMonthBirthday(
     users.length != 0
       ? users.join("\n")
       : `No birthdays are registered for this month.`;
-  embed.setDescription(list).setTitle(`${months[month]} | Upcoming Birthdays!`)    .setImage(
-      `https://i.pinimg.com/originals/b7/f7/88/b7f788e000ffb2854a98d937b8a46593.gif`,
-    )
+  embed.setDescription(list).setTitle(`${months[month]} | Upcoming Birthdays!`).setImage(
+    `https://i.pinimg.com/originals/b7/f7/88/b7f788e000ffb2854a98d937b8a46593.gif`,
+  )
     .setFooter({ text: `banner by @mae_1031 on danbooru` }).setColor("#6ed3ba");
   return embed;
 }

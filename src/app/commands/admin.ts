@@ -164,6 +164,11 @@ export const command: CommandData = {
         },
       ],
     },
+    {
+      name: "trim-list",
+      description: "gets a list of people who have left the server",
+      type: ApplicationCommandOptionType.Subcommand,
+    }
   ],
 };
 
@@ -253,6 +258,24 @@ export const chatInput: ChatInputCommand = async (ctx) => {
       content: `The character's profile has been edited!`,
       embeds: [embed],
       ephemeral: true,
+    });
+  }
+
+  if (sub === "trim-list") {
+    const people = await characterHelper.getAllInactive(ctx.client);
+    var text = ``;
+    if (people.length != 0) {
+      for (const user of people) {
+        text += `\n<@${user}>`
+      }
+    } else {
+      text = `Everything's caught up!`
+    }
+
+    
+    const embed = new EmbedBuilder().setDescription(`${text}`).setTitle(`Trimmable Data`)
+    await interaction.reply({
+      embeds: [embed]
     });
   }
 
@@ -360,7 +383,6 @@ export const chatInput: ChatInputCommand = async (ctx) => {
 
       return;
     }
-
     if (sub === "character") {
       embed
         .setDescription(

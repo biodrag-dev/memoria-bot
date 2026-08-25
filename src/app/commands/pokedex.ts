@@ -40,7 +40,19 @@ export const command: CommandData = {
         },
       ],
     },
-
+    {
+      name: "evolution-finder",
+      description: "Find the evolutions of a specified Pokemon!",
+      type: ApplicationCommandOptionType.Subcommand,
+      options: [
+        {
+          name: "name",
+          description: "The name of the Pokémon",
+          type: ApplicationCommandOptionType.String,
+          required: true,
+        },
+      ],
+    },
     {
       name: "random-mon",
       description: "Find a random Pokémon!",
@@ -89,6 +101,37 @@ export const chatInput: ChatInputCommand = async (ctx) => {
     });
   }
 
+  if (sub === "evolution-finder") {
+    const name = interaction.options.getString("name")!;
+    const pokemon = await pokehelper.findPokemon(name);
+
+    if (!pokemon) {
+      return interaction.editReply(
+        `Pokémon species "${name}" could not be found!`,
+      );
+    }
+
+    const evolutions = await pokehelper.getDirectEvolutions(
+      pokemon,
+    );
+
+    const evoEmbeds = [];
+    for (const evoName of evolutions) {
+      const pokemon = await pokehelper.findPokemon(evoName);
+      evoEmbeds.push(await pokehelper.pokeEmbedCreate(pokemon));
+    }
+
+    if (evoEmbeds.length != 0) {
+      return interaction.editReply({
+        embeds: evoEmbeds,
+      });
+    }
+    return interaction.editReply({
+      content: `Can't find evolutions!`,
+    });
+
+  }
+
   if (sub === "basemon-finder") {
     const name = interaction.options.getString("name")!;
     const pokemon = await pokehelper.findPokemon(name);
@@ -109,6 +152,8 @@ export const chatInput: ChatInputCommand = async (ctx) => {
       embeds: [embed],
     });
   }
+
+
 
   if (sub === "random-mon") {
     const pokemon = await pokehelper.findRandomMon();

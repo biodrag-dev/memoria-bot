@@ -160,6 +160,84 @@ export async function getEvolutionPath(dest: string) {
   }
 }
 
+export async function getDirectEvolutions(pokemon: Pokemon) {
+  switch (pokemon.name) {
+    case "basculin-white-striped":
+      return ["basculegion-female", "basculegion-male"];
+    case "frillish-male":
+      return ["jellicent-male"];
+    case "burmy":
+      return ["wormadam-plant", "wormadam-sandy", "wormadam-trash"];
+    case "finizen":
+      return ["palafin-zero", "palafin-hero"];
+    case "dunsparce":
+      return ["dudunsparce-two-segment", "dudunsparce-three-segment"];
+  }
+
+  try {
+    const pokemonSpecies = await P.getResource(pokemon.species.url);
+    const evoChain = await P.getResource(pokemonSpecies.evolution_chain.url);
+
+    const evolutionChain = getCurrentEvoChainLink(evoChain.chain, pokemonSpecies.name);
+    const evolutions = getEvolutionsHelper(evolutionChain, pokemon.name);
+
+    return evolutions;
+  } catch {
+    return [];
+  }
+}
+
+function getCurrentEvoChainLink(chainLink: any, current: string): any | undefined {
+
+  if (chainLink.species.name == current) {
+    return chainLink;
+  }
+
+
+  for (const evolution of chainLink.evolves_to) {
+    // iterates over each evolution (regional forms included)
+    for (const detail of evolution.evolution_details) {
+      // goes over the detail of each evolution (which form is required? which form is base?)
+      //checks if it evolves into a regional form
+      //var evolvedForm = detail.evolved_form?.name ?? evolution.species.name;
+      //check if the base form requires a regional form
+      var baseForm = detail.base_form?.name ?? chainLink.species.name;
+
+      const evoChain = getCurrentEvoChainLink(evolution, current);
+      if (evoChain) {
+        return evoChain;
+      }
+    }
+  }
+
+}
+
+function getEvolutionsHelper(
+  chainLink: any,
+  current: string,
+): Set<string> {
+
+  const evolutions = new Set<string>();
+  //each evolution that they can get
+  for (const evolution of chainLink.evolves_to) {
+    // iterates over each evolution (regional forms included)
+    for (const detail of evolution.evolution_details) {
+      // goes over the detail of each evolution (which form is required? which form is base?)
+      //checks if it evolves into a regional form
+      var evolvedForm = detail.evolved_form?.name ?? evolution.species.name;
+      //check if the base form requires a regional form
+      var baseForm = detail.base_form?.name ?? chainLink.species.name;
+
+      console.log(evolvedForm);
+      if (baseForm == current) {
+        evolutions.add(evolvedForm);
+      }
+    }
+  }
+
+  return evolutions;
+}
+
 function getEvolutionPathHelper(
   chainLink: any,
   target: string,
@@ -256,7 +334,7 @@ export async function getGenera(pokemonName: string): Promise<string> {
 export async function isLegendOrMyth(pokemonName: string): Promise<boolean> {
   const name = pokemonName.toLowerCase();
 
-  if(pokemonName.includes("-mega") || pokemonName.includes("-gmax") || pokemonName.includes("-totem") || pokemonName.includes("-eternal") || pokemonName.includes("-bloodmoon") || pokemonName.includes("-starter")){
+  if (pokemonName.includes("-mega") || pokemonName.includes("-gmax") || pokemonName.includes("-totem") || pokemonName.includes("-eternal") || pokemonName.includes("-bloodmoon") || pokemonName.includes("-starter")) {
     return true;
   }
   if (PARADOX_POKEMON.has(name) || ULTRA_BEASTS.has(name)) {
@@ -345,7 +423,7 @@ export function displayName(pokemonName: string) {
     form = "Mega ";
     name = name.replace("-mega", "");
   }
-  
+
   if (name.includes("-gmax")) {
     form = "Gigantamax ";
     name = name.replace("-gmax", "");
