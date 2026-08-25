@@ -15,6 +15,7 @@ import {
 import * as characterHelper from "../helpers/characterHelper";
 import * as submitHelper from "../helpers/submitHelper";
 import * as pokeHelper from "../helpers/pokeHelper";
+import * as embedHelper from "../helpers/embedHelper";
 
 import { EmbedBuilder } from "discord.js";
 
@@ -166,7 +167,6 @@ export const command: CommandData = {
   ],
 };
 
-
 export const autocomplete = async (ctx: any) => {
   const interaction = ctx.interaction;
 
@@ -293,12 +293,15 @@ export const chatInput: ChatInputCommand = async (ctx) => {
     if (sub === "reserve") {
       const species = interaction.options.getString("reservation", true);
       submitHelper.deleteDestination(species);
+
       embed.setDescription(
         `Deleted ${pokeHelper.displayName(species)} reservation.`,
       );
       await interaction.reply({
         embeds: [embed],
       });
+
+      return await embedHelper.updateReservesEmbed(ctx.interaction.client);;
     }
 
     if (sub === "all") {

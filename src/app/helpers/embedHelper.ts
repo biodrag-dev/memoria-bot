@@ -1,21 +1,28 @@
-import { Client, EmbedBuilder, Interaction, TextChannel } from "discord.js";
+import {
+  Client,
+  EmbedBuilder,
+  ForumChannel,
+  Interaction,
+  TextChannel,
+} from "discord.js";
 
 import * as submitHelper from "./submitHelper";
 
 export async function updateAllEmbeds(client: Client) {
-  // updateReservesEmbed(client);
-  // updateServerRulesEmbed(client);
-  // updateCharacterRulesEmbed(client);
-  // updateVerificationEmbed(client);
-  // updateRolesEmbed(client);
-  // updateRoleplayRules(client);
-  // updateFaqEmbed(client);
-  // //thread is archived
-  // //updatePartnershipRules(client);
-  // updateTemplateEmbed(client);
-  //   //thread is archived
+  updateReservesEmbed(client);
+  updateServerRulesEmbed(client);
+  updateCharacterRulesEmbed(client);
+  updateVerificationEmbed(client);
+  updateRolesEmbed(client);
+  updateRoleplayRules(client);
+  updateFaqEmbed(client);
+  //thread is archived
+  //updatePartnershipRules(client);
+  updateTemplateEmbed(client);
+    //thread is archived
   // updateStaffNpcEmbed(client);
   updateResourcesEmbed(client);
+  updateAllLoreEmbeds(client)
 }
 
 export async function updateEmbed(
@@ -108,6 +115,27 @@ export async function sendWelcomeMsg(client: Client, user: string) {
     content: `<@${user}>`,
     embeds: [embedOne],
   });
+}
+
+export async function updateAllLoreEmbeds(client: Client) {
+  const forum = (await client.channels.fetch(
+    `1527303791500722256`,
+  )) as ForumChannel;
+  const historyThread = await forum.threads.fetch(`1540937672405553195`);
+  const historyMessage = await historyThread!.fetchStarterMessage();
+  historyMessage?.edit({ embeds: [await getLoreHistoryEmbed()] });
+
+  const academyThread = await forum.threads.fetch(`1540937573696806963`);
+  const academyMessage = await academyThread!.fetchStarterMessage();
+  academyMessage?.edit({ embeds: await getLoreDexlightAcademyEmbed() });
+
+  const circuitThread = await forum.threads.fetch(`1540870356175163504`);
+  const circuitMessage = await circuitThread!.fetchStarterMessage();
+  circuitMessage?.edit({ embeds: [await getLoreTrialCircuitEmbed()] });
+
+  const mapThread = await forum.threads.fetch(`1540868211652952206`);
+  const mapMessage = await mapThread!.fetchStarterMessage();
+  await mapMessage?.edit({ embeds: [await getLoreRegionMap()] });
 }
 
 export async function updateStaffNpcEmbed(client: Client) {
@@ -403,7 +431,7 @@ async function getReservesThreeEmbed() {
     .setDescription(
       `Looking to reserve an Evolutionary Destination in advance? Use **/submit partner-reserve**! Note that reservervations cannot be changed to another species until a week has passed, you must submit with your current reservation, and there are no extensions.
       
-      ${await submitHelper.getAllReservedPartnerEntries()}`,
+${await submitHelper.getAllReservedPartnerEntries()}`,
     )
     .setThumbnail(
       `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png?format=webp&quality=lossless`,
@@ -447,16 +475,19 @@ async function getServerRulesEmbed() {
 7. Behave appropriately.
 > Staff will not be micromanaging every interaction. Do not attempt to look for loopholes in the rules or minimod – if you’re ever uncertain, feel free to ask us!
 
-8. Listen to staff.
+8. No AI.
+> Please do not share any AI-generated content of any form, whether it be art, writing, or music. Doing so intentionally may result in a ban.
+
+9. Listen to staff.
 > We ask that you listen to what the staff say. We are here to assist you, and meeting that with hostility is unacceptable. At the same time, staff are not above constructive criticism. It is okay for server members to disagree with us so long as it is done in a respectful manner and vice versa.
 
-9. No advertising.
+10. No advertising.
 > Advertising other servers here is strictly prohibited and will be met with either a kick or ban. If you wish to partner with us, please create a ticket in <#1533686056019300452>!
 
-10. No venting.
+11. No venting.
 > We are not medical professionals, so any advice given or improper handling may lead to more harm than good at times. If you need to vent, we suggest taking a look at <#1533714323271323738>. If you would like to take a break, we’re willing to accommodate you!
 
-11. Keep it out of staff DMs.
+12. Keep it out of staff DMs.
 > For both organization and our staff’s safety, we ask that you avoid DMing staff for server/moderation purposes. If you have something private you’d like to discuss with staff (e.g. harassment from another server member or a private character idea), please open up a ticket in <#1533686056019300452>. The password is \`starburst\`.`,
     )
     .setImage("https://1041uuu.jp/Gallery/b/b27.gif")
@@ -717,7 +748,11 @@ OO2 ﹒﹒Can I get a color role?
 > While we would like to avoid excessive role clutter in the server, you can gain a custom color role through boosting the server.
  
 OO3 ﹕How can I create a partnership with this server?
-> Go to <#1533686056019300452> and create a ticket! Please do not DM staff for partnerships.`,
+> Go to <#1533686056019300452> and create a ticket! Please do not DM staff for partnerships.
+ 
+OO4 ﹒﹒Can I help answer questions that others ask in <#1527299700699566162>?
+> If it is a question that can be answered by directly forwarding/screenshotting a section of the rules or one of the staff's rulings on such a question, then feel free to do so! However, to avoid confusion, we ask that personal interpretations of the rules are not shared as it can lead to minimodding or misinformation.
+`,
     )
     .setImage(
       "https://i.pinimg.com/originals/9f/0d/ae/9f0dae7c8678a5b18b8bbfbf924d8392.gif",
@@ -802,6 +837,139 @@ OO5 ﹒﹒Do people eat Pokemon or animals?
     .setImage("https://pbs.twimg.com/media/E-97E1hUYAAgmkc.png?name=orig")
     .setFooter({
       text: "banner by @mattfdraws on twitter",
+    });
+
+  return embed;
+}
+
+async function getLoreHistoryEmbed() {
+  const embed = new EmbedBuilder()
+    .setTitle(`𝐇𝐈𝐒𝐓𝐎𝐑𝐘`)
+    .setColor("#ee98c1")
+    .setDescription(
+      `In the distant past, long before the region of SanYuan had a name, a great uprising had bloodied its ancient lands.
+
+Perhaps it was because of the overcrowded and neglected; trainers catching Pokemon that they simply could not take care of—or, perhaps it was the abused, suffering from those in power forcing their Pokemon to commit deeds of evil. Regardless, it was the mistreatment of Pokemon that shifted the tides into one of war—an Uprising strong enough to shatter the norm.
+
+It was a messy conflict, one that left families bereft of children and parents on both sides. Humans were powerless before the might of Pokemon, but their ingenuity kept them three steps ahead as they forced Pokemon to fight against their own kind. During those times, it was so bleak that the only future each side could imagine was one where the other was eradicated entirely.
+
+When all hope seemed lost, three mythical Pokemon descended from the skies—bringing unity to the lands.
+
+Thanks to the intervention of Victini, Jirachi, and Mew, the war slowed to a stop, and negotiations began. Some argued for the complete separation of humans and pokemon, while others argued for the status quo to be continued and for the uproar to be disregarded and forgotten.
+
+In the end, humans and Pokemon came to a compromise.
+
+There would no longer be trainers with full teams of pokemon, but rather: one Pokemon, if at all. It was decided that this would prevent the abuse of power humans had held over their supposed companions for so long, allowing humans to develop and truly bond with their chosen Partner.
+
+While most of the precise historical details have been lost to time, that is the legends for how the one-on-one partnerships between Humans and Pokemon have begun.
+
+As people began adjusting to this new way of life, so did society. It wasn’t as if Pokemon were prohibited from hanging out with Trainers who already had a partner Pokemon—they were simply unable to be caught, remaining wild Pokemon on their own terms.
+
+Regulations began springing up, from the restriction of Pokeball sales to the decision on who could receive official Pokemon Partners entirely. Eventually, it was decided that all trainers would require a formal education—not only to avoid repeating the atrocities of the past and teach them how to properly care for their Pokemon partner’s needs, but also to prepare them for the real world.
+
+That is the origin of Dexlight Academy, the starting place for all trainers.`,
+    )
+    .setImage(
+      "https://64.media.tumblr.com/feceffc1039c6e37583700ca47730407/4127768b7eafaf67-9d/s1280x1920/635c02ff3664cee5be9504b26d3c549de3c953e3.gif",
+    )
+    .setFooter({
+      text: `banner by @apolism on tumblr`,
+    });
+  return embed;
+}
+
+async function getLoreDexlightAcademyEmbed(): Promise<EmbedBuilder[]> {
+  const embed = new EmbedBuilder()
+    .setTitle(`𝐇𝐎𝐔𝐒𝐄𝐒`)
+    .setColor("#6be26b")
+    .setDescription(
+      `Accepting students as young as 16 with no upper limit, Dexlight Academy is a school for anyone and everyone with potential. There are three houses, each named in honor of the Mythicals of Peace:`,
+    )
+    .setImage(
+      "https://i.pinimg.com/originals/d0/c2/2e/d0c22e043a90d7037af552ef4fe54235.gif",
+    )
+    .setFooter({
+      text: `banner by @apolism on tumblr`,
+    });
+  const embed2 = new EmbedBuilder()
+    .setTitle(`𝐕𝐈𝐂𝐓𝐈𝐍𝐈`)
+    .setColor("#ce1b1b")
+    .setDescription(
+      `> For the greatest wills. Victini's house is home to the battlers, those who are ready to feel clashing passions and the heat of battle. Battling is part of a Pokemon’s base instincts, and like the ancient trainers from before, the trainers in this class enjoy partaking in gritty combat. Their graduates are often the first responders in the case of rampaging Pokemon, and partake in keeping the public safety.`,
+    )
+    .setImage(
+      "https://64.media.tumblr.com/4c989428ba947bc4966e07e76d36bd28/118ec01107834a73-07/s540x810/5c2aa6ffdba2c64d3deb6fb0a646313eb247c561.gif",
+    )
+    .setFooter({
+      text: `banner by @waneella on tumblr`,
+    });
+
+  const embed3 = new EmbedBuilder()
+    .setTitle(`𝐌𝐄𝐖`)
+    .setColor("#3473fa")
+    .setDescription(
+      `> For the sharpest minds. The Mew house is one focused purely on study, whether it’s Pokemon biology or technology. Graduates from this house often go into scientific fields, and the most useful of inventions—whether it’s Nurse Joy’s technology or the battle items that you might use today—can be attributed to them.`,
+    )
+    .setImage(
+      "https://i.pinimg.com/originals/33/00/37/330037e99d9692d6b6a290296a33bdca.gif",
+    )
+    .setFooter({
+      text: `banner by @1041uuu on tumblr`,
+    });
+
+  const embed4 = new EmbedBuilder()
+    .setTitle(`𝐉𝐈𝐑𝐀𝐂𝐇𝐈`)
+    .setColor("#FFC969")
+    .setDescription(
+      `> For the most passionate hearts. The house of Jirachi is meant for those who seek to bond with Pokemon of all kinds, not just their partner. Their graduates often take occupations in the same vein working with all sorts of Pokemon, such as Pokemon Breeders and Nurses.`,
+    )
+    .setImage(
+      "https://i.pinimg.com/originals/82/19/ad/8219adaa7148d1dcd477a4d728f97b85.gif",
+    )
+    .setFooter({
+      text: ` banner by @anasabdin on tumblr`,
+    });
+
+  return [embed, embed2, embed3, embed4];
+}
+
+async function getLoreTrialCircuitEmbed() {
+  const embed = new EmbedBuilder()
+    .setTitle(`𝐓𝐑𝐈𝐀𝐋𝐒`)
+    .setColor("#b3df8a")
+    .setDescription(
+      `Compared to the traditional approach of a non-trainer school, Dexlight Academy offers a more hands-on experience, looking to combine both the grand stories of the ancient trainer’s adventures with the journey that comes with learning. Instead of 'book' learning with your teachers, students of Dexlight Academy participate in a Trial Circuit in order to receive official certification and graduation from their courses.
+
+With 18 total Sanyuanian Trial Leaders (listed in <#1540209862489939999>), there are 6 assigned to each class. As a student of Dexlight Academy, you are only expected to complete the 6 trials within your class, before completing a seventh with your respective class’s Champion.
+
+For some, it only takes one year to complete the Circuit. For others, decades.
+
+These Trials are seen as a rite of passage—you can only rely on yourself and your partner. Not much is publicly known about them, and the ones who have experienced these Trials remain tight-lipped on the matter. Some can even pass trials without even knowing it—sometimes the Trial Leaders grant their badges outside of their Trials to those who they feel already have learned the lesson they impart.
+
+Regardless of your class, however, the Trial Circuit does not discourage you from traveling together with your friends. This is a time to grow, to create new bonds.
+
+But while you may encounter difficulties on your journey, do not remain discouraged. Dexlight Academy selects its students for a reason: the pure potential the Champions have seen in you.`,
+    )
+    .setImage(
+      "https://i.pinimg.com/1200x/97/83/e4/9783e455c0b262277955766f9c7923ac.jpg",
+    )
+    .setFooter({
+      text: `banner by @1041uuu on tumblr`,
+    });
+
+  return embed;
+}
+
+async function getLoreRegionMap() {
+  const embed = new EmbedBuilder()
+    .setTitle(`thank you so much!!`)
+    .setColor("#53bd7f")
+    .setDescription(`WIP`)
+    .setImage(
+      "https://i.pinimg.com/originals/05/6d/8a/056d8a102432ffe13476a0b783c5116d.gif",
+    )
+    .setFooter({
+      text: `banner by @setamo-arts on tumblr`,
     });
 
   return embed;

@@ -18,6 +18,7 @@ import type {
 } from "commandkit";
 import * as pokehelper from "../helpers/pokeHelper";
 import * as submitHelper from "../helpers/submitHelper";
+import * as embedHelper from "../helpers/embedHelper";
 
 export const metadata: CommandMetadata = {
   guilds: [`${process.env.GUILD_ID}`],
@@ -254,6 +255,8 @@ export const chatInput: ChatInputCommand = async (ctx) => {
             .setThumbnail(
               await pokehelper.getSprite(pokemon.name, "Genderless", false),
             );
+          await embedHelper.updateReservesEmbed(ctx.interaction.client);
+
           await button.update({
             embeds: [embed],
             components: [],
