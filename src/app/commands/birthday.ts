@@ -171,6 +171,18 @@ export const command: CommandData = {
         },
       ],
     },
+    {
+      name: "personal",
+      description: "related to both yours and your characters!!",
+      type: ApplicationCommandOptionType.SubcommandGroup,
+      options: [
+        {
+          name: "view-all",
+          description: "view all birthdays for you and your characters!",
+          type: ApplicationCommandOptionType.Subcommand,
+        },
+      ],
+    },
   ],
 };
 
@@ -240,5 +252,9 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         embeds: [await characterHelper.getCharaAllBdays()],
       });
     }
+  }else if (group === "personal"){
+          return interaction.reply({
+        embeds: [await characterHelper.getAllPersonalBdays(interaction.client, interaction.user.id)],
+      });
   }
 };

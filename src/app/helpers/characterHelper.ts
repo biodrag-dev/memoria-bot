@@ -1358,6 +1358,66 @@ export async function playWithPartner(id: string) {
 //    BIRTHDAY COMMANDS
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+export async function getAllPersonalBdays(
+  client: Client,
+  id: string,
+): Promise<EmbedBuilder> {
+  await loadUsers();
+  const embed = new EmbedBuilder();
+
+  if (!charaDex[id]) {
+    embed.setDescription("You don't have any birthdays set!");
+    return embed;
+  }
+
+  const date = new Date(charaDex[id]?.birthday ?? 0);
+  const personalBday = !charaDex[id]?.birthday
+    ? `No birthday has been set!`
+    : `${months[date.getMonth()]} ${date.getDate()} | Your birthday!`;
+
+  var characters: string[] = [];
+  if (charaDex[id]) {
+    if (Object.entries(charaDex[id].characters).length > 0) {
+      const bdays = Object.entries(charaDex[id].characters).sort(
+        ([charaA, infoA], [charaB, infoB]) => {
+          const dateA = new Date(infoA.birthday ?? 9999);
+          const dateB = new Date(infoB.birthday ?? 9999);
+
+          return (
+            (dateA.getMonth() - dateB.getMonth()) * 40 +
+            (dateA.getDay() - dateB.getDay())
+          );
+        },
+      );
+      characters = await Promise.all(
+        bdays.map(async ([key, info]) => {
+          const date = info.birthday ? new Date(info.birthday) : `N/A`;
+          return `${date instanceof Date ? `${months[date.getMonth()]} ${date.getDate()}` : date} | ${key}`;
+        }),
+      );
+    }
+  }
+  const person = await client.users.fetch(id);
+  const avatar = person.displayAvatarURL({ size: 1024 });
+
+  embed
+    .setDescription(
+      `**Personal**
+${personalBday}
+
+**Character Birthday(s)**
+${characters.length == 0 ? `No characters are registered! Why don't you change that?` : characters.join("\n")}`,
+    )
+    .setTitle(`Your birthday(s)!`)
+    .setImage(
+      `https://64.media.tumblr.com/cda9db14ddc868b60551e28b0bcb8a06/tumblr_pevzh6YDZ71x5dih0o1_540.gif`,
+    )
+    .setFooter({ text: `banner by @setamo-arts on tumblr` })
+    .setColor("#9fd3b6")
+    .setThumbnail(avatar);
+  return embed;
+}
+
 export async function getOOCBirthdays(
   month: number,
   day: number,
@@ -1408,7 +1468,10 @@ export async function getOOCMonthBirthday(
     users.length != 0
       ? users.join("\n")
       : `No birthdays are registered for this month.`;
-  embed.setDescription(list).setTitle(`${months[month]} | Upcoming Birthdays!`);
+  embed.setDescription(list).setTitle(`${months[month]} | Upcoming Birthdays!`)    .setImage(
+      `https://i.pinimg.com/originals/b7/f7/88/b7f788e000ffb2854a98d937b8a46593.gif`,
+    )
+    .setFooter({ text: `banner by @mae_1031 on danbooru` }).setColor("#6ed3ba");
   return embed;
 }
 
@@ -1441,8 +1504,14 @@ export async function getOOCAllBirthdays(): Promise<EmbedBuilder> {
   const list =
     users.length != 0
       ? users.join("\n")
-      : `No birthdays are registered for this month. Why don't you change that?`;
-  embed.setDescription(list).setTitle(`Year | Upcoming Birthdays!`);
+      : `No birthdays are registered. Why don't you change that?`;
+  embed
+    .setDescription(list)
+    .setTitle(`Year | Upcoming Birthdays!`)
+    .setImage(
+      `https://i.pinimg.com/originals/83/4c/f3/834cf38ce6a44974aad1d522f2194025.gif`,
+    )
+    .setFooter({ text: `banner by @1041uuu on tumblr` }).setColor("#e94b46");
   return embed;
 }
 
@@ -1537,11 +1606,16 @@ export async function getCharaMonthBdays(month: number): Promise<EmbedBuilder> {
   const list =
     users.length !== 0
       ? users.join("\n")
-      : `No birthdays are registered for this month.`;
+      : `No character birthdays are registered for this month. Why don't you change that?`;
   embed
     .setDescription(list)
-    .setTitle(`${months[month]} | Upcoming Character Birthdays!`);
-  return embed;
+    .setTitle(`${months[month]} | Upcoming Character Birthdays!`).setImage(
+      `https://i.pinimg.com/originals/ce/7f/35/ce7f35ec213d896247c7c2e8620d81f9.gif`,
+    )
+    .setFooter({ text: `banner by @decomposedmaw on twitter` }).setColor("#6eaf66");
+
+  return embed
+    ;
 }
 
 export async function getCharaAllBdays(): Promise<EmbedBuilder> {
@@ -1574,8 +1648,14 @@ export async function getCharaAllBdays(): Promise<EmbedBuilder> {
   const list =
     users.length != 0
       ? users.join("\n")
-      : `No birthdays are registered for this month. Why don't you change that?`;
-  embed.setDescription(list).setTitle(`Year | Upcoming Character Birthdays!`);
+      : `No birthdays are registered. Why don't you change that?`;
+  embed
+    .setDescription(list)
+    .setTitle(`Year | Upcoming Character Birthdays!`)
+    .setImage(
+      `https://i.pinimg.com/originals/35/49/be/3549beaae0ba185e62d53e57144caa0d.gif`,
+    )
+    .setFooter({ text: `banner by @1041uuu on tumblr` }).setColor("#ce3c3c");
   return embed;
 }
 
