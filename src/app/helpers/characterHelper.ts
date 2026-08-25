@@ -64,7 +64,6 @@ interface Character {
   partner: Partner;
   optional: CharacterData;
   birthday?: Date;
-
 }
 
 interface UserData {
@@ -107,6 +106,21 @@ const natures = [
   { value: "23", name: "Jolly" },
   { value: "24", name: "Naive" },
   { value: "25", name: "Serious" },
+];
+
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 let charaDex: CharacterDex;
@@ -611,7 +625,7 @@ export async function createNewForumPost(
     const message = await thread.send(`<@${id}>`);
 
     setTimeout(async () => {
-      await message.delete().catch(() => { });
+      await message.delete().catch(() => {});
     }, 5000);
   }
   saveUsers();
@@ -1340,21 +1354,103 @@ export async function playWithPartner(id: string) {
   }
 }
 
-export async function getOOCBirthdays(month: number, day: number): Promise<string[]> {
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//    BIRTHDAY COMMANDS
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export async function getOOCBirthdays(
+  month: number,
+  day: number,
+): Promise<string[]> {
   await loadUsers();
   const bdays = Object.entries(charaDex)
     .filter(([_, info]) => {
       if (info.birthday) {
         const date = new Date(info.birthday);
-        return (date.getMonth() === month) && (date.getDate() === day);
+        return date.getMonth() === month && date.getDate() === day;
       }
-    }).map(([key, _]) => (key));
+    })
+    .map(([key, _]) => key);
 
   return bdays;
 }
 
+export async function getOOCMonthBirthday(
+  month: number,
+): Promise<EmbedBuilder> {
+  await loadUsers();
+  const bdays = Object.entries(charaDex)
+    .filter(([_, info]) => {
+      if (info.birthday) {
+        const date = new Date(info.birthday);
+        return date.getMonth() === month;
+      }
+      return false;
+    })
+    .sort(([_, a], [__, b]) => {
+      const dateA = new Date(a.birthday!);
+      const dateB = new Date(b.birthday!);
 
-export async function setBday(id: string, month: number, day: number) {
+      return (
+        (dateA.getMonth() - dateB.getMonth()) * 40 +
+        (dateA.getDay() - dateB.getDay())
+      );
+    });
+
+  const users = await Promise.all(
+    bdays.map(async ([key, info]) => {
+      const date = new Date(info.birthday!);
+      return `${months[date.getMonth()]} ${date.getDate()} | <@${key}>`;
+    }),
+  );
+  const embed = new EmbedBuilder();
+  const list =
+    users.length != 0
+      ? users.join("\n")
+      : `No birthdays are registered for this month.`;
+  embed.setDescription(list).setTitle(`${months[month]} | Upcoming Birthdays!`);
+  return embed;
+}
+
+export async function getOOCAllBirthdays(): Promise<EmbedBuilder> {
+  await loadUsers();
+  const bdays = Object.entries(charaDex)
+    .filter(([_, info]) => {
+      if (info.birthday) {
+        return true;
+      }
+      return false;
+    })
+    .sort(([_, a], [__, b]) => {
+      const dateA = new Date(a.birthday!);
+      const dateB = new Date(b.birthday!);
+
+      return (
+        (dateA.getMonth() - dateB.getMonth()) * 40 +
+        (dateA.getDay() - dateB.getDay())
+      );
+    });
+
+  const users = await Promise.all(
+    bdays.map(async ([key, info]) => {
+      const date = new Date(info.birthday!);
+      return `${months[date.getMonth()]} ${date.getDate()} | <@${key}>`;
+    }),
+  );
+  const embed = new EmbedBuilder();
+  const list =
+    users.length != 0
+      ? users.join("\n")
+      : `No birthdays are registered for this month. Why don't you change that?`;
+  embed.setDescription(list).setTitle(`Year | Upcoming Birthdays!`);
+  return embed;
+}
+
+export async function setBday(
+  id: string,
+  month: number,
+  day: number,
+): Promise<EmbedBuilder> {
   await loadUsers();
   try {
     const bday = new Date(0);
@@ -1371,15 +1467,141 @@ export async function setBday(id: string, month: number, day: number) {
     const embed = new EmbedBuilder()
       .setColor("Green")
       .setDescription(
-        `Your Birthday has been set!`,
+        `Your Birthday has been set for ${months[month]} ${day}!`,
       );
     return embed;
   } catch {
     const embed = new EmbedBuilder()
       .setColor("Red")
+      .setDescription(`Error: Invalid Date!`);
+    return embed;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//    CHARACTER BIRTHDAY COMMANDS
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export async function getCharaBdays(
+  month: number,
+  day: number,
+): Promise<{ userId: string; charaName: string }[]> {
+  await loadUsers();
+  const bdays: { userId: string; charaName: string }[] = [];
+
+  for (const [userId, userData] of Object.entries(charaDex)) {
+    for (const [charaName, character] of Object.entries(userData.characters)) {
+      if (character.birthday) {
+        const date = new Date(character.birthday);
+
+        if (date.getMonth() === month && date.getDate() === day) {
+          bdays.push({ userId, charaName });
+        }
+      }
+    }
+  }
+
+  return bdays;
+}
+
+export async function getCharaMonthBdays(month: number): Promise<EmbedBuilder> {
+  await loadUsers();
+
+  const bdays: { userId: string; character: Character }[] = [];
+  for (const [userId, userData] of Object.entries(charaDex)) {
+    for (const character of Object.values(userData.characters)) {
+      if (character.birthday) {
+        const date = new Date(character.birthday);
+        if (date.getMonth() === month) {
+          bdays.push({ userId, character });
+        }
+      }
+    }
+  }
+
+  bdays.sort((a, b) => {
+    const dateA = new Date(a.character.birthday!);
+    const dateB = new Date(b.character.birthday!);
+    return (
+      (dateA.getMonth() - dateB.getMonth()) * 40 +
+      (dateA.getDay() - dateB.getDay())
+    );
+  });
+
+  const users = bdays.map(({ userId, character }) => {
+    const date = new Date(character.birthday!);
+    return `${months[date.getMonth()]} ${date.getDate()} | ${character.name} | <@${userId}>`;
+  });
+
+  const embed = new EmbedBuilder();
+  const list =
+    users.length !== 0
+      ? users.join("\n")
+      : `No birthdays are registered for this month.`;
+  embed
+    .setDescription(list)
+    .setTitle(`${months[month]} | Upcoming Character Birthdays!`);
+  return embed;
+}
+
+export async function getCharaAllBdays(): Promise<EmbedBuilder> {
+  await loadUsers();
+
+  const bdays: { userId: string; character: Character }[] = [];
+  for (const [userId, userData] of Object.entries(charaDex)) {
+    for (const character of Object.values(userData.characters)) {
+      if (character.birthday) {
+        bdays.push({ userId, character });
+      }
+    }
+  }
+
+  bdays.sort((a, b) => {
+    const dateA = new Date(a.character.birthday!);
+    const dateB = new Date(b.character.birthday!);
+    return (
+      (dateA.getMonth() - dateB.getMonth()) * 40 +
+      (dateA.getDay() - dateB.getDay())
+    );
+  });
+
+  const users = bdays.map(({ userId, character }) => {
+    const date = new Date(character.birthday!);
+    return `${months[date.getMonth()]} ${date.getDate()} | ${character.name} | <@${userId}>`;
+  });
+
+  const embed = new EmbedBuilder();
+  const list =
+    users.length != 0
+      ? users.join("\n")
+      : `No birthdays are registered for this month. Why don't you change that?`;
+  embed.setDescription(list).setTitle(`Year | Upcoming Character Birthdays!`);
+  return embed;
+}
+
+export async function setCharaBday(
+  id: string,
+  name: string,
+  month: number,
+  day: number,
+): Promise<EmbedBuilder> {
+  await loadUsers();
+  try {
+    const bday = new Date(0);
+    bday.setMonth(month, day);
+
+    charaDex[id]!.characters[name]!.birthday = bday;
+    await saveUsers();
+    const embed = new EmbedBuilder()
+      .setColor("Green")
       .setDescription(
-        `Error: Invalid Date!`,
+        `${name}'s birthday has been set for ${months[month]} ${day}!`,
       );
+    return embed;
+  } catch {
+    const embed = new EmbedBuilder()
+      .setColor("Red")
+      .setDescription(`Error: Invalid Date!`);
     return embed;
   }
 }

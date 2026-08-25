@@ -89,7 +89,7 @@ export default async function (interaction: Interaction) {
             .setFooter({ text: "Better luck next time..." });
         }
         const alphaRoll = new EmbedBuilder()
-          .setDescription(`🎲 **Result** | ${submission.alphaRoll} ${submission.alphaRoll === 20 ? `<:ea_alphaicon:1533355784769896459>` : ``}`)
+          .setDescription(`🎲 **Result** | ${submission.alphaRoll} ${submission.alphaRoll === 20 ? `<:alpha:1539739148586455162>` : ``}`)
           .setTitle(`Rolling for Alpha Status (1d20)...`);
         if (submission.alphaRoll == 20) {
           alphaRoll.setColor("#f81a1a").setFooter({

@@ -166,6 +166,7 @@ export const command: CommandData = {
   ],
 };
 
+
 export const autocomplete = async (ctx: any) => {
   const interaction = ctx.interaction;
 

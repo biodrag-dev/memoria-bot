@@ -19,12 +19,28 @@ export async function startScheduler(client: Client) {
     // await channel.send("test.");
   });
 
-  cron.schedule("*/1 * * * *", async () => {
+  //
+  cron.schedule("0 0 * * *", async () => {
     const date = new Date();
-    const bdays = await characterHelper.getOOCBirthdays(date.getMonth(), date.getDate());
-    for(const id of bdays){
+    const bdays = await characterHelper.getOOCBirthdays(
+      date.getMonth(),
+      date.getDate(),
+    );
+    for (const id of bdays) {
       await embedHelper.sendOOCBirthdayEmbed(client, id);
     }
-    console.log("Bdays: ", bdays)
+    const charaBdays = await characterHelper.getCharaBdays(
+      date.getMonth(),
+      date.getDate(),
+    );
+    for (const id of charaBdays) {
+      await embedHelper.sendCharaBdayEmbed(
+        client,
+        id.charaName,
+        id.userId,
+        undefined,
+        undefined,
+      );
+    }
   });
 }

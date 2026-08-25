@@ -15,7 +15,7 @@ export async function updateAllEmbeds(client: Client) {
   // updateTemplateEmbed(client);
   //   //thread is archived
   // updateStaffNpcEmbed(client);
-  updateResourcesEmbed(client)
+  updateResourcesEmbed(client);
 }
 
 export async function updateEmbed(
@@ -30,14 +30,37 @@ export async function updateEmbed(
   });
 }
 
+export async function sendCharaBdayEmbed(
+  client: Client,
+  name: string,
+  user: string,
+  art_link: string | undefined,
+  artist_credits: string | undefined,
+) {
+  const channel = (await client.channels.fetch(
+    `${process.env.RP_DISC_CHANNEL}`,
+  )) as TextChannel;
+
+  const embedOne = await getCharaBdayEmbed(
+    art_link,
+    artist_credits,
+    name,
+    user,
+  );
+  await channel.send({
+    content: `<@${user}>`,
+    embeds: [embedOne],
+  });
+}
 
 export async function sendOOCBirthdayEmbed(client: Client, user: string) {
   const channel = (await client.channels.fetch(
     `${process.env.GEN_CHAT_CHANNEL}`,
   )) as TextChannel;
 
-  const embedOne = await getBoostEmbed(client, user);
+  const embedOne = await getBirthdayEmbed(client, user);
   await channel.send({
+    content: `<@${user}>`,
     embeds: [embedOne],
   });
 }
@@ -91,14 +114,15 @@ export async function updateStaffNpcEmbed(client: Client) {
   const channel = (await client.channels.fetch(
     `${process.env.STORY_NPC_CHANNEL}`,
   )) as TextChannel;
-  const msgOne = await channel.messages.fetch(`${process.env.STORY_NPC_MSG_ONE}`);
+  const msgOne = await channel.messages.fetch(
+    `${process.env.STORY_NPC_MSG_ONE}`,
+  );
   const embedOne = await getStaffNpcEmbed();
   await msgOne.edit({
     content: ``,
     embeds: [embedOne],
   });
 }
-
 
 export async function updateVerificationEmbed(client: Client) {
   const channel = (await client.channels.fetch(
@@ -836,7 +860,7 @@ export async function getResourcesEmbed() {
     .setTitle(`𝐑𝐄𝐒𝐎𝐔𝐑𝐂𝐄𝐒`)
     .setColor("#9b3a36")
     .setDescription(
-`Please know that you are not alone! Here are some helpful resources that we’ve gathered below to help you! If there are any other links you believe we should include, feel free to let us know so we can add them.
+      `Please know that you are not alone! Here are some helpful resources that we’ve gathered below to help you! If there are any other links you believe we should include, feel free to let us know so we can add them.
 
 [International Suicide Hotlines](<https://blog.opencounseling.com/suicide-hotlines/>)
 > A list of hotlines for different countries, including emergency numbers and in-person counseling options.
@@ -889,7 +913,6 @@ To make a copy, simply copy all of it and then paste into your own ellipsus docu
 
   return embed;
 }
-
 
 async function getStaffNpcEmbed() {
   const embed = new EmbedBuilder()
@@ -975,26 +998,50 @@ async function getLeaveEmbed(client: Client, user: string) {
   return embed;
 }
 
-
 async function getBirthdayEmbed(client: Client, user: string) {
   const person = await client.users.fetch(user);
   const avatar = person.displayAvatarURL({ size: 1024 });
 
   const embed = new EmbedBuilder()
-    .setTitle(`happy birthday!`)
-    .setColor("#d3584d")
-    .setDescription(`thanks for boosting!`)
+    .setTitle(`happy birthday!!`)
+    .setColor("#73dbee")
+    .setDescription(
+      `Hey, looks like it's <@${user}>'s special day! Thanks for sticking with us so far—here's to hoping that your next year will be just as good, if not better!`,
+    )
     .setImage(
-      "https://preview.redd.it/torii-to-another-time-me-pixel-art-2020-v0-zhgjmedjwii41.png?width=1080&crop=smart&auto=webp&s=e6a5e71970245ae20ee34eea290c189ab9bc9cbc",
+      "https://i.pinimg.com/originals/59/29/7e/59297e294dd62f3103ddc9fd4ba09cb2.gif",
     )
     .setFooter({
-      text: `${person.username} boosted! | banner by @16pxl on twitter`,
+      text: `it's ${person.username}'s birthday! | banner by @minimoss on twitter`,
     })
     .setThumbnail(avatar);
 
   return embed;
 }
 
+async function getCharaBdayEmbed(
+  avatar: string | undefined,
+  artist_credits: string | undefined,
+  name: string,
+  user: string,
+) {
+  const embed = new EmbedBuilder()
+    .setTitle(`Oh? Looks like it’s a special day today!`)
+    .setColor("#73dbee")
+    .setDescription(
+      `Give your birthday wishes to ${name}, written by <@${user}>! Hope you receive wonderful presents (though please do not ask us for a passing grade in a class you might be failing), and here’s to another great year!`,
+    )
+    .setImage(
+      avatar ??
+        `https://i.pinimg.com/originals/59/29/7e/59297e294dd62f3103ddc9fd4ba09cb2.gif`,
+    )
+    .setFooter({
+      text: `it's ${name}'s birthday! | ${artist_credits ?? `banner by @minimoss on twitter`}`,
+    });
+  //.setThumbnail();
+
+  return embed;
+}
 
 async function getBoostEmbed(client: Client, user: string) {
   const person = await client.users.fetch(user);
@@ -1002,14 +1049,16 @@ async function getBoostEmbed(client: Client, user: string) {
   const guild = client.guilds.cache.get(`${process.env.GUILD_ID}`);
 
   const embed = new EmbedBuilder()
-    .setTitle(`thank you so much!`)
+    .setTitle(`thank you so much!!`)
     .setColor("#ae281c")
-    .setDescription(`We appreciate the support, <@${user}>! You've unlocked the following perks:
+    .setDescription(
+      `We appreciate the support, <@${user}>! You've unlocked the following perks:
 - The monthly ability to reroll minor characteristics of your partner pokemon three times (both OOC and IRP)!
 > -# **/booster reroll**
 - A custom color role using hexcodes!
 > -# **/booster role**
-With your contribution, we are now at ${guild?.premiumSubscriptionCount} server boost(s)!`)
+With your contribution, we are now at ${guild?.premiumSubscriptionCount} server boost(s)!`,
+    )
     .setImage(
       "https://preview.redd.it/torii-to-another-time-me-pixel-art-2020-v0-zhgjmedjwii41.png?width=1080&crop=smart&auto=webp&s=e6a5e71970245ae20ee34eea290c189ab9bc9cbc",
     )
