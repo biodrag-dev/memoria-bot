@@ -310,7 +310,9 @@ export async function getAllInactive(client: Client): Promise<string[]> {
 
   if (guild) {
     for (const user of Object.keys(charaDex)) {
-      if (!guild.members.cache.has(user)) {
+      try {
+        const person = await guild.members.fetch(user);
+      } catch {
         inactiveUsers.push(user);
       }
     }

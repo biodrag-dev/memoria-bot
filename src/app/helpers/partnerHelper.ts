@@ -337,7 +337,7 @@ export async function generateStartingEmbed(id: string) {
     .setColor(resolveColor(professor.hexcode))
     .setTitle(professor.starter_title)
     .setDescription(professor.starter_dialogue)
-    .setFooter({ text: `quiz taken and modified from pokemon reborn` })
+    .setFooter({ text: `quiz taken and modified from pokemon reborn | feature inspired by bloom's twilight horizon` })
     .setThumbnail(professor.thumbnail);
 
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
