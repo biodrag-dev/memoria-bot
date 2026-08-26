@@ -72,8 +72,6 @@ export async function sendOOCBirthdayEmbed(client: Client, user: string) {
   });
 }
 
-
-
 export async function sendEnterMsg(client: Client, user: string) {
   const channel = (await client.channels.fetch(
     `${process.env.DOOR_CHANNEL}`,

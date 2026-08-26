@@ -99,9 +99,9 @@ Welcome to Dexlight Academy! We have many things to offer you:
 ➤ Artist-Centric 
 ➤ Safe, welcoming, and LGBTQ+ friendly environment
 And more!
-˗ˏˋ ꒰ ✉︎ ꒱ ˎˊ˗
+˗ˏˋ ꒰ ✉︎ ꒱ ˎˊ˗`,
 
-【 publicly launched [TBA], 2026. 】`,
+//【 publicly launched [TBA], 2026. 】`,
       )
       .setImage(
         "https://i.pinimg.com/originals/51/f1/13/51f1135629ff02dab6a1ad35170b1169.gif",
