@@ -9,20 +9,20 @@ import {
 import * as submitHelper from "./submitHelper";
 
 export async function updateAllEmbeds(client: Client) {
-  updateReservesEmbed(client);
-  updateServerRulesEmbed(client);
-  updateCharacterRulesEmbed(client);
-  updateVerificationEmbed(client);
-  updateRolesEmbed(client);
-  updateRoleplayRules(client);
-  updateFaqEmbed(client);
-  //thread is archived
-  //updatePartnershipRules(client);
-  updateTemplateEmbed(client);
-    //thread is archived
-  // updateStaffNpcEmbed(client);
-  updateResourcesEmbed(client);
-  updateAllLoreEmbeds(client)
+  // updateReservesEmbed(client);
+  // updateServerRulesEmbed(client);
+  // updateCharacterRulesEmbed(client);
+  // updateVerificationEmbed(client);
+  // updateRolesEmbed(client);
+  // updateRoleplayRules(client);
+  // updateFaqEmbed(client);
+  // //thread is archived
+  // //updatePartnershipRules(client);
+  // updateTemplateEmbed(client);
+  //   //thread is archived
+  // // updateStaffNpcEmbed(client);
+  // updateResourcesEmbed(client);
+  // updateAllLoreEmbeds(client)
 }
 
 export async function updateEmbed(
@@ -71,6 +71,8 @@ export async function sendOOCBirthdayEmbed(client: Client, user: string) {
     embeds: [embedOne],
   });
 }
+
+
 
 export async function sendEnterMsg(client: Client, user: string) {
   const channel = (await client.channels.fetch(
@@ -847,7 +849,7 @@ async function getLoreHistoryEmbed() {
     .setTitle(`𝐇𝐈𝐒𝐓𝐎𝐑𝐘`)
     .setColor("#ee98c1")
     .setDescription(
-      `In the distant past, long before the region of SanYuan had a name, a great uprising had bloodied its ancient lands.
+      `In the distant past, long before the region of Sanyuan had a name, a great uprising had bloodied its ancient lands.
 
 Perhaps it was because of the overcrowded and neglected; trainers catching Pokemon that they simply could not take care of—or, perhaps it was the abused, suffering from those in power forcing their Pokemon to commit deeds of evil. Regardless, it was the mistreatment of Pokemon that shifted the tides into one of war—an Uprising strong enough to shatter the norm.
 
@@ -940,7 +942,7 @@ async function getLoreTrialCircuitEmbed() {
     .setDescription(
       `Compared to the traditional approach of a non-trainer school, Dexlight Academy offers a more hands-on experience, looking to combine both the grand stories of the ancient trainer’s adventures with the journey that comes with learning. Instead of 'book' learning with your teachers, students of Dexlight Academy participate in a Trial Circuit in order to receive official certification and graduation from their courses.
 
-With 18 total Sanyuanian Trial Leaders (listed in <#1540209862489939999>), there are 6 assigned to each class. As a student of Dexlight Academy, you are only expected to complete the 6 trials within your class, before completing a seventh with your respective class’s Champion.
+With 18 total Sanyuanese Trial Leaders (listed in <#1540209862489939999>), there are 6 assigned to each class. As a student of Dexlight Academy, you are only expected to complete the 6 trials within your class, before completing a seventh with your respective class’s Champion.
 
 For some, it only takes one year to complete the Circuit. For others, decades.
 

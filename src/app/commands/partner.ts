@@ -1,5 +1,8 @@
 import {
+  ActionRowBuilder,
   ApplicationCommandOptionType,
+  ButtonBuilder,
+  ButtonStyle,
   Embed,
   EmbedBuilder,
   InteractionContextType,
@@ -10,6 +13,19 @@ import type {
   ChatInputCommand,
   CommandMetadata,
 } from "commandkit";
+
+const evoRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+  new ButtonBuilder()
+    .setCustomId("evolve-accept")
+    .setLabel("Proceed")
+    .setStyle(ButtonStyle.Success),
+
+  new ButtonBuilder()
+    .setCustomId("evolve-decline")
+    .setLabel("Cancel")
+    .setStyle(ButtonStyle.Danger),
+);
+
 import * as partnerHelper from "../helpers/partnerHelper";
 import * as charaHelper from "../helpers/characterHelper";
 
@@ -49,6 +65,12 @@ export const command: CommandData = {
           type: ApplicationCommandOptionType.String,
         },
       ],
+    },
+
+    {
+      name: "evolve",
+      description: "evolve your partner pokemon!",
+      type: ApplicationCommandOptionType.Subcommand,
     },
   ],
 };
@@ -121,13 +143,10 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         ephemeral: true,
       });
     }
+  } else if (sub === "evolve") {
+    const embed = new EmbedBuilder();
+    const msg = await interaction.reply(
+      await charaHelper.canEvoOOCPartner(interaction.user.id),
+    );
   }
-  const embed = await partnerHelper.getPartnerEmbed(
-    interaction.user.username,
-    interaction.user.id,
-  );
-  await interaction.reply({
-    embeds: [embed],
-  });
-
 };

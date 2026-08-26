@@ -160,18 +160,18 @@ export async function getEvolutionPath(dest: string) {
   }
 }
 
-export async function getDirectEvolutions(pokemon: Pokemon) {
+export async function getDirectEvolutions(pokemon: Pokemon) : Promise<Set<string>> {
   switch (pokemon.name) {
     case "basculin-white-striped":
-      return ["basculegion-female", "basculegion-male"];
+      return new Set(["basculegion-female", "basculegion-male"]);
     case "frillish-male":
-      return ["jellicent-male"];
+      return new Set(["jellicent-male"]);
     case "burmy":
-      return ["wormadam-plant", "wormadam-sandy", "wormadam-trash"];
+      return new Set(["wormadam-plant", "wormadam-sandy", "wormadam-trash"]);
     case "finizen":
-      return ["palafin-zero", "palafin-hero"];
+      return new Set(["palafin-zero", "palafin-hero"]);
     case "dunsparce":
-      return ["dudunsparce-two-segment", "dudunsparce-three-segment"];
+      return new Set(["dudunsparce-two-segment", "dudunsparce-three-segment"]);
   }
 
   try {
@@ -183,7 +183,7 @@ export async function getDirectEvolutions(pokemon: Pokemon) {
 
     return evolutions;
   } catch {
-    return [];
+    return new Set<string>();
   }
 }
 
@@ -228,7 +228,6 @@ function getEvolutionsHelper(
       //check if the base form requires a regional form
       var baseForm = detail.base_form?.name ?? chainLink.species.name;
 
-      console.log(evolvedForm);
       if (baseForm == current) {
         evolutions.add(evolvedForm);
       }

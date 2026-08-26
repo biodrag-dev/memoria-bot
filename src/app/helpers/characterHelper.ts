@@ -2,12 +2,14 @@ import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 import {
+  ActionRowBuilder,
   AnyThreadChannel,
   ChannelType,
   Client,
   ColorResolvable,
   EmbedBuilder,
   resolveColor,
+  StringSelectMenuBuilder,
 } from "discord.js";
 
 import * as pokehelper from "./pokeHelper";
@@ -303,12 +305,12 @@ async function saveUsers() {
 
 export async function getAllInactive(client: Client): Promise<string[]> {
   await loadUsers();
-  const inactiveUsers: string[] = []
+  const inactiveUsers: string[] = [];
   const guild = client.guilds.cache.get(`${process.env.GUILD_ID}`);
 
   if (guild) {
-    for(const user of Object.keys(charaDex)){
-      if(!guild.members.cache.has(user)){
+    for (const user of Object.keys(charaDex)) {
+      if (!guild.members.cache.has(user)) {
         inactiveUsers.push(user);
       }
     }
@@ -499,7 +501,7 @@ export async function deleteAll(
   }
   delete charaDex[id];
   const reserve = await submitHelper.getReserveOfUser(id);
-  if(reserve.length != 0){
+  if (reserve.length != 0) {
     submitHelper.deleteDestination(reserve[0]!);
   }
   await saveUsers();
@@ -644,7 +646,7 @@ export async function createNewForumPost(
     const message = await thread.send(`<@${id}>`);
 
     setTimeout(async () => {
-      await message.delete().catch(() => { });
+      await message.delete().catch(() => {});
     }, 5000);
   }
   saveUsers();
@@ -1331,6 +1333,109 @@ export async function addExpToPartner(id: string, exp: number) {
   }
 }
 
+export async function nextEvoLevelPartner(id: string): Promise<number> {
+  await loadUsers();
+  const pokemon = await pokehelper.findPokemon(
+    charaDex[id]!.OocPartner!.species,
+  );
+  const evolutions = await pokehelper.getDirectEvolutions(pokemon!);
+  //if no possible evolutions/fully evolved
+  if (evolutions.size == 0) {
+    return -1;
+  }
+  const evoChain = await pokehelper.getEvolutionPath(pokemon!.name);
+  const evoIndex = evoChain.findIndex((evo) => evo === pokemon!.name);
+
+  if (evoIndex == 0) {
+    return 25;
+  } else if (evoIndex == 1) {
+    return 50;
+  }
+
+  //if no partner
+  return 0;
+}
+
+export async function canEvoOOCPartner(id: string) {
+  await loadUsers();
+  const evoLevel = await nextEvoLevelPartner(id);
+  const embed = new EmbedBuilder();
+  const partnerName =
+    charaDex[id]!.OocPartner!.nickname ??
+    pokehelper.displayName(charaDex[id]!.OocPartner!.species);
+  if (evoLevel > getLevelFromExp(charaDex[id]!.OocPartner!.experience)) {
+    embed
+      .setDescription(
+        `You can't evolve ${partnerName} until they hit **level ${evoLevel}**!`,
+      )
+      .setTitle("Hold it!")
+      .setColor("Red");
+    return { embeds: [embed], ephemeral: true };
+  } else if (evoLevel == -1) {
+    embed
+      .setDescription(
+        `No further evolutions can be found! If this is a bug, go to <#1527299700699566162> for help!`,
+      )
+      .setTitle("Your partner is fully evolved!")
+      .setColor("Grey");
+    return { embeds: [embed], ephemeral: true };
+  } else {
+    const pokemon = await pokehelper.findPokemon(
+      charaDex[id]!.OocPartner!.species,
+    );
+    const evolutions = await pokehelper.getDirectEvolutions(pokemon!);
+
+    embed
+      .setTitle(`What?`)
+      .setDescription(`${partnerName} is evolving!`)
+      .setThumbnail(
+        await pokehelper.getSprite(
+          charaDex[id]!.OocPartner!.species,
+          charaDex[id]!.OocPartner!.gender,
+          charaDex[id]!.OocPartner!.shiny,
+        ),
+      )
+      .setColor("White");
+
+    const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+      new StringSelectMenuBuilder()
+        .setCustomId(`starter_evolution:${id}`)
+        .setPlaceholder(`select an evolution...`)
+        .addOptions(
+          Array.from(evolutions).map((option) => ({
+            label: `${pokehelper.displayName(option)}`,
+            value: option,
+          })),
+        ),
+    );
+    return { embeds: [embed], components: [row], ephemeral: true };
+  }
+}
+
+export async function changeSpecies(id: string, species: string) {
+  await loadUsers();
+  charaDex[id]!.OocPartner!.species = species;
+  await saveUsers();
+  const embed = new EmbedBuilder();
+  const partnerName =
+    charaDex[id]!.OocPartner!.nickname ??
+    pokehelper.displayName(charaDex[id]!.OocPartner!.species);
+  embed
+    .setDescription(
+      `Your ${partnerName} evolved into a ${pokehelper.displayName(species)}!`,
+    )
+    .setTitle("Congratulations!")
+    .setThumbnail(
+      await pokehelper.getSprite(
+        charaDex[id]!.OocPartner!.species,
+        charaDex[id]!.OocPartner!.gender,
+        charaDex[id]!.OocPartner!.shiny,
+      ),
+    )
+    .setColor("White");
+  return { embeds: [embed], ephemeral: true };
+}
+
 export async function setNick(id: string, nick: string | undefined) {
   await loadUsers();
   if (charaDex[id]?.OocPartner) {
@@ -1487,10 +1592,14 @@ export async function getOOCMonthBirthday(
     users.length != 0
       ? users.join("\n")
       : `No birthdays are registered for this month.`;
-  embed.setDescription(list).setTitle(`${months[month]} | Upcoming Birthdays!`).setImage(
-    `https://i.pinimg.com/originals/b7/f7/88/b7f788e000ffb2854a98d937b8a46593.gif`,
-  )
-    .setFooter({ text: `banner by @mae_1031 on danbooru` }).setColor("#6ed3ba");
+  embed
+    .setDescription(list)
+    .setTitle(`${months[month]} | Upcoming Birthdays!`)
+    .setImage(
+      `https://i.pinimg.com/originals/b7/f7/88/b7f788e000ffb2854a98d937b8a46593.gif`,
+    )
+    .setFooter({ text: `banner by @mae_1031 on danbooru` })
+    .setColor("#6ed3ba");
   return embed;
 }
 
@@ -1530,7 +1639,8 @@ export async function getOOCAllBirthdays(): Promise<EmbedBuilder> {
     .setImage(
       `https://i.pinimg.com/originals/83/4c/f3/834cf38ce6a44974aad1d522f2194025.gif`,
     )
-    .setFooter({ text: `banner by @1041uuu on tumblr` }).setColor("#e94b46");
+    .setFooter({ text: `banner by @1041uuu on tumblr` })
+    .setColor("#e94b46");
   return embed;
 }
 
@@ -1628,13 +1738,14 @@ export async function getCharaMonthBdays(month: number): Promise<EmbedBuilder> {
       : `No character birthdays are registered for this month. Why don't you change that?`;
   embed
     .setDescription(list)
-    .setTitle(`${months[month]} | Upcoming Character Birthdays!`).setImage(
+    .setTitle(`${months[month]} | Upcoming Character Birthdays!`)
+    .setImage(
       `https://i.pinimg.com/originals/ce/7f/35/ce7f35ec213d896247c7c2e8620d81f9.gif`,
     )
-    .setFooter({ text: `banner by @decomposedmaw on twitter` }).setColor("#6eaf66");
+    .setFooter({ text: `banner by @decomposedmaw on twitter` })
+    .setColor("#6eaf66");
 
-  return embed
-    ;
+  return embed;
 }
 
 export async function getCharaAllBdays(): Promise<EmbedBuilder> {
@@ -1674,7 +1785,8 @@ export async function getCharaAllBdays(): Promise<EmbedBuilder> {
     .setImage(
       `https://i.pinimg.com/originals/35/49/be/3549beaae0ba185e62d53e57144caa0d.gif`,
     )
-    .setFooter({ text: `banner by @1041uuu on tumblr` }).setColor("#ce3c3c");
+    .setFooter({ text: `banner by @1041uuu on tumblr` })
+    .setColor("#ce3c3c");
   return embed;
 }
 

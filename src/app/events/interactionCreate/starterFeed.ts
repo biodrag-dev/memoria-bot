@@ -1,4 +1,3 @@
-import * as starterQuizHelper from "../../helpers/starterQuizHelper";
 import * as partnerHelper from "../../helpers/partnerHelper";
 
 export default async function handleQuizInteraction(interaction: any) {
