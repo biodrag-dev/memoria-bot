@@ -29,15 +29,15 @@ Welcome to Dexlight Academy! We have many things to offer you:
 ➤ No Fakemon, OC-only setting
 ➤ Slower paced plot that leaves room for IRL
 ➤ Custom Coded Bot for Character Profiles
-➤ A Brand New Region to explore!
+➤ A Brand China-inspired New Region to explore!
 ➤ One-per-trainer Partner Pokemon System
 ➤ Opportunities for non-battler OCs to shine
 ➤ An emphasis of Quality over Quantity for writing + OCs
 ➤ Safe, Welcoming, and LGBTQ+ friendly environment
 And more!
-˗ˏˋ ꒰ ✉︎ ꒱ ˎˊ˗
+˗ˏˋ ꒰ ✉︎ ꒱ ˎˊ˗`,
 
-【 publicly launched [TBA], 2026. 】`,
+//【 publicly launched [TBA], 2026. 】`,
       )
       .setImage(
         "https://i.pinimg.com/originals/51/f1/13/51f1135629ff02dab6a1ad35170b1169.gif",

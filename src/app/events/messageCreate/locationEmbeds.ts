@@ -13,7 +13,7 @@ const handler: EventHandler<"messageCreate"> = async (message) => {
         var channel = message.channel;
         const keyword = message.content.replace(KEYWORD, "").trim();
 
-        const msg = locationEmbedHelper.embed(keyword)
+        const msg = await locationEmbedHelper.embed(keyword)
 
         if (msg.ephemeral) {
             const locEmbed = await message.reply(msg);
