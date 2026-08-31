@@ -388,7 +388,7 @@ export async function registerCharacter(user: string, client: Client) {
     partner: {
       nickname: undefined,
       shiny: submission.shinyRoll == 20,
-      species: basemon.name,
+      species: submission.docLink != "STAFF NPC" ? basemon.name : submission.partner,
       specialMoves: {},
       sizeMult: sizeMult,
     },

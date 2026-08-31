@@ -121,19 +121,19 @@ export async function updateAllLoreEmbeds(client: Client) {
   const forum = (await client.channels.fetch(
     `1527303791500722256`,
   )) as ForumChannel;
-  const historyThread = await forum.threads.fetch(`1540937672405553195`);
+  const historyThread = await forum.threads.fetch(`1542669344096653465`);
   const historyMessage = await historyThread!.fetchStarterMessage();
   historyMessage?.edit({ embeds: [await getLoreHistoryEmbed()] });
 
-  const academyThread = await forum.threads.fetch(`1540937573696806963`);
+  const academyThread = await forum.threads.fetch(`1542669325947633775`);
   const academyMessage = await academyThread!.fetchStarterMessage();
   academyMessage?.edit({ embeds: await getLoreDexlightAcademyEmbed() });
 
-  const circuitThread = await forum.threads.fetch(`1540870356175163504`);
+  const circuitThread = await forum.threads.fetch(`1542669293068619827`);
   const circuitMessage = await circuitThread!.fetchStarterMessage();
   circuitMessage?.edit({ embeds: [await getLoreTrialCircuitEmbed()] });
 
-  const mapThread = await forum.threads.fetch(`1540868211652952206`);
+  const mapThread = await forum.threads.fetch(`1542669134968389633`);
   const mapMessage = await mapThread!.fetchStarterMessage();
   await mapMessage?.edit({ embeds: [await getLoreRegionMap()] });
 }
