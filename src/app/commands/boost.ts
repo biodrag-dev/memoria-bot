@@ -19,6 +19,7 @@ export const metadata: CommandMetadata = {
 import * as characterHelper from "../helpers/characterHelper";
 import * as partnerHelper from "../helpers/partnerHelper";
 import * as pokeHelper from "../helpers/pokeHelper";
+import * as boosterHelper from "../helpers/boosterHelper";
 
 const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
   new ButtonBuilder()
@@ -139,7 +140,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
 
   if (group === "reroll") {
     if (sub === "ooc") {
-      var rerolls = await characterHelper.getRerolls(interaction.user.id);
+      var rerolls = await boosterHelper.getRerolls(interaction.user.id);
 
       if ((await partnerHelper.getPartner(interaction.user.id)) === undefined) {
         var embed = new EmbedBuilder()
@@ -156,7 +157,7 @@ You don't have a partner pokemon yet! Use **/partner view** to get one!`,
           ephemeral: true,
         });
       }
-      const partner = await characterHelper.getOOCPartner(interaction.user.id);
+      const partner = await partnerHelper.getOOCPartner(interaction.user.id);
       const img = await pokeHelper.getSprite(
         partner?.species!,
         partner?.gender,
@@ -181,7 +182,7 @@ ${rerolls === 0 ? `You're all out of rerolls for the month!` : `Would you like t
         time: 30_000,
       });
       collector.on("collect", async (button) => {
-        const rerollEmbed = await characterHelper.rerollOOC(
+        const rerollEmbed = await boosterHelper.rerollOOC(
           interaction.user.id,
           button.customId,
         );
@@ -195,7 +196,7 @@ ${rerolls === 0 ? `You're all out of rerolls for the month!` : `Would you like t
     } else if (sub === "irp") {
       const character = interaction.options.getString("name", true);
 
-      var rerolls = await characterHelper.getRerolls(interaction.user.id);
+      var rerolls = await boosterHelper.getRerolls(interaction.user.id);
       var embed = new EmbedBuilder();
       embed
         .setTitle(`${character} | Booster Perks`)
@@ -221,7 +222,7 @@ ${rerolls === 0 ? `You're all out of rerolls for the month!` : `Would you like t
         time: 30_000,
       });
       collector.on("collect", async (button) => {
-        const rerollEmbed = await characterHelper.rerollIRP(
+        const rerollEmbed = await boosterHelper.rerollIRP(
           interaction.user.id,
           character,
           button.customId,
@@ -242,7 +243,7 @@ ${rerolls === 0 ? `You're all out of rerolls for the month!` : `Would you like t
   } else if (group === "role") {
     if (sub === "name") {
       const name = interaction.options.getString("name", true);
-      characterHelper.boosterName(
+      boosterHelper.boosterName(
         interaction.client,
         interaction.user.id,
         name,
@@ -265,7 +266,7 @@ ${rerolls === 0 ? `You're all out of rerolls for the month!` : `Would you like t
         });
       }
 
-      const results = await characterHelper.boosterColor(
+      const results = await boosterHelper.boosterColor(
         interaction.client,
         interaction.user.id,
         color1,

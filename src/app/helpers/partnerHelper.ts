@@ -4,12 +4,11 @@ import {
   EmbedBuilder,
   StringSelectMenuBuilder,
 } from "@discordjs/builders";
-import * as charaHelper from "./characterHelper";
+import * as characterHelper from "./characterHelper";
 import * as pokeHelper from "./pokeHelper";
 
 import { OocPartner } from "./characterHelper";
 import { ButtonStyle, ColorResolvable, resolveColor } from "discord.js";
-import { l } from "commandkit/dist/element-DeLvTMfZ";
 
 export const sessions = new Map<string, choices>();
 
@@ -218,7 +217,7 @@ const playPrompts = [
 ];
 
 export async function getPartner(id: string) {
-  return charaHelper.getOOCPartner(id);
+  return await getOOCPartner(id);
 }
 
 function getRandomProfessor(): ProfessorData {
@@ -246,10 +245,6 @@ function getFriendshipLevel(professor: ProfessorData, friendship: number) {
     return professor.friendship.high;
   }
   return professor.friendship.highest;
-}
-
-function getLevelFromExp(exp: number): number {
-  return Math.min(100, Math.max(Math.floor(Math.cbrt(exp)), 1));
 }
 
 export async function generateChoices(
@@ -408,7 +403,7 @@ export async function claimPartnerProspect(id: string, starter: string) {
     canPlay: true,
   };
 
-  await charaHelper.setOOCPartner(id, partnerProspect);
+  await setOOCPartner(id, partnerProspect);
 }
 
 export async function getPartnerProspectEmbed(
@@ -422,7 +417,7 @@ export async function getPartnerProspectEmbed(
   const pokemon = await pokeHelper.findPokemon(prospect.species);
   const gender = `**Gender** | ${prospect.gender}\n`;
   const ability = `**Ability** | ${pokeHelper.getAbilityName(pokemon!, prospect.ability)}\n`;
-  const nature = `**Nature** | ${charaHelper.getNatureFromValue(prospect.nature)}\n`;
+  const nature = `**Nature** | ${characterHelper.getNatureFromValue(prospect.nature)}\n`;
 
   const dexEntry = await pokeHelper.getRandDexEntry(prospect.species);
   const color = pokeHelper.colors[`red`]!;
@@ -452,7 +447,7 @@ export async function getPartnerProspectEmbed(
 }
 
 export async function getPartnerEmbed(username: string, id: string) {
-  const partner = await charaHelper.getOOCPartner(id);
+  const partner = await getOOCPartner(id);
   if (partner) {
     const professor = getRandomProfessor();
     const metOn = `**Met On** | <t:${Math.floor(new Date(partner.registeredOn).getTime() / 1000)}:D>\n`;
@@ -477,7 +472,7 @@ export async function getPartnerEmbed(username: string, id: string) {
       ? `**Ability** | ${pokeHelper.getAbilityName(pokemon!, partner.ability)}\n`
       : ``;
     const nature = partner.nature
-      ? `**Nature** | ${charaHelper.getNatureFromValue(partner.nature)}\n`
+      ? `**Nature** | ${characterHelper.getNatureFromValue(partner.nature)}\n`
       : ``;
 
     const color = await pokeHelper.getColor(pokemon!);
@@ -535,7 +530,7 @@ ${prompt}${feed}${play}`,
 }
 
 export async function generateFeedingPrompt(id: string) {
-  const partner = await charaHelper.getOOCPartner(id);
+  const partner = await getOOCPartner(id);
   const embed = new EmbedBuilder();
   embed
     .setColor(resolveColor("#DBBC67"))
@@ -575,7 +570,7 @@ export async function generateFeedingPrompt(id: string) {
 }
 
 export async function feedBerry(id: string, berry: string) {
-  const partner = await charaHelper.getOOCPartner(id);
+  const partner = await getOOCPartner(id);
   const flavor = flavors.find((flavor) => flavor.name === berry)!.value;
   const nature = flavorNatures.find(
     (nature) => nature.value === partner!.nature,
@@ -596,7 +591,7 @@ export async function feedBerry(id: string, berry: string) {
     color = resolveColor("#a07f39");
   }
 
-  await charaHelper.fedPartner(id, baseValue);
+  await fedPartner(id, baseValue);
 
   const embed = new EmbedBuilder();
   embed
@@ -624,9 +619,9 @@ export async function feedBerry(id: string, berry: string) {
 }
 
 export async function playTime(id: string) {
-  const partner = await charaHelper.getOOCPartner(id);
+  const partner = await getOOCPartner(id);
 
-  await charaHelper.playWithPartner(id);
+  await playWithPartner(id);
 
   const prompt = playPrompts[Math.floor(Math.random() * playPrompts.length)];
   const embed = new EmbedBuilder();
@@ -652,4 +647,227 @@ export async function playTime(id: string) {
     components: [],
     ephemeral: false,
   };
+}
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//    PARTNER MONS
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export async function getOOCPartner(
+  id: string,
+): Promise<OocPartner | undefined> {
+  const charaDex = await characterHelper.getUsers();
+  return charaDex[id]?.OocPartner;
+}
+
+export async function resetDailies(id: string, prompt: number) {
+  const charaDex = await characterHelper.getUsers();
+  charaDex[id]!.OocPartner!.canFeed = true;
+  charaDex[id]!.OocPartner!.canPlay = true;
+  charaDex[id]!.OocPartner!.reset = new Date();
+  charaDex[id]!.OocPartner!.prompt = prompt;
+    await characterHelper.saveUsersExternal(charaDex);
+}
+
+export async function setOOCPartner(id: string, partner: OocPartner) {
+  const charaDex = await characterHelper.getUsers();
+
+  if (!charaDex[id]) {
+    charaDex[id] = { characters: {} };
+  }
+  charaDex[id]!.OocPartner = partner;
+    await characterHelper.saveUsersExternal(charaDex);
+}
+
+export async function increasedLevel(
+  id: string,
+  exp: number,
+): Promise<Boolean> {
+  const charaDex = await characterHelper.getUsers();
+  const oldLevel = Math.min(
+    100,
+    getLevelFromExp(charaDex[id]!.OocPartner!.experience),
+  );
+  const newLevel = Math.min(
+    100,
+    getLevelFromExp(charaDex[id]!.OocPartner!.experience + exp),
+  );
+
+  return oldLevel != newLevel;
+}
+
+function getLevelFromExp(exp: number): number {
+  return Math.min(100, Math.max(Math.floor(Math.cbrt(exp)), 1));
+}
+
+export function daysSince(date: Date) {
+  const today = new Date();
+  const prevDate = new Date(date);
+  const diffMs = today.getTime() - prevDate.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  return diffDays;
+}
+export async function addExpToPartner(id: string, exp: number) {
+  const charaDex = await characterHelper.getUsers();
+  if (charaDex[id]?.OocPartner) {
+    //does level increase?
+    if (await increasedLevel(id, exp)) {
+      charaDex[id].OocPartner.happiness++;
+    }
+    //decreases happiness if abandoned
+    if (daysSince(charaDex[id].OocPartner.lastInteracted) != 0) {
+      editHappiness(id, -daysSince(charaDex[id].OocPartner.lastInteracted));
+    }
+    charaDex[id].OocPartner.lastInteracted == new Date();
+    charaDex[id].OocPartner.experience += exp;
+    await characterHelper.saveUsersExternal(charaDex);
+  }
+}
+
+export async function nextEvoLevelPartner(id: string): Promise<number> {
+  const charaDex = await characterHelper.getUsers();
+  const pokemon = await pokeHelper.findPokemon(
+    charaDex[id]!.OocPartner!.species,
+  );
+  const evolutions = await pokeHelper.getDirectEvolutions(pokemon!);
+  //if no possible evolutions/fully evolved
+  if (evolutions.size == 0) {
+    return -1;
+  }
+  const evoChain = await pokeHelper.getEvolutionPath(pokemon!.name);
+  const evoIndex = evoChain.findIndex((evo) => evo === pokemon!.name);
+
+  if (evoIndex == 0) {
+    return 25;
+  } else if (evoIndex == 1) {
+    return 50;
+  }
+
+  //if no partner
+  return 0;
+}
+
+export async function canEvoOOCPartner(id: string) {
+  const charaDex = await characterHelper.getUsers();
+  const evoLevel = await nextEvoLevelPartner(id);
+  const embed = new EmbedBuilder();
+  const partnerName =
+    charaDex[id]!.OocPartner!.nickname ??
+    pokeHelper.displayName(charaDex[id]!.OocPartner!.species);
+  if (evoLevel > getLevelFromExp(charaDex[id]!.OocPartner!.experience)) {
+    embed
+      .setDescription(
+        `You can't evolve ${partnerName} until they hit **level ${evoLevel}**!`,
+      )
+      .setTitle("Hold it!")
+      .setColor(0xFF0000);
+    return { embeds: [embed], ephemeral: true };
+  } else if (evoLevel == -1) {
+    embed
+      .setDescription(
+        `No further evolutions can be found! If this is a bug, go to <#1527299700699566162> for help!`,
+      )
+      .setTitle("Your partner is fully evolved!")
+      .setColor(0x808080);
+    return { embeds: [embed], ephemeral: true };
+  } else {
+    const pokemon = await pokeHelper.findPokemon(
+      charaDex[id]!.OocPartner!.species,
+    );
+    const evolutions = await pokeHelper.getDirectEvolutions(pokemon!);
+
+    embed
+      .setTitle(`What?`)
+      .setDescription(`${partnerName} is evolving!`)
+      .setThumbnail(
+        await pokeHelper.getSprite(
+          charaDex[id]!.OocPartner!.species,
+          charaDex[id]!.OocPartner!.gender,
+          charaDex[id]!.OocPartner!.shiny,
+        ),
+      )
+      .setColor(0xFFFFFF);
+
+    const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+      new StringSelectMenuBuilder()
+        .setCustomId(`starter_evolution:${id}`)
+        .setPlaceholder(`select an evolution...`)
+        .addOptions(
+          Array.from(evolutions).map((option) => ({
+            label: `${pokeHelper.displayName(option)}`,
+            value: option,
+          })),
+        ),
+    );
+    return { embeds: [embed], components: [row], ephemeral: true };
+  }
+}
+
+export async function changeSpecies(id: string, species: string) {
+  const charaDex = await characterHelper.getUsers();
+  charaDex[id]!.OocPartner!.species = species;
+  await characterHelper.saveUsersExternal(charaDex);
+  const embed = new EmbedBuilder();
+  const partnerName =
+    charaDex[id]!.OocPartner!.nickname ??
+    pokeHelper.displayName(charaDex[id]!.OocPartner!.species);
+  embed
+    .setDescription(
+      `Your ${partnerName} evolved into a ${pokeHelper.displayName(species)}!`,
+    )
+    .setTitle("Congratulations!")
+    .setThumbnail(
+      await pokeHelper.getSprite(
+        charaDex[id]!.OocPartner!.species,
+        charaDex[id]!.OocPartner!.gender,
+        charaDex[id]!.OocPartner!.shiny,
+      ),
+    )
+    .setColor(0xFFFFFF);
+  return { embeds: [embed], ephemeral: true };
+}
+
+export async function setNick(id: string, nick: string | undefined) {
+  const charaDex = await characterHelper.getUsers();
+  if (charaDex[id]?.OocPartner) {
+    if (nick) {
+      charaDex[id]!.OocPartner.nickname = nick;
+    } else {
+      delete charaDex[id]!.OocPartner.nickname;
+    }
+    await characterHelper.saveUsersExternal(charaDex);
+  }
+}
+export async function editHappiness(id: string, affectionChange: number) {
+  const charaDex = await characterHelper.getUsers();
+  if (charaDex[id]?.OocPartner) {
+    charaDex[id].OocPartner.happiness = Math.max(
+      getLevelFromExp(charaDex[id].OocPartner.experience),
+      charaDex[id].OocPartner.happiness + affectionChange,
+    );
+    await characterHelper.saveUsersExternal(charaDex);
+  }
+}
+
+export async function fedPartner(id: string, affection: number) {
+  const charaDex = await characterHelper.getUsers();
+  if (charaDex[id]?.OocPartner) {
+    charaDex[id].OocPartner.canFeed = false;
+    charaDex[id].OocPartner.happiness += affection;
+    charaDex[id].OocPartner.lastInteracted == new Date();
+    await characterHelper.saveUsersExternal(charaDex);
+  }
+}
+
+export async function playWithPartner(id: string) {
+  const charaDex = await characterHelper.getUsers();
+  if (charaDex[id]?.OocPartner) {
+    charaDex[id].OocPartner.canPlay = false;
+    charaDex[id].OocPartner.happiness += 1;
+    charaDex[id].OocPartner.lastInteracted == new Date();
+    await characterHelper.saveUsersExternal(charaDex);
+  }
 }

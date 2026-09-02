@@ -10,6 +10,7 @@ import type {
     CommandMetadata,
 } from "commandkit";
 import * as characterHelper from "../helpers/characterHelper";
+import * as birthdayHelper from "../helpers/birthdayHelper";
 
 export const metadata: CommandMetadata = {
     guilds: [`${process.env.GUILD_ID}`],
@@ -214,7 +215,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         if (sub === "set") {
             return interaction.reply({
                 embeds: [
-                    await characterHelper.setBday(
+                    await birthdayHelper.setBday(
                         interaction.user.id,
                         Number(month),
                         date!,
@@ -223,11 +224,11 @@ export const chatInput: ChatInputCommand = async (ctx) => {
             });
         } else if (sub === "view-month") {
             return interaction.reply({
-                embeds: [await characterHelper.getOOCMonthBirthday(Number(month))],
+                embeds: [await birthdayHelper.getOOCMonthBirthday(Number(month))],
             });
         } else if (sub === "view-all") {
             return interaction.reply({
-                embeds: [await characterHelper.getOOCAllBirthdays()],
+                embeds: [await birthdayHelper.getOOCAllBirthdays()],
             });
         }
     } else if (group === "character") {
@@ -235,7 +236,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
             const character = interaction.options.getString("character", true);
             return interaction.reply({
                 embeds: [
-                    await characterHelper.setCharaBday(
+                    await birthdayHelper.setCharaBday(
                         interaction.user.id,
                         character,
                         Number(month),
@@ -245,16 +246,16 @@ export const chatInput: ChatInputCommand = async (ctx) => {
             });
         } else if (sub === "view-month") {
             return interaction.reply({
-                embeds: [await characterHelper.getCharaMonthBdays(Number(month))],
+                embeds: [await birthdayHelper.getCharaMonthBdays(Number(month))],
             });
         } else if (sub === "view-all") {
             return interaction.reply({
-                embeds: [await characterHelper.getCharaAllBdays()],
+                embeds: [await birthdayHelper.getCharaAllBdays()],
             });
         }
     } else if (group === "personal") {
         return interaction.reply({
-            embeds: [await characterHelper.getAllPersonalBdays(interaction.client, interaction.user.id)],
+            embeds: [await birthdayHelper.getAllPersonalBdays(interaction.client, interaction.user.id)],
         });
     }
 };
