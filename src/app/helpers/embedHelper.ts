@@ -6,7 +6,7 @@ import {
   TextChannel,
 } from "discord.js";
 
-import * as submitHelper from "./submitHelper";
+import * as submitHelper from "./extraHelpers/submitHelper";
 
 export async function updateAllEmbeds(client: Client) {
   // updateReservesEmbed(client);
@@ -800,8 +800,7 @@ OO8 ﹒﹒If an evolution chain includes a baby pokemon, can I start by skipping
 > No. If you were to claim a Pikachu, you would start off with a Pichu. All evolutions start off at the very base of the chain.
 
 OO9 ﹕Can I create a character from another region?
-> Yes, but the one pokemon per character rule is considered universal in this server. Large-scale events such as evil team takeovers or legendary sightings are not considered canon in this universe.
-
+> Due to the unique lore, all characters must be born and raised in Sanyuan. This doesn't stop you from making characters that have different ethnicities, but other regions are not considered canon in this universe due to the unique partner-pokemon relationship in Sanyuan!
 `,
     )
     .setImage(
@@ -819,8 +818,8 @@ async function getFaqFourEmbed() {
     .setTitle(`﹒﹒Roleplay Questions !!`)
     .setColor("#785d8a")
     .setDescription(
-      `OO1 ﹕Can I NPC a character?
-> You can use NPCs for interactions that call for them (ie. a waiter at a restaurant bringing your character a meal, a librarian checking out books for your character, your OC's family), however these NPCs cannot be used on their own in separate interactions apart from with their relevant OC.
+      `001 ﹕Hey, where's Tupperbox?
+> To link rewards to roleplay activity, we actually use our own, custom-coded proxy system! Type **mem!help** in botspam for more info :]
 
 OO2 ﹕When can my Pokemon evolve?
 > While there are many methods to evolving pokemon, in this server, they will scale off of your badge account. If their evolution chain has three stages, then they can evolve at badge 2 and 4. If their evolution chain has two, then they can evolve at badge 3.
@@ -832,7 +831,11 @@ OO4 ﹕Can I have some variation in my Pokemon to make them distinct from the ba
 > It depends on how large the variation may be. A slight shift in color or markings could work, like how May's Bulbasaur in the anime has heart markings instead of the traditional triangle markings. However, enough variations to make it mistakable for a shiny form or for a regional form is not allowed. Feel free to check with Staff first just to make sure it's alright!
 
 OO5 ﹒﹒Do people eat Pokemon or animals?
-> There are no regular animals. People eat Pokemon products like Wishiwashi Sashimi and Tauros Steaks all the time! Many people opt to consume the more renewable sources of meat, like naturally detatched Slowpoke Tails or Blissey Eggs, though.`,
+> There are no regular animals. People eat Pokemon products like Wishiwashi Sashimi and Tauros Steaks all the time! Many people opt to consume the more renewable sources of meat, like naturally detatched Slowpoke Tails or Blissey Eggs, though.
+ 
+OO6 ﹕Can I NPC a character?
+> You can use NPCs for interactions that call for them (ie. a waiter at a restaurant bringing your character a meal, a librarian checking out books for your character, your OC's family), however these NPCs cannot be used on their own in separate interactions apart from with their relevant OC.
+`,
     )
     .setImage("https://pbs.twimg.com/media/E-97E1hUYAAgmkc.png?name=orig")
     .setFooter({

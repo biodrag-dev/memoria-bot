@@ -3,7 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { Client, EmbedBuilder } from "discord.js";
 
-import * as pokehelper from "./pokeHelper";
+import * as pokehelper from "../pokeHelper";
 
 interface SubmitData {
   name: string;

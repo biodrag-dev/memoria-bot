@@ -1,5 +1,5 @@
-import * as starterQuizHelper from "../../helpers/starterQuizHelper";
-import * as partnerHelper from "../../helpers/partnerHelper";
+import * as starterQuizHelper from "../../helpers/extraHelpers/starterQuizHelper";
+import * as partnerHelper from "../../helpers/extraHelpers/partnerHelper";
 
 export default async function handleQuizInteraction(interaction: any) {
   if (!interaction.isStringSelectMenu()) return;

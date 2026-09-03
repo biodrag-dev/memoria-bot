@@ -17,9 +17,9 @@ export const metadata: CommandMetadata = {
 };
 
 import * as characterHelper from "../helpers/characterHelper";
-import * as partnerHelper from "../helpers/partnerHelper";
+import * as partnerHelper from "../helpers/extraHelpers/partnerHelper";
 import * as pokeHelper from "../helpers/pokeHelper";
-import * as boosterHelper from "../helpers/boosterHelper";
+import * as boosterHelper from "../helpers/extraHelpers/boosterHelper";
 
 const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
   new ButtonBuilder()

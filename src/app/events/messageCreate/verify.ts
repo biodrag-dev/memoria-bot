@@ -7,7 +7,7 @@ import * as embedHelper from "../../helpers/embedHelper";
 const KEYWORD = "starburst";
 
 const handler: EventHandler<"messageCreate"> = async (message) => {
-  if (message.author.bot) return;
+  if (message.author.bot || message.webhookId) return;
   if (!message.guild) return;
 
   if (message.channel.id !== process.env.VERIFY_CHANNEL) return;

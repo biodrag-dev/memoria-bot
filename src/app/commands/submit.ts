@@ -17,7 +17,7 @@ import type {
   CommandMetadata,
 } from "commandkit";
 import * as pokehelper from "../helpers/pokeHelper";
-import * as submitHelper from "../helpers/submitHelper";
+import * as submitHelper from "../helpers/extraHelpers/submitHelper";
 import * as embedHelper from "../helpers/embedHelper";
 
 export const metadata: CommandMetadata = {

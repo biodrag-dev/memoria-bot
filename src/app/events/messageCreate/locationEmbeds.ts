@@ -5,7 +5,7 @@ import * as locationEmbedHelper from "../../helpers/locationEmbedHelper";
 const KEYWORD = "m!location";
 
 const handler: EventHandler<"messageCreate"> = async (message) => {
-    if (message.author.bot) return;
+    if (message.author.bot || message.webhookId) return;
     if (!message.guild) return;
 
 

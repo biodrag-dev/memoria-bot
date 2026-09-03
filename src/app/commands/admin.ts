@@ -13,7 +13,7 @@ import {
 } from "discord.js";
 
 import * as characterHelper from "../helpers/characterHelper";
-import * as submitHelper from "../helpers/submitHelper";
+import * as submitHelper from "../helpers/extraHelpers/submitHelper";
 import * as pokeHelper from "../helpers/pokeHelper";
 import * as embedHelper from "../helpers/embedHelper";
 

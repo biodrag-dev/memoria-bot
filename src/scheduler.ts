@@ -1,7 +1,8 @@
 import cron from "node-cron";
-import * as submitHelper from "./app/helpers/submitHelper";
+import * as submitHelper from "./app/helpers/extraHelpers/submitHelper";
 import * as embedHelper from "./app/helpers/embedHelper";
 import * as characterHelper from "./app/helpers/characterHelper";
+import * as birthdayHelper from "./app/helpers/extraHelpers/birthdayHelper";
 
 import type { Client } from "commandkit";
 
@@ -22,14 +23,14 @@ export async function startScheduler(client: Client) {
   //
   cron.schedule("0 0 * * *", async () => {
     const date = new Date();
-    const bdays = await characterHelper.getOOCBirthdays(
+    const bdays = await birthdayHelper.getOOCBirthdays(
       date.getMonth(),
       date.getDate(),
     );
     for (const id of bdays) {
       await embedHelper.sendOOCBirthdayEmbed(client, id);
     }
-    const charaBdays = await characterHelper.getCharaBdays(
+    const charaBdays = await birthdayHelper.getCharaBdays(
       date.getMonth(),
       date.getDate(),
     );

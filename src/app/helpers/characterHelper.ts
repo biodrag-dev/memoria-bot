@@ -13,7 +13,7 @@ import {
 } from "discord.js";
 
 import * as pokehelper from "./pokeHelper";
-import * as submitHelper from "./submitHelper";
+import * as submitHelper from "./extraHelpers/submitHelper";
 
 interface Partner {
   gender?: string;
@@ -76,13 +76,6 @@ interface UserData {
   booster_role?: string;
   characters: Record<string, Character>;
   birthday?: Date;
-}
-
-export interface ProxyData {
-  prefix: string;
-  nick: string;
-  pfp_link?: string;
-  msgCount: string;
 }
 
 type CharacterDex = Record<string, UserData>;

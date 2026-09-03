@@ -1,6 +1,6 @@
 import type { EventHandler } from "commandkit";
 import * as embedHelper from "../../helpers/embedHelper";
-import * as submitHelper from "../../helpers/submitHelper";
+import * as submitHelper from "../../helpers/extraHelpers/submitHelper";
 
 const handler: EventHandler<"guildMemberRemove"> = async (member) => {
   await embedHelper.sendLeaveMsg(member.client, member.user.id);

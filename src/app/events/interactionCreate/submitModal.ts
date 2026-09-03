@@ -14,7 +14,7 @@ import {
   ModalSubmitInteraction,
 } from "discord.js";
 import * as pokehelper from "../../helpers/pokeHelper";
-import * as submitHelper from "../../helpers/submitHelper";
+import * as submitHelper from "../../helpers/extraHelpers/submitHelper";
 
 require("dotenv").config();
 

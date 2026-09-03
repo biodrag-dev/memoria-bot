@@ -2,6 +2,7 @@ import type { EventHandler } from "commandkit";
 
 import * as embedHelper from "../../helpers/embedHelper";
 import * as characterHelper from "../../helpers/characterHelper";
+import * as partnerHelper from "../../helpers/extraHelpers/partnerHelper";
 
 const OOC_CATEGORIES = [
   `1527218692038070323`, //behind the scenes
@@ -15,7 +16,7 @@ const OOC_CATEGORIES = [
 ];
 
 const handler: EventHandler<"messageCreate"> = async (message) => {
-  if (message.author.bot) return;
+  if (message.author.bot || message.webhookId) return;
   if (!message.guild) return;
   if (!message.channel.isTextBased()) return;
   if (!("parentId" in message.channel)) return;
@@ -31,7 +32,7 @@ const handler: EventHandler<"messageCreate"> = async (message) => {
   }
   const wordCount = message.content.trim().split(/\s+/).length;
 
-  characterHelper.addExpToPartner(message.author.id, wordCount * mult);
+  partnerHelper.addExpToPartner(message.author.id, wordCount * mult);
 };
 
 export default handler;

@@ -1,6 +1,6 @@
-import * as characterHelper from "./characterHelper";
+import * as characterHelper from "../characterHelper";
 import { Client, ColorResolvable, EmbedBuilder } from "discord.js";
-import * as pokehelper from "./pokeHelper";
+import * as pokehelper from "../pokeHelper";
 const monthlyRerolls = 3;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////

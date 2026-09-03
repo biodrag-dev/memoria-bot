@@ -7,7 +7,7 @@ import {
   PermissionFlagsBits,
   TextChannel,
 } from "discord.js";
-import * as submitHelper from "../../helpers/submitHelper";
+import * as submitHelper from "../../helpers/extraHelpers/submitHelper";
 import * as characterHelper from "../../helpers/characterHelper";
 
 export default async function (interaction: Interaction) {

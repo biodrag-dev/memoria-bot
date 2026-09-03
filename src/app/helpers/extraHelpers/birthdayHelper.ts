@@ -1,5 +1,5 @@
 import { Client, EmbedBuilder } from "discord.js";
-import * as characterHelper from "./characterHelper";
+import * as characterHelper from "../characterHelper";
 
 const months = [
   "January",

@@ -26,7 +26,7 @@ const evoRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
     .setStyle(ButtonStyle.Danger),
 );
 
-import * as partnerHelper from "../helpers/partnerHelper";
+import * as partnerHelper from "../helpers/extraHelpers/partnerHelper";
 import * as charaHelper from "../helpers/characterHelper";
 
 export const metadata: CommandMetadata = {
@@ -88,7 +88,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   }
 
   if (partnerHelper.isNewDate(partner.reset)) {
-    await charaHelper.resetDailies(
+    await partnerHelper.resetDailies(
       interaction.user.id,
       partnerHelper.getRandomPrompt(),
     );
@@ -104,7 +104,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
     });
   } else if (sub === "nick") {
     const name = interaction.options.getString("nickname", false)!;
-    await charaHelper.setNick(interaction.user.id, name);
+    await partnerHelper.setNick(interaction.user.id, name);
 
     const embed = new EmbedBuilder()
       .setColor("Green")
@@ -146,7 +146,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   } else if (sub === "evolve") {
     const embed = new EmbedBuilder();
     const msg = await interaction.reply(
-      await charaHelper.canEvoOOCPartner(interaction.user.id),
+      await partnerHelper.canEvoOOCPartner(interaction.user.id),
     );
   }
 };

@@ -4,7 +4,7 @@ import { EmbedBuilder } from "discord.js";
 const KEYWORD = "m!ad";
 
 const handler: EventHandler<"messageCreate"> = async (message) => {
-  if (message.author.bot) return;
+  if (message.author.bot || message.webhookId) return;
   if (!message.guild) return;
 
   if (message.content.trim() == KEYWORD) {

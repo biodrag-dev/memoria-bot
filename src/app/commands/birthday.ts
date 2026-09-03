@@ -10,7 +10,7 @@ import type {
     CommandMetadata,
 } from "commandkit";
 import * as characterHelper from "../helpers/characterHelper";
-import * as birthdayHelper from "../helpers/birthdayHelper";
+import * as birthdayHelper from "../helpers/extraHelpers/birthdayHelper";
 
 export const metadata: CommandMetadata = {
     guilds: [`${process.env.GUILD_ID}`],

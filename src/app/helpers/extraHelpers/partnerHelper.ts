@@ -4,10 +4,10 @@ import {
   EmbedBuilder,
   StringSelectMenuBuilder,
 } from "@discordjs/builders";
-import * as characterHelper from "./characterHelper";
-import * as pokeHelper from "./pokeHelper";
+import * as characterHelper from "../characterHelper";
+import * as pokeHelper from "../pokeHelper";
 
-import { OocPartner } from "./characterHelper";
+import { OocPartner } from "../characterHelper";
 import { ButtonStyle, ColorResolvable, resolveColor } from "discord.js";
 
 export const sessions = new Map<string, choices>();
