@@ -1,7 +1,5 @@
 import type { EventHandler } from "commandkit";
 
-import * as embedHelper from "../../helpers/embedHelper";
-import * as characterHelper from "../../helpers/characterHelper";
 import * as partnerHelper from "../../helpers/extraHelpers/partnerHelper";
 
 const OOC_CATEGORIES = [

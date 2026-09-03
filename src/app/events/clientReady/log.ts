@@ -10,6 +10,7 @@ const handler: EventHandler<"clientReady"> = async (client) => {
   client.user.setStatus("idle");
 
   Logger.info(`Logged in as ${client.user.username}!`);
+
 };
 
 export default handler;

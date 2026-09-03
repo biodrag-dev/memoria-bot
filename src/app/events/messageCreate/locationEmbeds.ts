@@ -1,5 +1,4 @@
 import type { EventHandler } from "commandkit";
-import { EmbedBuilder } from "discord.js";
 import * as locationEmbedHelper from "../../helpers/locationEmbedHelper";
 
 const KEYWORD = "m!location";
@@ -7,7 +6,6 @@ const KEYWORD = "m!location";
 const handler: EventHandler<"messageCreate"> = async (message) => {
     if (message.author.bot || message.webhookId) return;
     if (!message.guild) return;
-
 
     if (message.content.trim().startsWith(KEYWORD)) {
         var channel = message.channel;

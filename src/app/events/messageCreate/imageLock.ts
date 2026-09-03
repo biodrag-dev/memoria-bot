@@ -9,7 +9,7 @@ const handler: EventHandler<"messageCreate"> = async (message) => {
 
     //if message has attachments, below 24h limit, and doesn't have image_locked role removed (manual bypass)
     if (
-        message.attachments &&
+        message.attachments.size > 0 &&
         !member.roles.cache.has(`${process.env.IMAGE_LOCKED_ROLE}`) &&
         message.createdTimestamp - member.joinedTimestamp! < 24 * 60 * 60 * 1000
     ) {

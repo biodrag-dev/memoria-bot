@@ -1,6 +1,7 @@
 import {
   ApplicationCommandOptionType,
   InteractionContextType,
+  TextChannel,
 } from "discord.js";
 
 import type {
@@ -45,7 +46,7 @@ export const command: CommandData = {
 export const chatInput: ChatInputCommand = async (ctx) => {
   const interaction = ctx.interaction;
 
-  const channel = interaction.options.getChannel("channel", true);
+  const channel = interaction.options.getChannel("channel", true) as TextChannel;
 
   if (!channel.isTextBased()) {
     return interaction.reply({

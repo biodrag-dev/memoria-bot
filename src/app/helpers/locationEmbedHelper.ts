@@ -14,14 +14,6 @@ async function loadEmbeds() {
   }
 }
 
-async function saveEmbeds() {
-  await fs.writeFile(
-    `${jsonsPath}/embeds.json`,
-    JSON.stringify(embeds, null, 2),
-    "utf8",
-  );
-}
-
 export async function embed(name: string) {
   await loadEmbeds();
   if (embeds[name]) {
