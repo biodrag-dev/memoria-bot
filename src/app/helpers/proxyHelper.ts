@@ -202,3 +202,15 @@ export async function addCharacter(
 
   await saveProxies();
 }
+
+
+
+export async function replyText(
+  message: Message,
+) {
+
+    return `Replying to: ${message.author.username} | ${message.url}
+> ${message.content.slice(0, Math.min(message.content.length, 200))}`
+
+  await saveProxies();
+}
