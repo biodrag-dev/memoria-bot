@@ -3,7 +3,10 @@ import { EventHandler } from "commandkit";
 import * as starboardHelper from "../../helpers/starboardHelper";
 import { Message } from "discord.js";
 
-const handler: EventHandler<"messageReactionAdd"> = async (reaction, user) => {
+const handler: EventHandler<"messageReactionRemove"> = async (
+  reaction,
+  user,
+) => {
   if (user.bot) return;
 
   if (reaction.partial) {
@@ -17,7 +20,7 @@ const handler: EventHandler<"messageReactionAdd"> = async (reaction, user) => {
 
   if (reaction.emoji.name !== "⭐") return;
 
-  starboardHelper.starMessage(
+  starboardHelper.removeStar(
     reaction.client,
     reaction.count!,
     reaction.message as Message,
