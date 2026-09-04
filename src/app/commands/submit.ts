@@ -19,6 +19,7 @@ import type {
 import * as pokehelper from "../helpers/pokeHelper";
 import * as submitHelper from "../helpers/extraHelpers/submitHelper";
 import * as embedHelper from "../helpers/embedHelper";
+import * as proxyHelper from "../helpers/proxyHelper";
 
 export const metadata: CommandMetadata = {
   guilds: [`${process.env.GUILD_ID}`],

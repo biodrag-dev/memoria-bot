@@ -9,6 +9,8 @@ import {
 } from "discord.js";
 import * as submitHelper from "../../helpers/extraHelpers/submitHelper";
 import * as characterHelper from "../../helpers/characterHelper";
+import * as proxyHelper from "../../helpers/proxyHelper";
+import * as pokeHelper from "../../helpers/pokeHelper";
 
 export default async function (interaction: Interaction) {
   if (interaction.isButton()) {
@@ -21,15 +23,15 @@ export default async function (interaction: Interaction) {
       return;
     }
     const [action, userId, msgId] = interaction.customId.split(":");
-    const channel = await interaction.client.channels.fetch(
+    const channel = (await interaction.client.channels.fetch(
       `${process.env.SUBMIT_LOG}`,
-    ) as TextChannel;
+    )) as TextChannel;
+    const submission = await submitHelper.getSubmit(interaction.user.id);
 
     var reviewMsg;
     var embed;
     switch (action) {
       case "submit-confirm":
-        const submission = await submitHelper.getSubmit(interaction.user.id);
         if (!submission) {
           embed = new EmbedBuilder()
             .setColor("#ce1b1b")
@@ -89,7 +91,9 @@ export default async function (interaction: Interaction) {
             .setFooter({ text: "Better luck next time..." });
         }
         const alphaRoll = new EmbedBuilder()
-          .setDescription(`🎲 **Result** | ${submission.alphaRoll} ${submission.alphaRoll === 20 ? `<:alpha:1539739148586455162>` : ``}`)
+          .setDescription(
+            `🎲 **Result** | ${submission.alphaRoll} ${submission.alphaRoll === 20 ? `<:alpha:1539739148586455162>` : ``}`,
+          )
           .setTitle(`Rolling for Alpha Status (1d20)...`);
         if (submission.alphaRoll == 20) {
           alphaRoll.setColor("#f81a1a").setFooter({
@@ -146,7 +150,17 @@ export default async function (interaction: Interaction) {
           embeds: [embed],
           components: [],
         });
-        await characterHelper.registerCharacter(`${userId}`, interaction.client);
+
+        const pokemon = await pokeHelper.findPokemon(submission.partner);
+        const basemon = await pokeHelper.findBaseMon(pokemon); 
+        await proxyHelper.addCharacter(
+          userId!,
+          (await interaction.guild!.members.fetch(`${userId}`))?.displayName, submission.name, pokeHelper.displayName(basemon.name),
+        );
+        await characterHelper.registerCharacter(
+          `${userId}`,
+          interaction.client,
+        );
         await submitHelper.deleteSubmit(`${userId}`);
         break;
 

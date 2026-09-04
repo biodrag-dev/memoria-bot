@@ -16,6 +16,7 @@ import * as characterHelper from "../helpers/characterHelper";
 import * as submitHelper from "../helpers/extraHelpers/submitHelper";
 import * as pokeHelper from "../helpers/pokeHelper";
 import * as embedHelper from "../helpers/embedHelper";
+import * as proxyHelper from "../helpers/proxyHelper";
 
 import { EmbedBuilder } from "discord.js";
 
@@ -168,7 +169,7 @@ export const command: CommandData = {
       name: "trim-list",
       description: "gets a list of people who have left the server",
       type: ApplicationCommandOptionType.Subcommand,
-    }
+    },
   ],
 };
 
@@ -266,16 +267,17 @@ export const chatInput: ChatInputCommand = async (ctx) => {
     var text = ``;
     if (people.length != 0) {
       for (const user of people) {
-        text += `\n<@${user}>`
+        text += `\n<@${user}>`;
       }
     } else {
-      text = `Everything's caught up!`
+      text = `Everything's caught up!`;
     }
 
-    
-    const embed = new EmbedBuilder().setDescription(`${text}`).setTitle(`Trimmable Data`)
+    const embed = new EmbedBuilder()
+      .setDescription(`${text}`)
+      .setTitle(`Trimmable Data`);
     await interaction.reply({
-      embeds: [embed]
+      embeds: [embed],
     });
   }
 
@@ -324,7 +326,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         embeds: [embed],
       });
 
-      return await embedHelper.updateReservesEmbed(ctx.interaction.client);;
+      return await embedHelper.updateReservesEmbed(ctx.interaction.client);
     }
 
     if (sub === "all") {
@@ -355,7 +357,9 @@ export const chatInput: ChatInputCommand = async (ctx) => {
           embed.setDescription(
             `All of <@${interaction.options.getUser("roleplayer")!.id}>'s character data has been deleted.`,
           );
-
+          await proxyHelper.deleteUser(
+            interaction.options.getUser("roleplayer", true).id,
+          );
           await button.update({
             embeds: [embed],
             components: [],
@@ -410,6 +414,10 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         if (button.customId === "admin-delete-accept") {
           embed.setDescription(
             `${interaction.options.getString("character", true)} has been deleted!`,
+          );
+          await proxyHelper.deleteCharacter(
+            interaction.options.getUser("roleplayer", true).id,
+            interaction.options.getString("character", true),
           );
 
           await button.update({

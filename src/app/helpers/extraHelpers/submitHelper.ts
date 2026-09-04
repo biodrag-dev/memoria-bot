@@ -25,7 +25,7 @@ type SubmitDex = Record<string, SubmitData>;
 type EvoDex = Record<string, EvoData>;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const jsonsPath = path.resolve(__dirname, "../../../jsons");
+const jsonsPath = path.resolve(__dirname, "../../../../jsons");
 
 let submitDex: SubmitDex;
 let evoDex: EvoDex;

@@ -2,14 +2,12 @@ import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 import {
-  ActionRowBuilder,
   AnyThreadChannel,
   ChannelType,
   Client,
   ColorResolvable,
   EmbedBuilder,
   resolveColor,
-  StringSelectMenuBuilder,
 } from "discord.js";
 
 import * as pokehelper from "./pokeHelper";
@@ -276,7 +274,6 @@ const houseData: Record<string, houseData> = {
 async function loadUsers() {
   if (!charaDex) {
     const data = await fs.readFile(`${jsonsPath}/users.json`, "utf8");
-
     charaDex = JSON.parse(data) as CharacterDex;
   }
 }

@@ -1,7 +1,9 @@
 import { Client, EmbedBuilder, Message, TextChannel } from "discord.js";
 import fs from "fs/promises";
 import path from "path";
+
 const jsonsPath = path.resolve(__dirname, "../../../jsons");
+import * as proxyHelper from "./proxyHelper";
 
 var stars: Record<string, string>;
 const starMinimum = 1;
@@ -21,14 +23,21 @@ export async function saveStars() {
   );
 }
 
-export function getEmbed(stars: number, message: Message) {
+export async function getEmbed(stars: number, message: Message) {
   const embed = new EmbedBuilder();
-  if (message.content) {
-    embed.setDescription(message.content);
+  var reply;
+  if (message.reference) {
+    reply = proxyHelper.replyText(await message.fetchReference());
   }
+  if (message.content) {
+    embed.setDescription(`${reply ?? ``}${message.content}`);
+  }
+
+  const member = await message.guild?.members.fetch(message.author.id);
   embed.setAuthor({
-    iconURL: message.author.displayAvatarURL(),
-    name: message.author.username,
+    iconURL:
+      member?.displayAvatarURL() ?? message.author.displayAvatarURL(),
+    name: member?.displayName ?? message.author.displayName,
   });
   embed.setTimestamp();
   embed.setColor("#f4dc84");
@@ -61,7 +70,7 @@ export async function starMessage(
   const channel = (await client.channels.fetch(
     `${process.env.STARBOARD_CHANNEL}`,
   )) as TextChannel;
-  const msgInfo = getEmbed(starReactions, message);
+  const msgInfo = await getEmbed(starReactions, message);
 
   if (stars[message.id]) {
     const starredMsg = await channel.messages.fetch(`${stars[message.id]}`);
@@ -93,7 +102,7 @@ export async function removeStar(
     await starredMsg.delete();
     await saveStars();
   } else {
-    const msgInfo = getEmbed(starReactions, message);
+    const msgInfo = await getEmbed(starReactions, message);
     starredMsg.edit(msgInfo);
   }
 }
