@@ -1,4 +1,4 @@
-import Pokedex, { Pokemon } from "pokedex-promise-v2";
+import Pokedex, { Move, Pokemon } from "pokedex-promise-v2";
 
 const P = new Pokedex();
 
@@ -222,11 +222,13 @@ export async function getRandLearnableMove(pokemon: Pokemon){
 
 export async function getRandMove(){
     const moves = await P.getResource("https://pokeapi.co/api/v2/move/?offset=0&limit=-1");
-    let random = Math.floor(Math.random() * moves.results.length);
+    let random = Math.floor(Math.random() * 918);
     P.getMoveByName(moves.results[random]);
 }
 
-
+export async function getPrice(pokemon: Pokemon, move: Move){
+    move.power;
+}
 export function isSignatureMove(){
 
 }
