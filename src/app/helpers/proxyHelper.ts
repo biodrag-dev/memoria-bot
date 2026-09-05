@@ -163,18 +163,33 @@ export async function sendWebhook(
   if (data.isNarrator) {
     const embed = new EmbedBuilder().setDescription(content);
     if (data.embedColor) embed.setColor(data.embedColor);
-    webhook.send({
-      username: data?.nick,
-      avatarURL: data?.pfp_link,
-      embeds: [embed],
-    });
+    try {
+      await webhook.send({
+        username: data?.nick,
+        avatarURL: data?.pfp_link,
+        embeds: [embed],
+      });
+    } catch {
+      await webhook.send({
+        username: data?.nick,
+        embeds: [embed],
+      });
+    }
   } else {
-    webhook.send({
-      content: content,
-      username: data?.nick,
-      avatarURL: data?.pfp_link,
-      embeds: [],
-    });
+    try {
+      await webhook.send({
+        content: content,
+        username: data?.nick,
+        avatarURL: data?.pfp_link,
+        embeds: [],
+      });
+    } catch {
+      await webhook.send({
+        content: content,
+        username: data?.nick,
+        embeds: [],
+      });
+    }
   }
 }
 
@@ -242,7 +257,7 @@ export async function addCharacter(
       msgCount: 0,
       nick: name,
       isNarrator: false,
-        expDebt: 0,
+      expDebt: 0,
     },
     partner: {
       prefix: `${name}!partner:`,
