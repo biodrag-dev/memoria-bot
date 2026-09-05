@@ -1,4 +1,4 @@
-import Pokedex, { Pokemon, Type } from "pokedex-promise-v2";
+import Pokedex, { Pokemon } from "pokedex-promise-v2";
 import { EmbedBuilder, ColorResolvable } from "discord.js";
 
 const P = new Pokedex();

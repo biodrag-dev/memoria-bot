@@ -1042,3 +1042,10 @@ export async function evolvePartner(
   await saveUsers();
 }
 
+export async function addCurrency(id: string, name: string, amount: number){
+  await loadUsers();
+  const character = charaDex[id]!.characters[name]!;
+  character.balance += amount;
+  await saveUsers();
+
+}

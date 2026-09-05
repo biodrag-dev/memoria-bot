@@ -8,12 +8,14 @@ import {
   TextChannel,
 } from "discord.js";
 
+import * as characterHelper from "./characterHelper";
 const jsonsPath = path.resolve(__dirname, "../../../jsons");
 let proxyDex: Record<string, UserProxies>;
 
 export interface Proxies {
   character: ProxyData;
   partner: ProxyData;
+  expDebt: number;
 }
 
 export interface ProxyData {
@@ -23,7 +25,6 @@ export interface ProxyData {
   msgCount: number;
   isNarrator: boolean;
   embedColor?: ColorResolvable;
-  expDebt: number;
 }
 
 export interface UserProxies {
@@ -65,8 +66,13 @@ export async function proxyCheck(
     proxyLog.add(message.id);
 
     if (proxy[0] != "Narrator") {
-      //character helper
-      //proxy[0]
+      const wordCount : number = message.content
+        .replace(proxy[1].prefix, "")
+        .split(/\s+/).length;
+
+      const debt : number = proxyDex[id].proxies[wordCount]!.expDebt;
+      proxyDex[id].proxies[wordCount]!.expDebt = Math.max(debt - wordCount, 0);
+      await characterHelper.addCurrency(id, proxy[0], Math.max(wordCount - debt, 0));
     }
     if (message.reference) {
       const original = await message.fetchReference();
@@ -246,7 +252,6 @@ export async function addCharacter(
         msgCount: 0,
         nick: `${username}'s narrator`,
         isNarrator: true,
-        expDebt: 0,
       },
       proxies: {},
     };
@@ -257,15 +262,14 @@ export async function addCharacter(
       msgCount: 0,
       nick: name,
       isNarrator: false,
-      expDebt: 0,
     },
     partner: {
       prefix: `${name}!partner:`,
       msgCount: 0,
       nick: `${name}'s ${partner}`,
       isNarrator: false,
-      expDebt: 0,
     },
+    expDebt: 0,
   };
 
   await saveProxies();
