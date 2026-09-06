@@ -60,6 +60,8 @@ export interface Character {
   badges: personalBadge[];
   docLink: string;
   registeredOn: Date;
+  lastShopped?: Date;
+  shoppingArray?: number[];
   destination: string;
   partner: Partner;
   optional: CharacterData;
@@ -316,6 +318,12 @@ export async function getAllInactive(client: Client): Promise<string[]> {
   }
 
   return inactiveUsers;
+}
+
+export async function getCharacter(id: string, name: string): Promise<Character> {
+  await loadUsers();
+
+  return charaDex[id]?.characters[name];
 }
 
 export async function getCharactersObj(id: string): Promise<Character[]> {
@@ -647,7 +655,7 @@ export async function createNewForumPost(
     const message = await thread.send(`<@${id}>`);
 
     setTimeout(async () => {
-      await message.delete().catch(() => {});
+      await message.delete().catch(() => { });
     }, 5000);
   }
   saveUsers();
@@ -1042,7 +1050,7 @@ export async function evolvePartner(
   await saveUsers();
 }
 
-export async function addCurrency(id: string, name: string, amount: number){
+export async function addCurrency(id: string, name: string, amount: number) {
   await loadUsers();
   const character = charaDex[id]!.characters[name]!;
   character.balance += amount;

@@ -1,7 +1,7 @@
 import type { ChatInputCommand, CommandData, CommandMetadata } from "commandkit";
 
 import { ApplicationCommandOptionType } from "discord.js";
-
+import * as tmHelper from "../helpers/tmHelper";
 import * as pokehelper from "../helpers/pokeHelper";
 export const metadata: CommandMetadata = {
   guilds: [`${process.env.GUILD_ID}`],
@@ -60,7 +60,27 @@ export const command: CommandData = {
     },
     {
       name: "evo-path",
-      description: "Find a random Pokémon!",
+      description: "find the evolutionary path of a pokemon!",
+      type: ApplicationCommandOptionType.Subcommand,
+      options: [
+        {
+          name: "name",
+          description: "The name of the Pokémon",
+          type: ApplicationCommandOptionType.String,
+          required: true,
+        },
+      ],
+    },
+
+    {
+      name: "metronome",
+      description: "get a random move!",
+      type: ApplicationCommandOptionType.Subcommand,
+    },
+
+    {
+      name: "metronome2",
+      description: "get a random move!",
       type: ApplicationCommandOptionType.Subcommand,
       options: [
         {
@@ -153,8 +173,6 @@ export const chatInput: ChatInputCommand = async (ctx) => {
     });
   }
 
-
-
   if (sub === "random-mon") {
     const pokemon = await pokehelper.findRandomMon();
     const embed = await pokehelper.pokeEmbedCreate(pokemon);
@@ -185,5 +203,10 @@ export const chatInput: ChatInputCommand = async (ctx) => {
     return interaction.editReply({
       embeds: evoEmbeds,
     });
+  }
+
+  if (sub === "metronome") {
+    const move = await tmHelper.getRandMove();
+    return interaction.editReply({content: move.name});
   }
 };

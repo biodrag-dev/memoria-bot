@@ -14,6 +14,7 @@ import {
 } from "discord.js";
 
 import * as characterHelper from "../helpers/characterHelper";
+import * as tmHelper from "../helpers/tmHelper";
 
 const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
   new ButtonBuilder()
@@ -231,6 +232,20 @@ export const command: CommandData = {
           description: "Who drew the art you are now using?",
           type: ApplicationCommandOptionType.String,
           required: true,
+        },
+      ],
+    },
+        {
+      name: "shop",
+      description: "Purchase TMs here!",
+      type: ApplicationCommandOptionType.Subcommand,
+      options: [
+        {
+          name: "name",
+          description: "Which character are you looking for?",
+          type: ApplicationCommandOptionType.String,
+          required: true,
+          autocomplete: true,
         },
       ],
     },
@@ -531,5 +546,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
       embeds: [embed],
       ephemeral: true,
     });
+  }else if (sub === "shop"){
+    return interaction.reply(await tmHelper.getStoreFront(interaction.user.id, interaction.options.getString("name", true)))
   }
 };

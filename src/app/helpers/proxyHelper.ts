@@ -194,6 +194,7 @@ export async function sendWebhook(
         content: content,
         username: data?.nick,
         embeds: [],
+        
       });
     }
   }
@@ -234,7 +235,6 @@ export async function deleteUser(id: string) {
 export async function deleteCharacter(id: string, name: string) {
   await loadProxies();
   delete proxyDex[id]?.proxies[name];
-
   await saveProxies();
 }
 
