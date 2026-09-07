@@ -62,8 +62,8 @@ Alrighty, as soon as you sign on the dotted line right there, we'll find you one
   },
   {
     name: `Liyuan Yin`,
-    icon: `https://i.ibb.co/mrZnDm3F/FBD20-B6-E-D3-D3-47-F7-B0-FA-14-F87355-FFD3.png`,
-    thumbnail: `https://i.ibb.co/mrZnDm3F/FBD20-B6-E-D3-D3-47-F7-B0-FA-14-F87355-FFD3.png`,
+    icon: `https://cdn.discordapp.com/attachments/936098065788567593/1539842867596627968/FBD20B6E-D3D3-47F7-B0FA-14F87355FFD3.png?ex=6a9edc2c&is=6a9d8aac&hm=2066fe92e72c8c7a8afc34dea260f9a7a1d94a99f62c69717566f848796e9e16&`,
+    thumbnail: `https://cdn.discordapp.com/attachments/936098065788567593/1539842867596627968/FBD20B6E-D3D3-47F7-B0FA-14F87355FFD3.png?ex=6a9edc2c&is=6a9d8aac&hm=2066fe92e72c8c7a8afc34dea260f9a7a1d94a99f62c69717566f848796e9e16&`,
     hexcode: "#48CAE4",
     friendship: {
       none: `WHAT!? …What’re you trying to do with PARTNER? They don’t seem to like you at all!`,
@@ -687,16 +687,8 @@ export async function increasedLevel(
   exp: number,
 ): Promise<Boolean> {
   const charaDex = await characterHelper.getUsers();
-  const oldLevel = Math.min(
-    100,
-    getLevelFromExp(charaDex[id]!.OocPartner!.experience),
-  );
-  const newLevel = Math.min(
-    100,
-    getLevelFromExp(charaDex[id]!.OocPartner!.experience + exp),
-  );
 
-  return oldLevel != newLevel;
+  return characterHelper.increasedLevel(charaDex[id]!.OocPartner!.experience, charaDex[id]!.OocPartner!.experience + exp)
 }
 
 function getLevelFromExp(exp: number): number {

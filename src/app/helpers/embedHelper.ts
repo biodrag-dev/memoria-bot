@@ -819,10 +819,10 @@ async function getFaqFourEmbed() {
     .setColor("#785d8a")
     .setDescription(
       `001 ﹕Hey, where's Tupperbox?
-> To link rewards to roleplay activity, we actually use our own, custom-coded proxy system! Type **mem!help** in botspam for more info :]
+> To link rewards to roleplay activity, we actually use our own, custom-coded proxy system! Use **/character proxy** to edit those! :]
 
 OO2 ﹕When can my Pokemon evolve?
-> While there are many methods to evolving pokemon, in this server, they will scale off of your badge account. If their evolution chain has three stages, then they can evolve at badge 2 and 4. If their evolution chain has two, then they can evolve at badge 3.
+> While there are many methods to evolving pokemon, in this server, they will scale off of your badge amount. If their evolution chain has three stages, then they can evolve at badge 2 and 4. If their evolution chain has two, then they can evolve at badge 3.
 
 OO3 ﹒﹒How are Z-Moves, Mega Evolution, Terastalization, Gigantamaxxing, and/or other battle mechanics being handled?
 > While most of the details are entirely unknown or mythologized in-character, attending events could potentially (but are not always guaranteed to) get you something related to those mechanics later down the line!

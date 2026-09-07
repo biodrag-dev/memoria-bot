@@ -3,7 +3,7 @@ import type {
   CommandData,
   CommandMetadata,
 } from "commandkit";
-import { EmbedBuilder } from "discord.js";
+import { ColorResolvable, EmbedBuilder, TextChannel } from "discord.js";
 
 import {
   ApplicationCommandOptionType,
@@ -15,6 +15,7 @@ import {
 
 import * as characterHelper from "../helpers/characterHelper";
 import * as tmHelper from "../helpers/tmHelper";
+import * as proxyHelper from "../helpers/proxyHelper";
 
 const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
   new ButtonBuilder()
@@ -162,6 +163,21 @@ export const command: CommandData = {
         },
       ],
     },
+
+    {
+      name: "balance",
+      description: "View your character's balance!",
+      type: ApplicationCommandOptionType.Subcommand,
+      options: [
+        {
+          name: "name",
+          description: "Whose balance are you viewing?",
+          type: ApplicationCommandOptionType.String,
+          required: true,
+          autocomplete: true,
+        },
+      ],
+    },
     {
       name: "view",
       description: "View your character",
@@ -235,7 +251,7 @@ export const command: CommandData = {
         },
       ],
     },
-        {
+    {
       name: "shop",
       description: "Purchase TMs here!",
       type: ApplicationCommandOptionType.Subcommand,
@@ -249,6 +265,71 @@ export const command: CommandData = {
         },
       ],
     },
+
+    {
+      name: "proxy",
+      description: "Proxy commands",
+      type: ApplicationCommandOptionType.SubcommandGroup,
+      options: [
+        {
+          name: "edit",
+          description: "edit details of your proxies!",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "name",
+              description: "Which proxy are you editing?",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+              autocomplete: true,
+            },
+            {
+              name: "nickname",
+              description: "The name that shows up for the proxy!",
+              type: ApplicationCommandOptionType.String,
+              required: false,
+              max_length: 40,
+            },
+            {
+              name: "profile-picture",
+              description: "The avatar for the proxy!",
+              type: ApplicationCommandOptionType.Attachment,
+              required: false,
+            },
+            {
+              name: "prefix",
+              description: "Proxy trigger (ie. tx:text would send \"text\" linked to the associated tx: prefix)",
+              type: ApplicationCommandOptionType.String,
+              required: false,
+              max_length: 20,
+            },
+            {
+              name: "color",
+              description: "(Hex code) color of its embed!",
+              type: ApplicationCommandOptionType.String,
+              required: false,
+            },
+          ]
+
+        },
+        {
+          name: "view",
+          description: "view your proxy details",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "name",
+              description: "Which proxy are you viewing?",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+              autocomplete: true,
+            },
+          ]
+
+        }
+
+      ]
+    }
   ],
 };
 
@@ -256,6 +337,10 @@ export const autocomplete = async (ctx: any) => {
   const interaction = ctx.interaction;
   const focused = interaction.options.getFocused(true);
   const names = await characterHelper.getCharacterNames(interaction.user.id);
+
+  if (interaction.options.getSubcommandGroup() == "proxy" && focused.name == "name") {
+    return await interaction.respond(await proxyHelper.getAllProxyNames(interaction.user.id));
+  }
 
   if (interaction.options.getSubcommand() == "set") {
     const characterId = interaction.options.getString("name", false);
@@ -316,6 +401,49 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   const group = interaction.options.getSubcommandGroup();
 
   const sub = interaction.options.getSubcommand();
+
+
+  if (group === "proxy") {
+    const [proxyId, partnerType] = interaction.options
+      .getString("name", true)
+      .split(":");
+    if (sub === "edit") {
+      const attachment = interaction.options.getAttachment("profile-picture");
+      if (attachment) {
+        const allowedTypes = new Set([
+          "image/png",
+          "image/jpeg",
+          "image/webp",
+        ]);
+        if (!allowedTypes.has(attachment.contentType ?? "")) {
+          return interaction.reply({
+            content: "Profile pictures must be PNG, JPG, or WebP.",
+            ephemeral: true,
+          });
+        }
+      }
+
+      await proxyHelper.editProxyDetails(
+        interaction,
+        interaction.user.id,
+        proxyId!,
+        partnerType === "partner",
+        interaction.options.getString("nickname"),
+        attachment,
+        interaction.options.getString("prefix"),
+        interaction.options.getString("color") as ColorResolvable,
+
+      );
+    }
+    const embed = await proxyHelper.getProxyPage(interaction.user.id,
+      proxyId!,
+      partnerType === "partner");
+
+    return await interaction.reply({
+      content: sub === "edit" ? `Proxy Edited!` : ``,
+      embeds: [embed]
+    })
+  }
 
   if (group === "partner") {
     switch (sub) {
@@ -400,6 +528,8 @@ export const chatInput: ChatInputCommand = async (ctx) => {
                 interaction.options.getString("name", true),
                 interaction.client,
               );
+              const channel = await interaction.client.channels.fetch(`${process.env.IRP_NOTIFICATIONS}`) as TextChannel;
+              channel.send({embeds:[embed], content:`<@${interaction.user.id}>`})
               await button.update({
                 content: ``,
                 embeds: [embed],
@@ -546,7 +676,11 @@ export const chatInput: ChatInputCommand = async (ctx) => {
       embeds: [embed],
       ephemeral: true,
     });
-  }else if (sub === "shop"){
-    return interaction.reply(await tmHelper.getStoreFront(interaction.user.id, interaction.options.getString("name", true)))
+  } else if (sub === "shop") {
+    await interaction.deferReply();
+
+    return interaction.editReply(await tmHelper.getStoreFront(interaction.user.id, interaction.options.getString("name", true)))
+  } else if (sub === "balance") {
+    return interaction.reply({ embeds: [await proxyHelper.balanceEmbed(interaction.user.id, interaction.options.getString("name", true))] });
   }
 };

@@ -18,7 +18,7 @@ export default async function handleQuizInteraction(interaction: any) {
     return;
   }
 
-  const partner = await partnerHelper.getPartner(ids[1]);
+  const partner = interaction.values[0].split(":");
 
   // Prevent old dropdowns from being used
   if (partner?.canFeed !== true) {

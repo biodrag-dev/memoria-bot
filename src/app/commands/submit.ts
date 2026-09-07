@@ -90,7 +90,7 @@ charaModal.addComponents(
     .setLabel("Document Link")
     .setStyle(TextInputStyle.Short)
     .setRequired(true)
-    .setMaxLength(100)
+    .setMaxLength(200)
     .setPlaceholder("https://docs.google.com/document/d/..."),
 );
 

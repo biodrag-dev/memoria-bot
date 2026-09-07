@@ -25,5 +25,4 @@ export const command: CommandData = {
 
 export const chatInput: ChatInputCommand = async (ctx) => {
   const interaction = ctx.interaction;
-
 };

@@ -9,6 +9,35 @@ interface ColorData {
   bannerCreds: string;
 }
 
+const versionOrder = new Map([
+  ['champions', 0],
+  ['red-green-japan', 1],
+  ['blue-japan', 2],
+  ['red-blue', 3],
+  ['yellow', 4],
+  ['gold-silver', 5],
+  ['crystal', 6],
+  ['ruby-sapphire', 7],
+  ['colosseum', 8],
+  ['firered-leafgreen', 9],
+  ['emerald', 10],
+  ['xd', 11],
+  ['diamond-pearl', 12],
+  ['platinum', 13],
+  ['heartgold-soulsilver', 14],
+  ['black-white', 15],
+  ['black-2-white-2', 16],
+  ['x-y', 17],
+  ['omega-ruby-alpha-sapphire', 18],
+  ['sun-moon', 19],
+  ['ultra-sun-ultra-moon', 20],
+  ['lets-go-pikachu-lets-go-eevee', 21],
+  ['sword-shield', 22],
+  ['brilliant-diamond-shining-pearl', 23],
+  ['legends-arceus', 24],
+  ['scarlet-violet', 25],
+]);
+
 const PARADOX_POKEMON = new Set([
   // Scarlet
   "great-tusk",
@@ -160,7 +189,7 @@ export async function getEvolutionPath(dest: string) {
   }
 }
 
-export async function getDirectEvolutions(pokemon: Pokemon) : Promise<Set<string>> {
+export async function getDirectEvolutions(pokemon: Pokemon): Promise<Set<string>> {
   switch (pokemon.name) {
     case "basculin-white-striped":
       return new Set(["basculegion-female", "basculegion-male"]);
@@ -579,7 +608,82 @@ export async function getPossibleAbilities(
   ];
 }
 
-export async function getColor(pokemon: any): Promise<ColorData> {
+export async function getColor(pokemon: Pokemon): Promise<ColorData> {
   const species = await P.getResource(pokemon.species.url);
   return colors[species.color.name]!;
+}
+
+
+export function getLatestGen(pokemon: Pokemon) {
+  const generations = new Set<string>();
+
+  for (const move of pokemon.moves) {
+    for (const version of move.version_group_details) {
+      generations.add(version.version_group.name);
+    }
+  }
+  const latestGeneration = [...generations].reduce<string | null>(
+    (latest, generation) => {
+      if (
+        latest === null ||
+        (versionOrder.get(generation) ?? -1) >
+        (versionOrder.get(latest) ?? -1)
+      ) {
+        return generation;
+      }
+
+      return latest;
+    },
+    null
+  );
+
+  return latestGeneration!;
+}
+
+
+export function getLearnset(pokemon: Pokemon, game: string) {
+  const moves = [];
+
+  for (const move of pokemon.moves) {
+    for (const version of move.version_group_details) {
+      if (version.move_learn_method.name == "level-up" && version.version_group.name === game) {
+        moves.push(move);
+      }
+    }
+  }
+  return moves;
+}
+
+export function learnedMoves(pokemon: Pokemon, oldLevel: number, newLevel: number) {
+  const latestGen = getLatestGen(pokemon);
+  const moves = [];
+
+  for (const move of pokemon.moves) {
+    for (const version of move.version_group_details) {
+      if (version.move_learn_method.name == "level-up" && version.version_group.name === latestGen && version.level_learned_at <= newLevel && version.level_learned_at > oldLevel) {
+        moves.push(move);
+      }
+    }
+  }
+  return moves;
+}
+
+
+export function latestGenLearnset(pokemon: Pokemon) {
+  const latestGen = getLatestGen(pokemon);
+  const set = getLearnset(pokemon, latestGen);
+
+  set.sort((moveA, moveB) => moveA.version_group_details.find((m) => m.version_group.name == latestGen)?.level_learned_at! - moveB.version_group_details.find((m) => m.version_group.name == latestGen)?.level_learned_at!)
+
+  var string = ``;
+  for (const move of set) {
+    string += `${move.version_group_details.find((m) => m.version_group.name == latestGen)?.level_learned_at} | ${move.move.name}\n`;
+  }
+  console.log(string);
+}
+
+export async function moveDisplayName(id: string){
+
+    const move = await P.getMoveByName(id);
+    return move.names.find((move) => move.language.name === "en")!.name;
 }

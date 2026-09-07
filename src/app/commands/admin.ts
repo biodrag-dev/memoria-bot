@@ -283,6 +283,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
 
   if (sub === "toggle-badge") {
     const badge = await characterHelper.toggleBadge(
+      interaction.client,
       interaction.options.getUser("roleplayer", true).id,
       interaction.options.getString("character", true),
       interaction.options.getString("badge", true),

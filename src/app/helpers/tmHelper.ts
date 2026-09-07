@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, StringSelectMenuBuilder } from "discord.js";
 import Pokedex, { Move, Pokemon, Type } from "pokedex-promise-v2";
 import * as characterHelper from "./characterHelper";
 import { months } from "./extraHelpers/birthdayHelper"
@@ -531,7 +531,7 @@ export async function getRandMove() {
     return await P.getMoveByName(moves.results[random].name);
 }
 
-function isLegal(name: string) {
+function isLegalBasic(name: string) {
     if (LEGENDARYSIGNATURES.has(name) || isZMove(name) || isGMax(name) || BANNED.has(name))
         return false;
     return true;
@@ -544,22 +544,49 @@ function nonSignatureLegalCheck(name: string) {
 }
 
 
-export function getPrice(pokemon: Pokemon, move: Move) {
+export function getPrice(move: Move, moveData: characterHelper.tmData) {
 
-    (move.power ?? 1) * (move.meta?.max_hits ?? 1);
-    return 34;
+    if (moveData.legendary) {
+        return 50000;
+    }
+    var basePrice;
+    if (move.damage_class.name == "status") {
+        basePrice = 5000;
+    } else {
+        basePrice = (move.power ?? 50) * (move.meta?.max_hits ?? 1) * (move.accuracy ?? 100);
+        if (move.priority > 0) {
+            basePrice += 1000;
+        }
+    }
+
+    if (!moveData.learnedMoves) {
+        basePrice *= 1.5;
+    }
+    if(!moveData.typeMatch){
+        basePrice *= 1.5
+    }
+    if (moveData.signature) {
+        basePrice *= 2;
+    }
+    return basePrice;
 }
 
-export async function getStoreEntry(id: number) {
+export async function getStoreEntry(id: number, moveData: characterHelper.tmData) {
 
     const move = await P.getMoveByName(id);
-
-    return `${tmEmojis[move.type.name as PokemonType]} | **TM ${move.id}: ${move.names.find((move) => move.language.name === "en")!.name}** | $34
+    var emoji = ``
+    if (moveData.legendary) {
+        emoji = `⭐ `
+    } else if (moveData.signature) {
+        emoji = `<:shiny:1539739147001012234> `
+    }
+    return `${emoji}${tmEmojis[move.type.name as PokemonType]} **TM ${move.id}: ${move.names.find((move) => move.language.name === "en")!.name}** // ₽${getPrice(move, moveData)}
 -# > ${move.flavor_text_entries.find((move) => move.language.name === "en")?.flavor_text.replaceAll("\n", " ")}`
 }
 
 export async function getStoreFront(buyerid: string, charaName: string) {
-    const row = new ActionRowBuilder<ButtonBuilder>();
+    const row = new ActionRowBuilder<StringSelectMenuBuilder>();
+    const menu = new StringSelectMenuBuilder().setCustomId(`buy:tm:${buyerid}`);
     var character = await characterHelper.getCharacter(buyerid, charaName);
     const partner = await P.getPokemonByName(character.partner.species);
 
@@ -567,7 +594,7 @@ export async function getStoreFront(buyerid: string, charaName: string) {
     const today = new Date();
     var shopSet = character.shoppingArray;
     //if it's still the same day as generated
-    if (lastShopped.getDate() != today.getDate()) {
+    if (lastShopped.getDate() != today.getDate() || lastShopped.getMonth() != today.getMonth()) {
         const users = await characterHelper.getUsers();
         shopSet = await rerollEntries(partner);
         users[buyerid]!.characters[charaName]!.lastShopped = today;
@@ -577,18 +604,26 @@ export async function getStoreFront(buyerid: string, charaName: string) {
     const entries: string[] = [];
 
     for (const id of shopSet!) {
-        const move = await P.getMoveByName(id);
-        entries.push(await getStoreEntry(id));
+        const move = await P.getMoveByName(id.id);
+        entries.push(await getStoreEntry(id.id, id));
 
-        const price = getPrice(partner, move);
+        const price = getPrice(move, id);
         if (price <= character.balance) {
-            row.addComponents(new ButtonBuilder().setCustomId(`buy_tm:${buyerid}:${id}:${price}`).setLabel(`Buy ${move.names.find((move) => move.language.name === "en")?.name}`).setStyle(ButtonStyle.Primary));
+            menu.addOptions({
+                label: `TM ${move.id}: ${move.names.find((move) => move.language.name === "en")!.name} | ₽${price}`,
+                value: `${character.name}:${move.name}:${move.id}:${price}`,
+                emoji: tmEmojis[move.type.name as PokemonType]
+            })
         }
     }
-    const embed = new EmbedBuilder();
+    if (menu.options.length > 0) {
+        row.addComponents(menu);
+    }
+    const embed = new EmbedBuilder().setColor("#777d81");
     embed.setDescription(entries.join("\n") + " ");
-    embed.setTitle(`${charaName}'s Store! | ${months[lastShopped.getMonth()]} ${today.getDate()}`);
-    embed.setFooter({ text: `${charaName}'s balance: ${character.balance}` })
+    embed.setImage("https://www.brycekho.com/uploads/2/5/0/8/25083559/11x17-psyduck-shiny.jpg")
+    embed.setTitle(`${charaName}'s Shop! | ${months[today.getMonth()]} ${today.getDate()}`);
+    embed.setFooter({ text: `${charaName}'s balance: ₽${character.balance} | banner by brycekhodraws on twitter` })
 
     return {
         embeds: [embed], components: row.components.length > 0 ? [row] : [],
@@ -608,13 +643,13 @@ export async function rerollEntries(pokemon: Pokemon) {
     var typeMove2;
     while (!typeMove1) {
         let random = Math.floor(Math.random() * type.moves.length);
-        if (isNonSignatureMove(type.moves[random]!.name)) {
+        if (nonSignatureLegalCheck(type.moves[random]!.name)) {
             typeMove1 = await P.getMoveByName(type.moves[random]!.name);
         }
     }
     while (!typeMove2) {
         let random = Math.floor(Math.random() * type2.moves.length);
-        if (isNonSignatureMove(type2.moves[random]!.name)) {
+        if (nonSignatureLegalCheck(type2.moves[random]!.name)) {
             typeMove2 = await P.getMoveByName(type2.moves[random]!.name);
         }
     }
@@ -622,15 +657,14 @@ export async function rerollEntries(pokemon: Pokemon) {
     const gamble = await rareGambleTM(type, type2);
 
     // 1 is rand ANY move (nonsignature), 20% chance to be a signature (must be same type?), 3% chance to be a legendary's signature
-    return [random.id, random2.id, typeMove1.id, typeMove2.id, gamble.id];
+    return [getTMData(pokemon, random), getTMData(pokemon, random2), getTMData(pokemon, typeMove1), getTMData(pokemon, typeMove2), getTMData(pokemon, gamble)];
 }
 
 export async function rareGambleTM(type1: Type, type2: Type) {
     const random = Math.floor(Math.random() * 100);
-    console.log("random tm roll:", random);
     var move;
 
-    if (random >= 90) {
+    if (random >= 80) {
         let isType1 = (Math.floor(Math.random() * 2) == 0);
 
         const type1Filter = SIGNATURES_BY_TYPE[type1.name as PokemonType].filter((move) => move.legendary == false);
@@ -642,7 +676,7 @@ export async function rareGambleTM(type1: Type, type2: Type) {
         const movename = isType1 ? type1Filter[random]!.name : type2Filter[random]!.name;
         move = await P.getMoveByName(movename);
 
-    } else if (random >= 96) {
+    } else if (random >= 85) {
         let isType1 = (Math.floor(Math.random() * 2) == 0);
 
         const type1Filter = SIGNATURES_BY_TYPE[type1.name as PokemonType].filter((move) => move.legendary == true);
@@ -657,7 +691,7 @@ export async function rareGambleTM(type1: Type, type2: Type) {
         move = getRandMove()
         while (!move) {
             let random = await getRandMove();
-            if (isNonSignatureMove(random.name)) {
+            if (nonSignatureLegalCheck(random.name)) {
                 move = random;
             }
         }
@@ -665,8 +699,16 @@ export async function rareGambleTM(type1: Type, type2: Type) {
     return move;
 }
 
-export function isNonSignatureMove(move: string) {
-    return !(SIGNATURES.has(move) || LEGENDARYSIGNATURES.has(move));
+export function getTMData(pokemon: Pokemon, move: Move): characterHelper.tmData {
+    return {
+        id: move.id,
+        legendary: LEGENDARYSIGNATURES.has(move.name),
+        signature: SIGNATURES.has(move.name),
+        learnedMoves: pokemon.moves.some(
+            (learnset) => learnset.move.name === move.name
+        ),
+        typeMatch: (pokemon.types[0]!.type.name === move.type.name || pokemon.types[1]?.type.name === move.type.name)
+    }
 }
 
 export function isZMove(name: string) {
@@ -674,5 +716,6 @@ export function isZMove(name: string) {
 }
 
 export function isGMax(name: string) {
-    return name.startsWith("g-max");
+    return name.startsWith("g-max") || name.startsWith("max");
 }
+
