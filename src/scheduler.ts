@@ -13,11 +13,6 @@ export async function startScheduler(client: Client) {
     await submitHelper.clearTemporary();
     await submitHelper.clearExpiredReserves();
     await embedHelper.updateReservesEmbed(client);
-    // const channel = await client.channels.fetch("1530190433941196902");
-
-    // if (!channel?.isTextBased()) return;
-
-    // await channel.send("test.");
   });
 
   //
@@ -43,5 +38,7 @@ export async function startScheduler(client: Client) {
         undefined,
       );
     }
+  }, {
+    timezone: 'America/Denver'
   });
 }
