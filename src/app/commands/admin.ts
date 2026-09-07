@@ -17,6 +17,7 @@ import * as submitHelper from "../helpers/extraHelpers/submitHelper";
 import * as pokeHelper from "../helpers/pokeHelper";
 import * as embedHelper from "../helpers/embedHelper";
 import * as proxyHelper from "../helpers/proxyHelper";
+import * as qotdHelper from "../helpers/qotdHelper";
 
 import { EmbedBuilder } from "discord.js";
 
@@ -251,6 +252,37 @@ export const command: CommandData = {
       description: "gets a list of people who have left the server",
       type: ApplicationCommandOptionType.Subcommand,
     },
+    {
+      name: "qotd",
+      description: "qotd-related commands",
+      type: ApplicationCommandOptionType.SubcommandGroup,
+      options: [
+        {
+          name: "queue",
+          description: "gets a list of upcoming qotds",
+          type: ApplicationCommandOptionType.Subcommand,
+        },
+        {
+          name: "remove",
+          description: "removes a question from the queue",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "index",
+              description: "Index of the question to be removed",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+              autocomplete: true,
+            },
+          ]
+        },
+        {
+          name: "force",
+          description: "forces a qotd",
+          type: ApplicationCommandOptionType.Subcommand,
+        },
+      ]
+    },
   ],
 };
 
@@ -260,6 +292,10 @@ export const autocomplete = async (ctx: any) => {
   const focused = interaction.options.getFocused(true);
   const sub = interaction.options.getSubcommand();
   const group = interaction.options.getSubcommandGroup();
+
+  if (group == "qotd" && sub == "remove") {
+    return await interaction.respond(qotdHelper.getIndexToRemove());
+  }
 
   if (sub == "toggle-badge") {
     const characterId = interaction.options.getString("character", false);
@@ -317,6 +353,18 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   const group = interaction.options.getSubcommandGroup(false);
   const sub = interaction.options.getSubcommand();
 
+  if (group == "qotd") {
+    if (sub == "queue") {
+      return interaction.reply({ embeds: [qotdHelper.getQueue()] });
+    } else if (sub == "remove") {
+      qotdHelper.removeIndex(Number.parseInt(interaction.options.getString("index", true)));
+      return interaction.reply({ embeds: [new EmbedBuilder().setColor("Red").setDescription("QOTD removed successfully!")] });
+    } else if (sub == "force") {
+      qotdHelper.sendQuestion(interaction.client);
+      return interaction.reply({ embeds: [new EmbedBuilder().setColor("Green").setDescription("QOTD forced!")] });
+    }
+    return;
+  }
   if (sub === "edit") {
     await characterHelper.editCharacter(
       interaction.options.getUser("roleplayer")!.id,
@@ -541,7 +589,8 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         interaction.options.getInteger("amount", true),
       )
     }
-    return interaction.reply({ embeds: [proxyHelper.balanceEmbed(interaction.options.getUser("roleplayer", true).id, interaction.options.getString("character", true))]
-  });
-}
+    return interaction.reply({
+      embeds: [proxyHelper.balanceEmbed(interaction.options.getUser("roleplayer", true).id, interaction.options.getString("character", true))]
+    });
+  }
 };

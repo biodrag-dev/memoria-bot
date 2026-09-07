@@ -3,6 +3,7 @@ import * as submitHelper from "./app/helpers/extraHelpers/submitHelper";
 import * as embedHelper from "./app/helpers/embedHelper";
 import * as characterHelper from "./app/helpers/characterHelper";
 import * as birthdayHelper from "./app/helpers/extraHelpers/birthdayHelper";
+import * as qotdHelper from "./app/helpers/qotdHelper";
 
 import type { Client } from "commandkit";
 
@@ -38,6 +39,7 @@ export async function startScheduler(client: Client) {
         undefined,
       );
     }
+    qotdHelper.sendQuestion(client);
   }, {
     timezone: 'America/Denver'
   });

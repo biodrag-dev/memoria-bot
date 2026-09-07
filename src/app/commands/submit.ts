@@ -19,7 +19,7 @@ import type {
 import * as pokehelper from "../helpers/pokeHelper";
 import * as submitHelper from "../helpers/extraHelpers/submitHelper";
 import * as embedHelper from "../helpers/embedHelper";
-import * as proxyHelper from "../helpers/proxyHelper";
+import * as qotdHelper from "../helpers/qotdHelper";
 
 export const metadata: CommandMetadata = {
   guilds: [`${process.env.GUILD_ID}`],
@@ -116,6 +116,32 @@ export const command: CommandData = {
         },
       ],
     },
+    {
+      name: "qotd",
+      description: "Suggest a QOTD!",
+      type: ApplicationCommandOptionType.Subcommand,
+      options: [
+        {
+          name: "question",
+          description: "The main question",
+          type: ApplicationCommandOptionType.String,
+          required: true,
+          max_length: 80
+        },
+        {
+          name: "description",
+          description: "Additional context/description if need be!",
+          type: ApplicationCommandOptionType.String,
+          required: false,
+        },
+        {
+          name: "image",
+          description: "is there an image you'd like to attach with this qotd?",
+          type: ApplicationCommandOptionType.Attachment,
+          required: false,
+        },
+      ],
+    },
   ],
 };
 
@@ -123,6 +149,35 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   const interaction = ctx.interaction;
 
   const sub = interaction.options.getSubcommand();
+  if (sub === "qotd") {
+    const attachment = interaction.options.getAttachment("image");
+    if (attachment) {
+      const allowedTypes = new Set([
+        "image/png",
+        "image/jpeg",
+        "image/webp",
+        "image/gif"
+      ]);
+      if (!allowedTypes.has(attachment.contentType ?? "")) {
+        return interaction.reply({
+          content: "Image must be PNG, JPG, GIF, or WebP.",
+          ephemeral: true,
+        });
+      }
+    }
+
+    qotdHelper.createSuggestion(interaction.client,
+      interaction.options.getString("question", true),
+      interaction.options.getString("description"),
+      interaction.user.id,
+      interaction.options.getAttachment("image")?.url);
+
+    interaction.reply({
+      content: "QOTD submitted successfully!",
+      ephemeral: true
+    })
+  }
+
   if (sub === "character") {
     if ((await submitHelper.hasSubmit(ctx.interaction.user.id)) === true) {
       const failEmbed = new EmbedBuilder()
