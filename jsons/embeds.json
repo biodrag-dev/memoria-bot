@@ -1,0 +1,112 @@
+{
+  "volcano": {
+    "title": "火鳥山 | Mount Huǒniǎo",
+    "color": 13254717,
+    "description": "> Far from dormant but fortunately not rampant on the daily, those who live near **Mount Huǒniǎo** have many stories to tell of its occasional eruptions. The townspeople have grown accustomed to this lifestyle, knowing when and how to deal with the subsequent lava threatening their borders and thick screens of ash blanketing the sky. Take one look at the terrain surrounding the volcano and it may very well look like the skeletal remains of a Pokémon best left buried – jagged and infamously treacherous. Trainers daring enough to brave its heat will find that plant life is still capable of flourishing in its vicinity, taking on a crimson hue as deep as magma itself. It’s uncertain whether the earth is naturally a colour bordering obsidian, but few are willing to stay for long and find out due to the poor air quality.",
+    "image": {
+      "url": "https://cdnb.artstation.com/p/assets/images/images/086/258/409/4k/josu-solano-452951-mountain-v2.jpg"
+    },
+    "footer": {
+      "text": "banner by @jsolano on artstation"
+    }
+  },
+  "volcano city": {
+    "title": "天蝎城市 | Tiānxiē City",
+    "color": 14706964,
+    "description": "> **Tiānxiē City** is best described as a civilization that is constantly bustling. Thanks to the occasional eruptions from **Mount Huǒniǎo** damaging its buildings, its colourful lifestyle has anchored itself on a culture that shifts with each time they rebuild. With art and festivities as the focus of its community, they take eruptions as an opportunity to experiment with new art styles and mediums, rarely holding a grudge as it challenges them as creatives and oddly forgiving to even outsiders. Here, there is no such thing as a quiet nightlife, offering crowded night markets with unconventional streetfoods and passionate buskers trying to make a living.",
+    "image": {
+      "url": "https://cdnb.artstation.com/p/assets/images/images/042/825/599/large/carla-cordelia-visual-development-artist-night-market-magical-mddartss.jpg "
+    },
+    "footer": {
+      "text": "banner by @carlacordelia on artstation"
+    }
+  },
+  "rainforest": {
+    "title": "十字架雨林 | Shízìjià Rainforest",
+    "color": 14247609,
+    "description": "> The **Shízìjià Rainforest** is no place for beginners. Swarming with poisonous Pokémon, trainers will find many signs reminding them to bring as many Antidotes as there are species of plants present. Due to the rainforest’s proximity to **Mount Huǒniǎo**, it’s recommended to always plan out a way to seek shelter should acid rain pour down. In spite of the environment threatening all those that enter, it flourishes with great biodiversity and dreamy flora that is as dangerous as it is colourful. Streams of water flow gently through its depths, reflections revealing mushrooms that are impossibly tall and pranksters spying on you from afar. Why not try your luck by trying one of the Berries here, while you’re at it?",
+    "image": {
+      "url": "https://cdnb.artstation.com/p/assets/images/images/098/296/927/large/sylvain-sarrailh-highrise-the-verdant-labyrinth.webp"
+    },
+    "footer": {
+      "text": "banner by @tohad on artstation"
+    }
+  },
+  "spring mountains": {
+    "title": "金魚山脉 | Jīnyú Mountains",
+    "color": 9363117,
+    "description": "> Nestled within the center of **Jīnyú Mountains** is a hot spring that is surprisingly gentle on the skin. The ambience is enough to lull someone into a deep sleep from a quick dip, but whether you’ll wake up to find Fairy Pokémon braiding your hair or not is another story. Between cherry blossom petals kissing the water’s surface and the layered cascades that mist the area, weary travelers have claimed to hear the voice of the person they miss the most. There is little evidence to back this, however, and the locals have begun to believe this mysterious spirit of the springs will only reveal itself to those with pure and noble hearts.",
+    "image": {
+      "url": "https://cdnb.artstation.com/p/assets/images/images/031/373/211/large/g-liulian-2.jpg"
+    },
+    "footer": {
+      "text": "banner by @gliulian on artstation"
+    }
+  },
+  "spring town": {
+    "title": "人馬集镇 | Rénmǎ Town",
+    "color": 9952203,
+    "description": "> Perched above countless waterfalls and as a reward for making the taxing hike to the top, **Rénmǎ Town** welcomes all with countless luxurious – and pricey – inns for travelers to soothe their souls. Whether you choose to meditate, explore the network of bridges, or fill your lungs with the air that doesn’t get much cleaner than this, wild Pokémon can be found training and skipping from spring to spring. Everywhere you turn, you will undoubtedly find a place of your own to bathe and unwind. Perhaps one will restore youth – is what the locals tell you. They’ll even give you a discount for another night, if you want to spend another day searching for it!",
+    "image": {
+      "url": "https://cdnb.artstation.com/p/assets/images/images/008/155/355/large/g-liulian-.jpg"
+    },
+    "footer": {
+      "text": "banner by @gliulian on artstation"
+    }
+  },
+  "tundra": {
+    "title": "夾白苔原  | Jiābái Tundra",
+    "color": 14217453,
+    "description": "> If you wanted to try your hand at finding a Cubchoo in a snowstorm, then **Jiābái Tundra** is the place to do it. Although the terrain itself is far from challenging, it’s a coin flip between stepping into one inch of snow or sinking into ten feet of it. The harsh winds and cold nights hardly make it suitable to set up camp in. That is, assuming you haven’t lost all your gear from being toppled over during a blizzard. Your footprints disappear quickly here, but maybe that’s exactly how you like it? Regardless, it’s important to strap your resources tightly to your body, lest you inevitably get lost from one checkpoint to another without enough food to spare.",
+    "image": {
+      "url": "https://cdnb.artstation.com/p/assets/images/images/022/130/479/4k/grady-frederick-steppe-final-2-color-v3.jpg"
+    },
+    "footer": {
+      "text": "banner by @gradyart on artstation"
+    }
+  },
+  "safety village": {
+    "title": "寶瓶村子 | Bǎopíng Village",
+    "color": 15263911,
+    "description": "> It’s nothing short of a miracle to make it to **Bǎopíng Village** in one piece. As one of the only safe points before entering the **Fùbái Mountains** and situated at its base, the residents are accommodating and ready to treat frostbite at a moment’s notice. For how likely it was to freeze to death moments ago, the auroras you can catch a glimpse of here are a rewarding sight indeed. Try their specialty hot pot while you’re here, it’ll warm you right up to the point you’ll miss this feeling once you leave! Don’t be afraid to ask them for assistance or accept their generous hospitality – it’s always a cause for celebration when a familiar face returns from their journey.",
+    "image": {
+      "url": "https://cdna.artstation.com/p/assets/images/images/042/631/438/4k/sin-jong-hun-56-aurora-town.jpg"
+    },
+    "footer": {
+      "text": "banner by @huniartist on artstation"
+    }
+  },
+  "safety valley": {
+    "title": "水委山谷 | Shuǐwěi Valley",
+    "color": 6796622,
+    "description": "> Situated between **Fùbái Mountains** and **Jīnyú Mountains**, **Shuǐwěi Valley** reaps the best of both worlds with pleasantly warm weather all year long. With both soft, rolling hills and steeper climbs available, there’s a little something for all kinds of hikers. A clear stream flows through the area, wrapping around to form a ring where bedtime stories tell the tale of a promise from a deity Pokémon to return. Whether that’s the reason behind such a drastic difference in terrain from one place to another or not, even geomorphologists are baffled yet intrigued by the formations here. Many have taken it upon themselves to find a plausible explanation, but if anything is for certain, then it’s how well-loved the land is here – blessed as the valley where two contrasting forces intertwine.",
+    "image": {
+      "url": "https://cdna.artstation.com/p/assets/images/images/035/157/498/4k/andreas-rocha-landscapefinalwide.jpg"
+    },
+    "footer": {
+      "text": "banner by @andreasrocha on artstation"
+    }
+  },
+    "tundra1": {
+    "title": "夾白苔原  | Jiābái Tundra",
+    "color": 14247609,
+    "description": "test",
+    "image": {
+      "url": "https://cdnb.artstation.com/p/assets/images/images/022/130/479/4k/grady-frederick-steppe-final-2-color-v3.jpg"
+    },
+    "footer": {
+      "text": "banner by @gradyart on artstation"
+    }
+  },
+    "tundra2": {
+    "title": "夾白苔原  | Jiābái Tundra",
+    "color": 14247609,
+    "description": "test",
+    "image": {
+      "url": "https://cdnb.artstation.com/p/assets/images/images/022/130/479/4k/grady-frederick-steppe-final-2-color-v3.jpg"
+    },
+    "footer": {
+      "text": "banner by @gradyart on artstation"
+    }
+  }
+}

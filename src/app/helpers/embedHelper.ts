@@ -2,6 +2,7 @@ import {
   Client,
   EmbedBuilder,
   ForumChannel,
+  Guild,
   Interaction,
   TextChannel,
 } from "discord.js";
@@ -25,12 +26,22 @@ export async function updateAllEmbeds(client: Client) {
   // updateAllLoreEmbeds(client)
 }
 
+export async function sendMemberLog(
+  guild: Guild,
+  embed: EmbedBuilder,
+) {
+  const channel = guild.channels.cache.get(`${process.env.MEMBER_LOG}`);
+
+  if (!channel?.isTextBased()) return;
+
+  await channel.send({ embeds: [embed] });
+}
+
 export async function updateEmbed(
   channel: any,
   message_id: string,
   embed: EmbedBuilder,
 ) {
-  //const channel = await interaction.client.channels.fetch(`${channel_id}`);
   const msg = await channel.messages.fetch(`${message_id}`);
   await msg.edit({
     embeds: [embed],
@@ -819,7 +830,7 @@ async function getFaqFourEmbed() {
     .setColor("#785d8a")
     .setDescription(
       `001 ﹕Hey, where's Tupperbox?
-> To link rewards to roleplay activity, we actually use our own, custom-coded proxy system! Use **/character proxy** to edit those! :]
+> To link rewards/leveling to roleplay activity, we actually use our own, custom-coded proxy system! Use **/character proxy** to edit those! :]
 
 OO2 ﹕When can my Pokemon evolve?
 > While there are many methods to evolving pokemon, in this server, they will scale off of your badge amount. If their evolution chain has three stages, then they can evolve at badge 2 and 4. If their evolution chain has two, then they can evolve at badge 3.
@@ -835,7 +846,9 @@ OO5 ﹒﹒Do people eat Pokemon or animals?
  
 OO6 ﹕Can I NPC a character?
 > You can use NPCs for interactions that call for them (ie. a waiter at a restaurant bringing your character a meal, a librarian checking out books for your character, your OC's family), however these NPCs cannot be used on their own in separate interactions apart from with their relevant OC.
-`,
+
+OO8 ﹒﹒How can my partner learn new moves?
+> They can either learn new moves through leveling up (the learnset is Scarlet/Violet, or latest game they appear in barring ZA/Champions), or you can buy TMs through **/character store**! Some special TMs can even teach your pokemon moves they can't naturally learn!`,
     )
     .setImage("https://pbs.twimg.com/media/E-97E1hUYAAgmkc.png?name=orig")
     .setFooter({

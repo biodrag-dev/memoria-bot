@@ -27,18 +27,16 @@ type EvoDex = Record<string, EvoData>;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const jsonsPath = path.resolve(__dirname, "../../../../jsons");
 
-let submitDex: SubmitDex;
-let evoDex: EvoDex;
+let submitDex: SubmitDex = await loadSubmissions();
+let evoDex: EvoDex = await loadEvos();
 
 export async function toProperCase(name: string) {
   return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
 async function loadSubmissions() {
-  if (!submitDex) {
-    const data = await fs.readFile(`${jsonsPath}/submissions.json`, "utf8");
-    submitDex = JSON.parse(data) as SubmitDex;
-  }
+  const data = await fs.readFile(`${jsonsPath}/submissions.json`, "utf8");
+  return JSON.parse(data) as SubmitDex;
 }
 
 async function saveSubmissions() {
@@ -50,10 +48,8 @@ async function saveSubmissions() {
 }
 
 async function loadEvos() {
-  if (!evoDex) {
-    const data = await fs.readFile(`${jsonsPath}/evoDestinations.json`, "utf8");
-    evoDex = JSON.parse(data) as EvoDex;
-  }
+  const data = await fs.readFile(`${jsonsPath}/evoDestinations.json`, "utf8");
+  return JSON.parse(data) as EvoDex;
 }
 
 async function saveEvos() {
@@ -65,8 +61,7 @@ async function saveEvos() {
 }
 
 //checks if the destination is valid, ie. the evo isn't taken, or they've already reserved it
-export async function checkDestination(id: string, name: string) {
-  await loadEvos();
+export function checkDestination(id: string, name: string) {
   if (
     !evoDex[`${name}`] ||
     (evoDex[`${name}`]!.user == id && evoDex[`${name}`]!.status != "Approved")
@@ -75,24 +70,21 @@ export async function checkDestination(id: string, name: string) {
   return false;
 }
 
-export async function getDestination(name: string): Promise<EvoData> {
-  await loadEvos();
+export function getDestination(name: string): EvoData {
   return evoDex[`${name}`]!;
 }
 
 //approves a reservation
-export async function approveDestination(name: string) {
-  await loadEvos();
+export function approveDestination(name: string) {
   evoDex[`${name}`]!.status = "Approved";
   evoDex[`${name}`]!.dateMade = new Date();
-  await saveEvos();
+  saveEvos();
 }
 
 //deletes a destination
-export async function deleteDestination(name: string) {
-  await loadEvos();
+export function deleteDestination(name: string) {
   delete evoDex[`${name}`];
-  await saveEvos();
+  saveEvos();
 }
 
 export function reserveExpireDate(name: string) {
@@ -102,15 +94,13 @@ export function reserveExpireDate(name: string) {
 }
 
 export function getReserveOfUser(id: string) {
-  loadEvos();
   return Object.entries(evoDex)
     .filter(([_, data]) => data.user === id && data.status === "Reserved")
     .map(([name]) => name);
 }
 
 //creates a destination entry with reserved status. will override existing ones
-async function createDestination(id: string, name: string) {
-  loadEvos();
+function createDestination(id: string, name: string) {
   const evoData: EvoData = {
     user: id,
     status: "Reserved",
@@ -120,31 +110,19 @@ async function createDestination(id: string, name: string) {
   saveEvos();
 }
 
-export async function hasSubmit(id: string) {
-  await loadSubmissions();
+export function hasSubmit(id: string) {
   if (submitDex[`${id}`] && submitDex[`${id}`]!.status != "Temporary")
     return true;
   return false;
 }
-export async function denySubmit(id: string) {
-  await loadEvos();
-  await loadSubmissions();
-}
 
-export async function approveSubmit() {
-  await loadEvos();
-  await loadSubmissions();
-}
-
-export async function createSubmit(
+export function createSubmit(
   id: string,
   name: string,
   house: string,
   docLink: string,
   partner: string,
 ) {
-  await loadSubmissions();
-  await loadEvos();
   const shinyRoll = Math.floor(Math.random() * 20) + 1;
   const alphaRoll = Math.floor(Math.random() * 20) + 1;
 
@@ -167,53 +145,47 @@ export async function createSubmit(
       dateMade: new Date(),
     };
     evoDex[`${partner}`] = evoData;
-    await saveEvos();
+    saveEvos();
   }
-  await saveSubmissions();
+  saveSubmissions();
 }
 
-export async function continueSubmit(id: string) {
-  await loadSubmissions();
+export function continueSubmit(id: string) {
   submitDex[`${id}`]!.status = "Reviewing";
   if (submitDex[`${id}`]!.docLink != "STAFF NPC") {
-    await createDestination(id, submitDex[`${id}`]!.partner);
+    createDestination(id, submitDex[`${id}`]!.partner);
   }
 
-  await saveSubmissions();
+  saveSubmissions();
 }
 
-export async function getSubmit(id: string): Promise<SubmitData> {
-  await loadSubmissions();
+export function getSubmit(id: string): SubmitData {
   return submitDex[`${id}`]!;
 }
 
-export async function deleteSubmit(id: string) {
-  await loadSubmissions();
-  await loadEvos();
+export function deleteSubmit(id: string) {
   const partner = submitDex[`${id}`]!.partner;
   if (submitDex[`${id}`]?.docLink != "STAFF NPC" && evoDex[`${partner}`]!.status == "Temporary") {
     delete evoDex[`${partner}`];
-    await saveEvos();
+    saveEvos();
   }
   delete submitDex[`${id}`];
 
-  await saveSubmissions();
+  saveSubmissions();
 }
 
-export async function clearTemporary() {
-  await loadSubmissions();
-  await loadEvos();
+export function clearTemporary() {
   const tempSubs = Object.entries(submitDex)
     .filter(([_, data]) => data.status === "Temporary")
     .map(([key]) => key);
 
   for (const chara of tempSubs) {
-    await deleteSubmit(chara);
+    deleteSubmit(chara);
   }
+  saveSubmissions();
 }
 
-export async function clearExpiredReserves() {
-  await loadEvos();
+export function clearExpiredReserves() {
   const now = new Date();
 
   for (const [destination, evo] of Object.entries(evoDex)) {
@@ -222,13 +194,12 @@ export async function clearExpiredReserves() {
     expirationDate.setMonth(expirationDate.getMonth() + 1);
 
     if (now >= expirationDate) {
-      await deleteDestination(destination);
+      deleteDestination(destination);
     }
   }
 }
 
 export async function reviewEmbed(id: string, status: string) {
-  await loadSubmissions();
   const submission = submitDex[`${id}`]!;
   const pokemon = await pokehelper.findPokemon(submission.partner);
 
@@ -238,7 +209,11 @@ export async function reviewEmbed(id: string, status: string) {
     )
     .setDescription(
       `**House** | ${submission.house}\n**Evolutionary Destination** | ${await toProperCase(submission.partner)}\n**Document Link**\n${submission.docLink}`,
-    )
+    ).addFields({
+      name: `**Roleplayer**`,
+      value: `<@${id}>`,
+      inline: true,
+    },)
     .setFooter({
       text: `use /submit character to submit your oc! our template is required.`,
     });
@@ -261,8 +236,7 @@ export async function reviewEmbed(id: string, status: string) {
   return embed;
 }
 
-export async function getAllApprovedPartnerEntries() {
-  await loadEvos();
+export function getAllApprovedPartnerEntries() {
   let array = [];
   for (const [destination, evo] of Object.entries(evoDex)) {
     if (evo.status == "Approved") {
@@ -276,8 +250,7 @@ export async function getAllApprovedPartnerEntries() {
   return array.join("\n");
 }
 
-export async function getAllReservedPartnerEntries() {
-  await loadEvos();
+export function getAllReservedPartnerEntries() {
   const now = new Date();
   let array = [];
 
@@ -298,8 +271,6 @@ export async function getAllReservedPartnerEntries() {
 }
 
 export async function verifyCanReserve(userId: string, speciesName: string) {
-  loadEvos();
-
   if ((await pokehelper.isLegendOrMyth(speciesName.toLowerCase())) === true) {
     return -3;
   }
@@ -345,7 +316,6 @@ export function createProperReserve(userId: string, speciesName: string) {
 }
 
 export async function getAllReserves(client: Client): Promise<any[]> {
-  loadEvos();
   const reservations = await Promise.all(
     Object.entries(evoDex)
       .filter(([_, reservation]) => reservation.status === "Reserved")

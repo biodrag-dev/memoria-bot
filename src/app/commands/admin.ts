@@ -82,6 +82,87 @@ export const command: CommandData = {
         },
       ],
     },
+
+    {
+      name: "balance",
+      description: "Character balance/edit",
+      type: ApplicationCommandOptionType.SubcommandGroup,
+      options: [
+        {
+          name: "view",
+          description: "view balance",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "roleplayer",
+              description: "Character owner",
+              type: ApplicationCommandOptionType.User,
+              required: true,
+            },
+            {
+              name: "character",
+              description: "Character name",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+              autocomplete: true,
+            },
+          ]
+        },
+        {
+          name: "add",
+          description: "add balance",
+
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "roleplayer",
+              description: "Character owner",
+              type: ApplicationCommandOptionType.User,
+              required: true,
+            },
+            {
+              name: "character",
+              description: "Character name",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+              autocomplete: true,
+            },
+            {
+              name: "amount",
+              description: "How much are you changing the value by?",
+              type: ApplicationCommandOptionType.Integer,
+              required: true,
+            },
+          ]
+        },
+        {
+          name: "set",
+          description: "What will their balance be set to?",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "roleplayer",
+              description: "Character owner",
+              type: ApplicationCommandOptionType.User,
+              required: true,
+            },
+            {
+              name: "character",
+              description: "Character name",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+              autocomplete: true,
+            },
+            {
+              name: "amount",
+              description: "Character name",
+              type: ApplicationCommandOptionType.Integer,
+              required: true,
+            },
+          ]
+        },
+      ],
+    },
     {
       name: "toggle-badge",
       description: "Toggles a badge",
@@ -448,4 +529,19 @@ export const chatInput: ChatInputCommand = async (ctx) => {
       return;
     }
   }
+  if (group === "balance") {
+    if (sub === "add") {
+      characterHelper.changeBalance(interaction.options.getUser("roleplayer", true).id,
+        interaction.options.getString("character", true),
+        interaction.options.getInteger("amount", true),
+      )
+    } else if (sub === "set") {
+      characterHelper.setBalance(interaction.options.getUser("roleplayer", true).id,
+        interaction.options.getString("character", true),
+        interaction.options.getInteger("amount", true),
+      )
+    }
+    return interaction.reply({ embeds: [proxyHelper.balanceEmbed(interaction.options.getUser("roleplayer", true).id, interaction.options.getString("character", true))]
+  });
+}
 };

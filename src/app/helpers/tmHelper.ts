@@ -7,6 +7,9 @@ const P = new Pokedex();
 //     "normal": ["zippy-zap"],
 //     "fire": []
 
+const moves = (await P.getMovesList()).results.map((resource) => { return resource.name });
+
+
 type PokemonType =
     | "normal"
     | "fire"
@@ -495,6 +498,7 @@ const LEGENDARYSIGNATURES = new Set([
     "mighty-cleave",
     "tachyon-cutter",
     "tera-starstorm",
+    "ivy-cudgel",
     "malignant-chain"
 ]);
 const BANNED = new Set([
@@ -562,7 +566,7 @@ export function getPrice(move: Move, moveData: characterHelper.tmData) {
     if (!moveData.learnedMoves) {
         basePrice *= 1.5;
     }
-    if(!moveData.typeMatch){
+    if (!moveData.typeMatch) {
         basePrice *= 1.5
     }
     if (moveData.signature) {
@@ -709,6 +713,11 @@ export function getTMData(pokemon: Pokemon, move: Move): characterHelper.tmData 
         ),
         typeMatch: (pokemon.types[0]!.type.name === move.type.name || pokemon.types[1]?.type.name === move.type.name)
     }
+}
+
+export function getAllMoveNames() {
+    console.log(moves);
+
 }
 
 export function isZMove(name: string) {

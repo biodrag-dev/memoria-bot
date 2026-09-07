@@ -10,8 +10,9 @@ const monthlyRerolls = 3;
 export function isValidHex(color: string): boolean {
   return /^#?[0-9A-F]{6}$/i.test(color);
 }
+
 async function createRole(client: Client, id: string) {
-  const charaDex = await characterHelper.getUsers();
+  const charaDex = characterHelper.getUsers();
   if (!charaDex[id]) {
     charaDex[id] = { characters: {} };
   }
@@ -23,11 +24,11 @@ async function createRole(client: Client, id: string) {
     await role.setPosition(targetRole.position - 1);
     await member.roles.add(role);
     charaDex[id].booster_role = role.id;
-    await characterHelper.saveUsersExternal(charaDex);
+    characterHelper.saveUsersExternal(charaDex);
   }
 }
 export async function removeBoosterRole(client: Client, id: string) {
-  const charaDex = await characterHelper.getUsers();
+  const charaDex = characterHelper.getUsers();
   if (charaDex[id]?.booster_role) {
     const guild = client.guilds.cache.get(`${process.env.GUILD_ID}`)!;
     const role = await guild.roles.fetch(charaDex?.[id].booster_role);
@@ -48,7 +49,7 @@ export async function boosterColor(
   ) {
     return `Error: not a hex code!`;
   }
-  const charaDex = await characterHelper.getUsers();
+  const charaDex = characterHelper.getUsers();
 
   const guild = client.guilds.cache.get(`${process.env.GUILD_ID}`)!;
   const role = guild.roles.cache.get(charaDex[id]?.booster_role!);
@@ -82,7 +83,7 @@ export async function boosterColor(
 }
 
 export async function boosterName(client: Client, id: string, name: string) {
-  const charaDex = await characterHelper.getUsers();
+  const charaDex = characterHelper.getUsers();
   await createRole(client, id);
   const guild = client.guilds.cache.get(`${process.env.GUILD_ID}`)!;
   const role = guild.roles.cache.get(charaDex[id]?.booster_role!);
@@ -93,7 +94,7 @@ export async function boosterName(client: Client, id: string, name: string) {
 }
 
 export async function getRerolls(id: string): Promise<number> {
-  const charaDex = await characterHelper.getUsers();
+  const charaDex = characterHelper.getUsers();
   if (!charaDex[id]?.last_rolled) {
     // if never rolled
     return monthlyRerolls;
@@ -113,7 +114,7 @@ export async function rerollOOC(
   id: string,
   field: string,
 ): Promise<EmbedBuilder> {
-  const charaDex = await characterHelper.getUsers();
+  const charaDex = characterHelper.getUsers();
   const roll = Math.floor(Math.random() * 20) + 1;
   const embed = new EmbedBuilder();
 
@@ -161,7 +162,7 @@ ${pokehelper.getSize(partner.sizeMult)} -> ${pokehelper.getSize(sizeMult)}`,
   }
   charaDex[id]!.monthly_rolled = (await getRerolls(id)) - 1;
   charaDex[id]!.last_rolled = new Date();
-  await characterHelper.saveUsersExternal(charaDex);
+  characterHelper.saveUsersExternal(charaDex);
   embed.setThumbnail(
     await pokehelper.getSprite(partner.species, partner.gender, partner.shiny),
   );
@@ -174,7 +175,7 @@ export async function rerollIRP(
   name: string,
   field: string,
 ): Promise<EmbedBuilder> {
-  const charaDex = await characterHelper.getUsers();
+  const charaDex = characterHelper.getUsers();
 
   const roll = Math.floor(Math.random() * 20) + 1;
   const embed = new EmbedBuilder();
@@ -222,7 +223,7 @@ ${pokehelper.getSize(partner.sizeMult)} -> ${pokehelper.getSize(sizeMult)}`,
   }
   charaDex[id]!.monthly_rolled = (await getRerolls(id)) - 1;
   charaDex[id]!.last_rolled = new Date();
-  await characterHelper.saveUsersExternal(charaDex);
+  characterHelper.saveUsersExternal(charaDex);
   embed.setThumbnail(await characterHelper.getPartnerSprite(id, name));
 
   return embed;

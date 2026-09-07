@@ -1,0 +1,27 @@
+{
+  "1074503972037075054": {
+    "narrator": {
+      "prefix": "narr:",
+      "msgCount": 0,
+      "nick": "nickname test's narrator",
+      "isNarrator": true
+    },
+    "proxies": {
+      "TEST": {
+        "character": {
+          "prefix": "TEST:",
+          "msgCount": 0,
+          "nick": "TEST",
+          "isNarrator": false
+        },
+        "partner": {
+          "prefix": "1",
+          "msgCount": 57,
+          "nick": "TEST's Sprigatito",
+          "isNarrator": false
+        },
+        "expDebt": 0
+      }
+    }
+  }
+}

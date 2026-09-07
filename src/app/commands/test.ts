@@ -10,6 +10,7 @@ import type {
 } from "commandkit";
 
 import * as proxyHelper from "../helpers/proxyHelper";
+import * as tmHelper from "../helpers/tmHelper";
 
 export const metadata: CommandMetadata = {
   guilds: [`${process.env.GUILD_ID}`],
@@ -25,4 +26,4 @@ export const command: CommandData = {
 
 export const chatInput: ChatInputCommand = async (ctx) => {
   const interaction = ctx.interaction;
-};
+};  

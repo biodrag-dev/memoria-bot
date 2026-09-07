@@ -522,15 +522,15 @@ export const chatInput: ChatInputCommand = async (ctx) => {
                 interaction.user.id,
                 character,
                 embed,
+                interaction.client
               );
               characterHelper.updateCharaForumPost(
                 interaction.user.id,
                 interaction.options.getString("name", true),
                 interaction.client,
               );
-              const channel = await interaction.client.channels.fetch(`${process.env.IRP_NOTIFICATIONS}`) as TextChannel;
-              channel.send({embeds:[embed], content:`<@${interaction.user.id}>`})
-              await button.update({
+
+              await button.editReply({
                 content: ``,
                 embeds: [embed],
                 components: [],
@@ -548,11 +548,13 @@ export const chatInput: ChatInputCommand = async (ctx) => {
               collector.stop();
             }
           });
+        } else {
+
+          return await interaction.reply({
+            embeds: [embed],
+          });
         }
-        return await interaction.reply({
-          embeds: [embed],
-          ephemeral: true,
-        });
+        return;
       }
       case "set": {
         const character = interaction.options.getString("name", true);

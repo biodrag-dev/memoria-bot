@@ -24,7 +24,7 @@ export async function getAllPersonalBdays(
   client: Client,
   id: string,
 ): Promise<EmbedBuilder> {
-  const charaDex = await characterHelper.getUsers()
+  const charaDex = characterHelper.getUsers()
   const embed = new EmbedBuilder();
 
   if (!charaDex[id]) {
@@ -80,11 +80,11 @@ ${characters.length == 0 ? `No characters are registered! Why don't you change t
   return embed;
 }
 
-export async function getOOCBirthdays(
+export function getOOCBirthdays(
   month: number,
   day: number,
-): Promise<string[]> {
-  const charaDex = await characterHelper.getUsers()
+): string[] {
+  const charaDex = characterHelper.getUsers()
   const bdays = Object.entries(charaDex)
     .filter(([_, info]) => {
       if (info.birthday) {
@@ -142,7 +142,7 @@ export async function getOOCMonthBirthday(
 }
 
 export async function getOOCAllBirthdays(): Promise<EmbedBuilder> {
-  const charaDex = await characterHelper.getUsers()
+  const charaDex = characterHelper.getUsers()
   const bdays = Object.entries(charaDex)
     .filter(([_, info]) => {
       if (info.birthday) {
@@ -182,12 +182,12 @@ export async function getOOCAllBirthdays(): Promise<EmbedBuilder> {
   return embed;
 }
 
-export async function setBday(
+export function setBday(
   id: string,
   month: number,
   day: number,
-): Promise<EmbedBuilder> {
-  const charaDex = await characterHelper.getUsers()
+): EmbedBuilder {
+  const charaDex = characterHelper.getUsers()
 
   try {
     const bday = new Date(0);
@@ -200,7 +200,7 @@ export async function setBday(
     }
 
     charaDex[id].birthday = bday;
-    await characterHelper.saveUsersExternal(charaDex);
+    characterHelper.saveUsersExternal(charaDex);
     const embed = new EmbedBuilder()
       .setColor("Green")
       .setDescription(
@@ -219,11 +219,11 @@ export async function setBday(
 //    CHARACTER BIRTHDAY COMMANDS
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export async function getCharaBdays(
+export function getCharaBdays(
   month: number,
   day: number,
-): Promise<{ userId: string; charaName: string }[]> {
-  const charaDex = await characterHelper.getUsers()
+): { userId: string; charaName: string }[] {
+  const charaDex = characterHelper.getUsers()
   const bdays: { userId: string; charaName: string }[] = [];
 
   for (const [userId, userData] of Object.entries(charaDex)) {
@@ -241,8 +241,8 @@ export async function getCharaBdays(
   return bdays;
 }
 
-export async function getCharaMonthBdays(month: number): Promise<EmbedBuilder> {
-  const charaDex = await characterHelper.getUsers()
+export function getCharaMonthBdays(month: number): EmbedBuilder {
+  const charaDex = characterHelper.getUsers()
 
   const bdays: { userId: string; character: characterHelper.Character }[] = [];
   for (const [userId, userData] of Object.entries(charaDex)) {
@@ -287,8 +287,8 @@ export async function getCharaMonthBdays(month: number): Promise<EmbedBuilder> {
   return embed;
 }
 
-export async function getCharaAllBdays(): Promise<EmbedBuilder> {
-  const charaDex = await characterHelper.getUsers()
+export function getCharaAllBdays(): EmbedBuilder {
+  const charaDex = characterHelper.getUsers()
 
   const bdays: { userId: string; character: characterHelper.Character }[] = [];
   for (const [userId, userData] of Object.entries(charaDex)) {
@@ -329,19 +329,19 @@ export async function getCharaAllBdays(): Promise<EmbedBuilder> {
   return embed;
 }
 
-export async function setCharaBday(
+export function setCharaBday(
   id: string,
   name: string,
   month: number,
   day: number,
-): Promise<EmbedBuilder> {
-  const charaDex = await characterHelper.getUsers()
+): EmbedBuilder {
+  const charaDex = characterHelper.getUsers()
   try {
     const bday = new Date(0);
     bday.setMonth(month, day);
 
     charaDex[id]!.characters[name]!.birthday = bday;
-    await characterHelper.saveUsersExternal(charaDex);
+    characterHelper.saveUsersExternal(charaDex);
     const embed = new EmbedBuilder()
       .setColor("Green")
       .setDescription(

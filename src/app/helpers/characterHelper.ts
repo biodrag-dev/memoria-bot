@@ -1,4 +1,4 @@
-import fs from "fs/promises";
+import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import {
@@ -124,7 +124,8 @@ const natures = [
 ];
 
 
-let charaDex: CharacterDex;
+let charaDex: CharacterDex = await loadUsers();
+console.log("new charahelper created");
 
 interface personalBadge {
   name: string;
@@ -286,29 +287,26 @@ const houseData: Record<string, houseData> = {
   },
 };
 
-async function loadUsers() {
-  if (!charaDex) {
-    const data = await fs.readFile(`${jsonsPath}/users.json`, "utf8");
-    charaDex = JSON.parse(data) as CharacterDex;
-  }
+function loadUsers() {
+  const data = fs.readFileSync(`${jsonsPath}/users.json`, "utf8");
+  return JSON.parse(data) as CharacterDex;
 }
 
-async function saveUsers() {
-  await fs.writeFile(
+function saveUsers() {
+  fs.writeFileSync(
     `${jsonsPath}/users.json`,
     JSON.stringify(charaDex, null, 2),
     "utf8",
   );
 }
 
-export async function getUsers(): Promise<CharacterDex> {
-  await loadUsers();
+export function getUsers(): CharacterDex {
   return charaDex;
 }
 
-export async function saveUsersExternal(characters: CharacterDex) {
+export function saveUsersExternal(characters: CharacterDex) {
   charaDex = characters;
-  await fs.writeFile(
+  fs.writeFileSync(
     `${jsonsPath}/users.json`,
     JSON.stringify(charaDex, null, 2),
     "utf8",
@@ -316,7 +314,6 @@ export async function saveUsersExternal(characters: CharacterDex) {
 }
 
 export async function getAllInactive(client: Client): Promise<string[]> {
-  await loadUsers();
   const inactiveUsers: string[] = [];
   const guild = client.guilds.cache.get(`${process.env.GUILD_ID}`);
 
@@ -333,15 +330,11 @@ export async function getAllInactive(client: Client): Promise<string[]> {
   return inactiveUsers;
 }
 
-export async function getCharacter(id: string, name: string): Promise<Character> {
-  await loadUsers();
-
-  return charaDex[id]?.characters[name];
+export function getCharacter(id: string, name: string): Character {
+  return charaDex[id]!.characters[name]!;
 }
 
-export async function getCharactersObj(id: string): Promise<Character[]> {
-  await loadUsers();
-
+export function getCharactersObj(id: string): Character[] {
   const characters: Character[] = [];
 
   if (!charaDex?.[id]) {
@@ -355,9 +348,7 @@ export async function getCharactersObj(id: string): Promise<Character[]> {
   return characters;
 }
 
-export async function getCharacterNames(id: string): Promise<string[]> {
-  await loadUsers();
-
+export function getCharacterNames(id: string): string[] {
   const names: string[] = [];
 
   if (!charaDex?.[id]) {
@@ -383,7 +374,6 @@ export async function getPartnerSprite(id: string, name: string) {
 }
 
 export async function registerCharacter(user: string, client: Client) {
-  await loadUsers();
   const submission = await submitHelper.getSubmit(user);
   const pokemon = await pokehelper.findPokemon(submission.partner);
 
@@ -394,6 +384,13 @@ export async function registerCharacter(user: string, client: Client) {
     sizeMult = 2;
   } else {
     sizeMult = Math.random() / 2 + 0.75;
+  }
+
+  const learnedMoves = pokehelper.learnedMoves(pokemon!, -1, 5);
+  const moves: Record<string, string> = {};
+
+  for (const move of learnedMoves) {
+    moves[move.move.name] = await pokehelper.moveDisplayName(move.move.name);
   }
 
   const charaData: CharacterData = {};
@@ -409,7 +406,7 @@ export async function registerCharacter(user: string, client: Client) {
       shiny: submission.shinyRoll == 20,
       species:
         submission.docLink != "STAFF NPC" ? basemon.name : submission.partner,
-      learnedMoves: {},
+      learnedMoves: moves,
       specialMoves: {},
       sizeMult: sizeMult,
     },
@@ -434,7 +431,7 @@ export async function registerCharacter(user: string, client: Client) {
   }
   charaDex![user].characters[submission.name] = character;
 
-  await saveUsers();
+  saveUsers();
   await createNewForumPost(
     `${user}`,
     `${submission.name}`,
@@ -449,8 +446,6 @@ export async function deleteCharacter(
   name: string,
   client: Client,
 ): Promise<EmbedBuilder> {
-  await loadUsers();
-
   const user = charaDex?.[id];
 
   const character = user?.characters[name];
@@ -490,7 +485,7 @@ export async function deleteCharacter(
     await guildMember.roles.remove(`${process.env.ROLEPLAYER_ROLE}`);
   }
 
-  await saveUsers();
+  saveUsers();
 
   const displayDestination =
     evoDestination.charAt(0).toUpperCase() +
@@ -507,8 +502,6 @@ export async function deleteAll(
   id: string,
   client: Client,
 ): Promise<EmbedBuilder> {
-  await loadUsers();
-
   if (!charaDex?.[id]) {
     return new EmbedBuilder()
       .setDescription("User could not be found!")
@@ -529,7 +522,7 @@ export async function deleteAll(
   if (reserve.length != 0) {
     submitHelper.deleteDestination(reserve[0]!);
   }
-  await saveUsers();
+  saveUsers();
 
   return new EmbedBuilder()
     .setDescription(`All of <@${id}>'s data was deleted!`)
@@ -537,7 +530,6 @@ export async function deleteAll(
 }
 
 export function getCharacterEmbed(id: string, name: string) {
-  loadUsers();
   if (
     !charaDex[id] ||
     !charaDex[id].characters ||
@@ -602,8 +594,6 @@ export function editCharacter(
   field: string,
   info: string,
 ) {
-  loadUsers();
-
   if (!charaDex?.[id]?.characters[name]) {
     return;
   } else {
@@ -614,7 +604,6 @@ export function editCharacter(
 }
 
 export async function deleteThread(id: string, name: string, client: Client) {
-  await loadUsers();
   if (!charaDex?.[id]?.characters[name]) {
     return;
   }
@@ -630,7 +619,6 @@ export async function createNewForumPost(
   client: Client,
   npc: boolean,
 ) {
-  loadUsers();
   if (!charaDex?.[id]?.characters[name]) {
     return;
   } else {
@@ -682,7 +670,6 @@ export async function updateCharaForumPost(
   name: string,
   client: Client,
 ) {
-  loadUsers();
   if (!charaDex?.[id]?.characters[name]) {
     return;
   } else {
@@ -757,7 +744,6 @@ export async function getPartnerEmbed(
   if (name == "Anrui Tian") {
     return getAnruiPartnerEmbed();
   }
-  loadUsers();
 
   const embed = new EmbedBuilder();
   if (charaDex?.[id]?.characters[name]) {
@@ -831,11 +817,10 @@ ${gender}${level}${ability}${nature}${metOn}${dexEntry}${bio}${moves}${speciMove
   return embed;
 }
 
-export async function getSetPartnerFields(
+export function getSetPartnerFields(
   id: string,
   name: string,
-): Promise<any[]> {
-  loadUsers();
+): any[] {
   const options = [];
 
   if (charaDex?.[id]?.characters[name]) {
@@ -856,13 +841,12 @@ export async function getSetPartnerFields(
   return options;
 }
 
-export async function editPartner(
+export function editPartner(
   id: string,
   name: string,
   field: string,
   data: string,
 ) {
-  loadUsers();
   if (!charaDex?.[id]?.characters[name]) {
     return;
   } else {
@@ -901,7 +885,6 @@ export function getNatures() {
 }
 
 export async function getAbilities(id: string, name: string): Promise<any[]> {
-  loadUsers();
   const character = charaDex[id]!.characters[name]!;
   const partner = character.partner as Partner;
 
@@ -912,7 +895,6 @@ export async function getAbilities(id: string, name: string): Promise<any[]> {
 }
 
 export async function getGenders(id: string, name: string): Promise<any[]> {
-  loadUsers();
   const character = charaDex[id]!.characters[name]!;
   return await pokehelper.getPossibleGenders(character.destination);
 }
@@ -922,7 +904,6 @@ export function getNatureFromValue(value: string): string {
 }
 
 export function getPossibleBadges(id: string, name: string): any[] {
-  loadUsers();
   const house = charaDex[id]!.characters[name]!.house;
   // const arr = [];
   const houseBadges = Object.entries(badges)
@@ -935,7 +916,6 @@ export function getPossibleBadges(id: string, name: string): any[] {
 }
 
 export async function toggleBadge(client: Client, id: string, name: string, badge: string) {
-  loadUsers();
   var personalBadges = charaDex[id]!.characters[name]!.badges;
 
   if (personalBadges.some((b) => b.type === badge)) {
@@ -968,7 +948,6 @@ export async function toggleBadge(client: Client, id: string, name: string, badg
 }
 
 export function hasBadge(id: string, name: string, badge: string): boolean {
-  loadUsers();
   var personalBadges = charaDex[id]!.characters[name]!.badges;
 
   if (personalBadges.some((b) => b.type === badge)) {
@@ -978,7 +957,6 @@ export function hasBadge(id: string, name: string, badge: string): boolean {
 }
 
 export function getBadges(id: string, name: string): string {
-  loadUsers();
   const charaBadges = charaDex[id]!.characters[name]!.badges;
   const stringBuilder = [];
   for (const badge of charaBadges) {
@@ -997,7 +975,6 @@ export async function canEvolve(
   name: string,
   embed: EmbedBuilder,
 ): Promise<boolean> {
-  await loadUsers();
   const character = charaDex[id]!.characters[name]!;
   var minCount;
   const badgeCount = character.badges.length;
@@ -1058,14 +1035,14 @@ export async function evolvePartner(
   id: string,
   name: string,
   embed: EmbedBuilder,
+  client: Client
 ) {
-  await loadUsers();
   const character = charaDex[id]!.characters[name]!;
   const evoChain = await pokehelper.getEvolutionPath(character.destination);
+  const partner = character.partner;
   const evoIndex = evoChain.findIndex(
     (evo) => evo === character.partner.species,
   );
-  pokehelper.displayName(character.partner.species);
   embed
     .setTitle(`Congratulations!`)
     .setDescription(
@@ -1080,11 +1057,27 @@ export async function evolvePartner(
       ),
     );
   character.partner.species = evoChain[evoIndex + 1]!;
+
+  const pokemon = await pokehelper.findPokemon(evoChain[evoIndex + 1]!);
+  const learnedMoves = pokehelper.learnedMoves(pokemon!, -1, 0);
+  const channel = await client.channels.fetch(`${process.env.IRP_NOTIFICATIONS}`) as TextChannel
+  await channel.send({ content: `<@${id}>`, embeds: [embed] })
+  for (const move of learnedMoves) {
+    character.partner.learnedMoves[move.move.name] = await pokehelper.moveDisplayName(move.move.name);
+
+    const embed = new EmbedBuilder()
+    embed.setTitle("Congratulations!")
+      .setThumbnail(await pokehelper.getSprite(partner.species, partner.gender, partner.shiny))
+      .setFooter({ text: `${character.name}'s partner | evolution` })
+      .setDescription(`${partner.nickname ?? pokehelper.displayName(partner.species)} learned ${partner.learnedMoves[move.move.name]}!`)
+      .setColor("White")
+    await channel.send({ content: `<@${id}>`, embeds: [embed] })
+  }
+
   await saveUsers();
 }
 
 export async function addCurrency(client: Client, id: string, name: string, amount: number) {
-  await loadUsers();
   const character = charaDex[id]!.characters[name]!;
   const oldExp = character.partner.exp;
   const newExp = character.partner.exp + amount;
@@ -1098,36 +1091,35 @@ export async function addCurrency(client: Client, id: string, name: string, amou
 
     const channel = await client.channels.fetch(`${process.env.IRP_NOTIFICATIONS}`) as TextChannel
     for (const move of learnedMoves) {
-      console.log(move);
+      if ((await knowsMove(id, name, move.move.name)) === false) {
+        character.partner.learnedMoves[move.move.name] = await pokehelper.moveDisplayName(move.move.name);
 
-      character.partner.learnedMoves[move.move.name] = await pokehelper.moveDisplayName(move.move.name);
-
-      const embed = new EmbedBuilder()
-      embed.setTitle("Congratulations!")
-        .setThumbnail(await pokehelper.getSprite(partner.species, partner.gender, partner.shiny))
-        .setFooter({ text: `${character.name}'s partner | lv. ${getLevelFromExp(newExp)}` })
-        .setDescription(`${partner.nickname ?? pokehelper.displayName(partner.species)} learned ${partner.learnedMoves[move.move.name]}!`)
-        .setColor(houseData[character.house]!.hexcode)
-      channel.send({ content: `<@${id}>`, embeds: [embed] })
+        const embed = new EmbedBuilder()
+        embed.setTitle("Congratulations!")
+          .setThumbnail(await pokehelper.getSprite(partner.species, partner.gender, partner.shiny))
+          .setFooter({ text: `${character.name}'s partner | lv. ${getLevelFromExp(newExp)}` })
+          .setDescription(`${partner.nickname ?? pokehelper.displayName(partner.species)} learned ${partner.learnedMoves[move.move.name]}!`)
+          .setColor(houseData[character.house]!.hexcode)
+        channel.send({ content: `<@${id}>`, embeds: [embed] })
+      }
     }
     await updateCharaForumPost(id, name, client);
   }
-  await saveUsers();
+  saveUsers();
 
 }
 
-export async function changeBalance(id: string, name: string, amount: number) {
-  await loadUsers();
-  const character = charaDex[id]!.characters[name]!;
-
-  character.balance += amount;
-  await saveUsers();
+export function changeBalance(id: string, name: string, amount: number) {
+  charaDex[id]!.characters[name]!.balance += amount;
+  saveUsers();
 }
 
-
+export function setBalance(id: string, name: string, amount: number) {
+  charaDex[id]!.characters[name]!.balance = amount;
+  saveUsers();
+}
 
 export async function teachMove(client: Client, id: string, name: string, moveName: string) {
-  await loadUsers();
   const character = charaDex[id]!.characters[name]!;
   const partner = character.partner;
   const channel = await client.channels.fetch(`${process.env.IRP_NOTIFICATIONS}`) as TextChannel
@@ -1142,12 +1134,11 @@ export async function teachMove(client: Client, id: string, name: string, moveNa
   channel.send({ content: `<@${id}>`, embeds: [embed] })
 
   await updateCharaForumPost(id, name, client);
-  await saveUsers();
+  saveUsers();
 }
 
 
 export async function knowsMove(id: string, name: string, moveName: string) {
-  await loadUsers();
   const character = charaDex[id]!.characters[name]!;
   const partner = character.partner;
 

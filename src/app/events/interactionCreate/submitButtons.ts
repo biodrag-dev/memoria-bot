@@ -23,8 +23,11 @@ export default async function (interaction: Interaction) {
       return;
     }
     const [action, userId, msgId] = interaction.customId.split(":");
-    const channel = (await interaction.client.channels.fetch(
+    const SUBMISSIONS_CHANNEL = (await interaction.client.channels.fetch(
       `${process.env.SUBMIT_LOG}`,
+    )) as TextChannel;
+    const SUBMIT_LOG = (await interaction.client.channels.fetch(
+      `${process.env.CHARACTER_LOG}`,
     )) as TextChannel;
     const submission = await submitHelper.getSubmit(interaction.user.id);
 
@@ -51,10 +54,9 @@ export default async function (interaction: Interaction) {
           interaction.user.id,
           "Reviewing",
         );
-        const msg = await channel.send({
+        const msg = await SUBMISSIONS_CHANNEL.send({
           embeds: [embed],
         });
-
         const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
           new ButtonBuilder()
             .setCustomId(`admin-approve:${interaction.user.id}:${msg.id}`)
@@ -67,11 +69,14 @@ export default async function (interaction: Interaction) {
             .setStyle(ButtonStyle.Danger),
         );
 
-        reviewMsg = await channel.messages.fetch(`${msg.id}`);
+        reviewMsg = await SUBMISSIONS_CHANNEL.messages.fetch(`${msg.id}`);
         await msg.edit({
           embeds: [embed],
           components: [row],
         });
+        SUBMIT_LOG.send({
+          embeds: [embed]
+        })
 
         const thread = await msg.startThread({
           name: `Review Thread | ${submission.name}`,
@@ -144,15 +149,23 @@ export default async function (interaction: Interaction) {
           });
           return;
         }
-        reviewMsg = await channel.messages.fetch(`${msgId}`);
+        reviewMsg = await SUBMISSIONS_CHANNEL.messages.fetch(`${msgId}`);
         embed = await submitHelper.reviewEmbed(`${userId}`, "Approved");
+        embed.addFields({
+          name: `**Approved By**`,
+          value: `<@${interaction.user.id}>`,
+          inline: true,
+        });
         await reviewMsg.edit({
           embeds: [embed],
           components: [],
         });
+        SUBMIT_LOG.send({
+          embeds: [embed]
+        })
 
         const pokemon = await pokeHelper.findPokemon(submission.partner);
-        const basemon = await pokeHelper.findBaseMon(pokemon); 
+        const basemon = await pokeHelper.findBaseMon(pokemon);
         await proxyHelper.addCharacter(
           userId!,
           (await interaction.guild!.members.fetch(`${userId}`))?.displayName, submission.name, pokeHelper.displayName(basemon.name),
@@ -174,12 +187,19 @@ export default async function (interaction: Interaction) {
           });
           return;
         }
-        reviewMsg = await channel.messages.fetch(`${msgId}`);
-        embed = await submitHelper.reviewEmbed(`${userId}`, "Denied");
+
+        reviewMsg = await SUBMISSIONS_CHANNEL.messages.fetch(`${msgId}`);
+        embed = await submitHelper.reviewEmbed(`${userId}`, "Denied")
+        embed.addFields({
+          name: `**Denied By**`,
+          value: `<@${interaction.user.id}>`,
+          inline: true,
+        });
         await reviewMsg.edit({
           embeds: [embed],
           components: [],
         });
+        SUBMIT_LOG.send({ embeds: [embed] })
         await submitHelper.deleteSubmit(`${userId}`);
         break;
     }

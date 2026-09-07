@@ -1,6 +1,6 @@
 import type { EventHandler } from "commandkit";
 import * as embedHelper from "../../helpers/embedHelper";
-import * as characterHelper from "../../helpers/characterHelper";
+import * as boosterHelper from "../../helpers/extraHelpers/boosterHelper";
 
 const handler: EventHandler<"guildMemberUpdate"> = async (
   oldMember,
@@ -8,12 +8,12 @@ const handler: EventHandler<"guildMemberUpdate"> = async (
 ) => {
   // User started boosting
   if (!oldMember.premiumSince && newMember.premiumSince) {
-    await embedHelper.sendBoostMsg(newMember.client, newMember.user.id);    
+    await embedHelper.sendBoostMsg(newMember.client, newMember.user.id);
   }
 
   // User stopped boosting
   if (oldMember.premiumSince && !newMember.premiumSince) {
-    await characterHelper.removeBoosterRole(newMember.client, newMember.user.id);
+    await boosterHelper.removeBoosterRole(newMember.client, newMember.user.id);
   }
 };
 

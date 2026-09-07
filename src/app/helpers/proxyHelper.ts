@@ -1,20 +1,18 @@
-import fs from "fs/promises";
+import fs from "fs";
 import path from "path";
 import {
     Attachment,
-    ChatInputApplicationCommandData,
     ChatInputCommandInteraction,
     Client,
     ColorResolvable,
     EmbedBuilder,
-    Interaction,
     Message,
     TextChannel,
 } from "discord.js";
 
 import * as characterHelper from "./characterHelper";
 const jsonsPath = path.resolve(__dirname, "../../../jsons");
-let proxyDex: Record<string, UserProxies>;
+let proxyDex: Record<string, UserProxies> = loadProxies();
 
 export interface Proxies {
     character: ProxyData;
@@ -38,16 +36,13 @@ export interface UserProxies {
 
 const proxyLog = new Set<string>();
 
-async function loadProxies() {
-    if (!proxyDex) {
-        const data = await fs.readFile(`${jsonsPath}/proxyDex.json`, "utf8");
-
-        proxyDex = JSON.parse(data) as Record<string, UserProxies>;
-    }
+function loadProxies() {
+    const data = fs.readFileSync(`${jsonsPath}/proxyDex.json`, "utf8");
+    return JSON.parse(data) as Record<string, UserProxies>;
 }
 
-async function saveProxies() {
-    await fs.writeFile(
+function saveProxies() {
+    fs.writeFileSync(
         `${jsonsPath}/proxyDex.json`,
         JSON.stringify(proxyDex, null, 2),
         "utf8",
@@ -59,7 +54,6 @@ export async function proxyCheck(
     channel: string,
     message: Message,
 ): Promise<boolean> {
-    await loadProxies();
     if (!proxyDex[id]) {
         return false;
     }
@@ -76,7 +70,7 @@ export async function proxyCheck(
 
             const debt: number = proxyDex[id].proxies[proxy[0]]!.expDebt;
             proxyDex[id].proxies[proxy[0]]!.expDebt = Math.max(debt - wordCount, 0);
-            await characterHelper.addCurrency(message.client, id, proxy[0], Math.max(wordCount - debt, 0));
+            characterHelper.addCurrency(message.client, id, proxy[0], Math.max(wordCount - debt, 0));
         }
         if (message.reference) {
             const original = await message.fetchReference();
@@ -93,7 +87,7 @@ export async function proxyCheck(
                     const debt: number = proxyDex[id].proxies[proxy[0]]!.expDebt;
                     proxyDex[id].proxies[proxy[0]]!.expDebt = Math.max(debt - (newWordCount - oldWordCount), 0);
                     await characterHelper.addCurrency(message.client, id, proxy[0], Math.max((newWordCount - oldWordCount) - debt, 0));
-                    await saveProxies();
+                    saveProxies();
                 }
                 proxyEditMsgLog(proxy[1], original, message);
                 await editWebhook(
@@ -109,14 +103,13 @@ export async function proxyCheck(
         await sendWebhook(message.client, proxy[1], message, channel);
         proxyLogMsg(proxy[1], message);
         proxy[1].msgCount++;
-        await saveProxies();
+        saveProxies();
         await message.delete();
         return true;
     }
 }
 
-export async function getAllProxyNames(userID: string) {
-    await loadProxies();
+export function getAllProxyNames(userID: string) {
     const proxies = []
     if (!proxyDex[userID]) {
         return [];
@@ -140,7 +133,6 @@ export async function getAllProxyNames(userID: string) {
 }
 
 export async function editProxyDetails(interaction: ChatInputCommandInteraction, userID: string, name: string, partner: boolean, nick: string | null, pfp: Attachment | null, trigger: string | null, embedColor: ColorResolvable | null) {
-    await loadProxies();
     if (!proxyDex[userID]) {
         return new EmbedBuilder();
     }
@@ -173,7 +165,7 @@ ${proxy.pfp_link ?? "N/A"} -> ${pfp.url}`)
 ${proxy.embedColor ?? "N/A"} -> ${embedColor}`)
         proxy.embedColor = embedColor;
     }
-    await saveProxies();
+    saveProxies();
 
 
     const channel = (await interaction.client.channels.fetch(
@@ -201,8 +193,7 @@ ${proxy.embedColor ?? "N/A"} -> ${embedColor}`)
     channel.send({ embeds: [embed] });
 }
 
-export async function getProxyPage(userID: string, name: string, partner: boolean): Promise<EmbedBuilder> {
-    await loadProxies();
+export function getProxyPage(userID: string, name: string, partner: boolean): EmbedBuilder {
     if (!proxyDex[userID]) {
         return new EmbedBuilder();
     }
@@ -249,15 +240,14 @@ export function proxyDeleteHelper(
     return null;
 }
 
-export async function proxyDelete(userID: string, message: Message) {
-    await loadProxies();
-    const proxy = await proxyDeleteHelper(userID, message);
+export function proxyDelete(userID: string, message: Message) {
+    const proxy = proxyDeleteHelper(userID, message);
     if (proxy) {
         const wordCount: number = message.content
             .trim()
             .split(/\s+/).length;
         proxyDex[userID]!.proxies[proxy[0]]!.expDebt += wordCount;
-        await saveProxies();
+        saveProxies();
 
         proxyDeleteLogMsg(proxy[1], message);
         message.delete();
@@ -354,25 +344,23 @@ export async function editWebhook(
     }
 }
 
-export async function deleteUser(id: string) {
-    await loadProxies();
+export function deleteUser(id: string) {
     delete proxyDex[id];
-    await saveProxies();
+    saveProxies();
 }
 
-export async function deleteCharacter(id: string, name: string) {
-    await loadProxies();
+export function deleteCharacter(id: string, name: string) {
     delete proxyDex[id]?.proxies[name];
-    await saveProxies();
+    saveProxies();
 }
 
-export async function addCharacter(
+export function addCharacter(
     id: string,
     username: string,
     name: string,
     partner: string,
 ) {
-    await loadProxies();
+    loadProxies();
     if (!proxyDex[id]) {
         proxyDex[id] = {
             narrator: {
@@ -400,7 +388,7 @@ export async function addCharacter(
         expDebt: 0,
     };
 
-    await saveProxies();
+    saveProxies();
 }
 
 export function replyText(message: Message) {
@@ -559,9 +547,8 @@ async function proxyDeleteLogMsg(proxy: ProxyData, message: Message) {
 }
 
 
-export async function balanceEmbed(id: string, name: string) {
-    await loadProxies();
-    const character = await characterHelper.getCharacter(id, name);
+export function balanceEmbed(id: string, name: string) {
+    const character = characterHelper.getCharacter(id, name);
     const embed = new EmbedBuilder();
     embed.setAuthor({ name: `${name}'s Bank Account`, iconURL: proxyDex[id]?.proxies[name]?.character.pfp_link })
     embed.setDescription(`**Balance** | ₽${character.balance}`);
