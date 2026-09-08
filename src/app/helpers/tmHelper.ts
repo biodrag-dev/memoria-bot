@@ -680,7 +680,7 @@ export async function rareGambleTM(type1: Type, type2: Type) {
         const movename = isType1 ? type1Filter[random]!.name : type2Filter[random]!.name;
         move = await P.getMoveByName(movename);
 
-    } else if (random >= 85) {
+    } else if (random >= 75) {
         let isType1 = (Math.floor(Math.random() * 2) == 0);
 
         const type1Filter = SIGNATURES_BY_TYPE[type1.name as PokemonType].filter((move) => move.legendary == true);
