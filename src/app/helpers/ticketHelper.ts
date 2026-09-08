@@ -66,7 +66,11 @@ export async function createTicket(client: Client, member: GuildMember) {
         .setDescription(
           "Thanks for opening a ticket! Please describe what you are here for. Staff will be here to help shortly!",
         )
-        .setColor("#8FE3A0"),
+        .setColor("#8FE3A0")
+        .setFooter({ text: `banner by @decomposedmaw on tumblr` })
+        .setImage(
+          `https://i.pinimg.com/originals/ce/f1/13/cef1136121b5970952d64ae9783a73f9.gif`,
+        ),
     ],
     components: [
       new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -135,7 +139,11 @@ async function createTicketLog(client: Client, member: GuildMember) {
         .setDescription(
           "Thanks for opening a ticket! Please describe what you are here for. Staff will be here to help shortly!",
         )
-        .setColor("#8FE3A0"),
+        .setColor("#8FE3A0")
+        .setFooter({ text: `banner by @decomposedmaw on tumblr` })
+        .setImage(
+          `https://i.pinimg.com/originals/ce/f1/13/cef1136121b5970952d64ae9783a73f9.gif`,
+        ),
     ],
     components: [
       new ActionRowBuilder<ButtonBuilder>().addComponents(

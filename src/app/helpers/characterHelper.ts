@@ -20,6 +20,8 @@ interface Partner {
   nickname?: string;
   nature?: string;
   bio?: string;
+  img_link?: string;
+  artist_credits?: string;
   shiny: boolean;
   species: string;
   learnedMoves: Record<string, string>;
@@ -75,11 +77,11 @@ export interface Character {
 }
 
 export interface tmData {
-  id: number,
-  typeMatch: boolean,
-  signature: boolean,
-  legendary: boolean,
-  learnedMoves: boolean,
+  id: number;
+  typeMatch: boolean;
+  signature: boolean;
+  legendary: boolean;
+  learnedMoves: boolean;
 }
 
 interface UserData {
@@ -122,7 +124,6 @@ const natures = [
   { value: "24", name: "Naive" },
   { value: "25", name: "Serious" },
 ];
-
 
 let charaDex: CharacterDex = await loadUsers();
 console.log("new charahelper created");
@@ -413,7 +414,7 @@ export async function registerCharacter(user: string, client: Client) {
     docLink: submission.docLink,
     optional: charaData,
     balance: 1000,
-    inventory: {}
+    inventory: {},
   };
   const guild = client.guilds.cache.get(`${process.env.GUILD_ID}`);
   const member = await guild!.members.fetch(user);
@@ -659,7 +660,7 @@ export async function createNewForumPost(
     const message = await thread.send(`<@${id}>`);
 
     setTimeout(async () => {
-      await message.delete().catch(() => { });
+      await message.delete().catch(() => {});
     }, 5000);
   }
   saveUsers();
@@ -750,7 +751,7 @@ export async function getPartnerEmbed(
     const character = charaDex[id].characters[name]!;
     const partner = character.partner as Partner;
     const houseInfo = houseData[character.house]!;
-    const level = `**Level** | ${Math.min(100, Math.max(Math.floor(Math.cbrt(partner.exp)), 1))}\n`
+    const level = `**Level** | ${Math.min(100, Math.max(Math.floor(Math.cbrt(partner.exp)), 1))}\n`;
     const species = `**Species** | ${pokehelper.displayName(partner.species)}`;
     const alphaCheck = pokehelper.getSize(partner.sizeMult);
     const shinyCheck =
@@ -777,9 +778,15 @@ export async function getPartnerEmbed(
     const bio = partner.bio ? `\n\n${partner.bio}` : ``;
 
     const learnedMoves = Object.values(partner.learnedMoves);
-    const moves = learnedMoves.length === 0 ? `` : `\n\n**Learned Moves**\n> ${learnedMoves.join(",\ ")}\n`
+    const moves =
+      learnedMoves.length === 0
+        ? ``
+        : `\n\n**Learned Moves**\n> ${learnedMoves.join(",\ ")}\n`;
     const specialMoves = Object.values(partner.specialMoves);
-    const speciMoves = specialMoves.length === 0 ? `` : `**TM/Special Moves**\n> ${specialMoves.join(",\ ")}\n`
+    const speciMoves =
+      specialMoves.length === 0
+        ? ``
+        : `**TM/Special Moves**\n> ${specialMoves.join(",\ ")}\n`;
 
     const image = await pokehelper.getSprite(
       partner.species,
@@ -796,7 +803,7 @@ export async function getPartnerEmbed(
 ${gender}${level}${ability}${nature}${metOn}${dexEntry}${bio}${moves}${speciMoves}`,
       )
       .setFooter({
-        text: houseInfo.artist_credits,
+        text: partner.artist_credits ?? houseInfo.artist_credits,
         iconURL: `${houseInfo.iconLink}`,
       })
       .addFields(
@@ -812,15 +819,12 @@ ${gender}${level}${ability}${nature}${metOn}${dexEntry}${bio}${moves}${speciMove
         },
       )
       .setThumbnail(image)
-      .setImage(houseInfo.banner);
+      .setImage(partner.img_link ?? houseInfo.banner);
   }
   return embed;
 }
 
-export function getSetPartnerFields(
-  id: string,
-  name: string,
-): any[] {
+export function getSetPartnerFields(id: string, name: string): any[] {
   const options = [];
 
   if (charaDex?.[id]?.characters[name]) {
@@ -867,6 +871,12 @@ export function editPartner(
         break;
       case "bio":
         partner.bio = data;
+        break;
+      case "img_link":
+        partner.img_link = data;
+        break;
+      case "artist_credits":
+        partner.artist_credits = data;
         break;
     }
   }
@@ -915,7 +925,12 @@ export function getPossibleBadges(id: string, name: string): any[] {
   return houseBadges;
 }
 
-export async function toggleBadge(client: Client, id: string, name: string, badge: string) {
+export async function toggleBadge(
+  client: Client,
+  id: string,
+  name: string,
+  badge: string,
+) {
   var personalBadges = charaDex[id]!.characters[name]!.badges;
 
   if (personalBadges.some((b) => b.type === badge)) {
@@ -933,18 +948,29 @@ export async function toggleBadge(client: Client, id: string, name: string, badg
   saveUsers();
 
   if (await canEvolve(id, name, new EmbedBuilder())) {
-    const channel = await client.channels.fetch(`${process.env.IRP_NOTIFICATIONS}`) as TextChannel
-    const character = charaDex[id]!.characters[name]!
-    const embed = new EmbedBuilder()
-    embed.setTitle("Congratulations!")
-      .setThumbnail(await pokehelper.getSprite(character.partner.species, character.partner.gender, character.partner.shiny))
+    const channel = (await client.channels.fetch(
+      `${process.env.IRP_NOTIFICATIONS}`,
+    )) as TextChannel;
+    const character = charaDex[id]!.characters[name]!;
+    const embed = new EmbedBuilder();
+    embed
+      .setTitle("Congratulations!")
+      .setThumbnail(
+        await pokehelper.getSprite(
+          character.partner.species,
+          character.partner.gender,
+          character.partner.shiny,
+        ),
+      )
       .setFooter({ text: `${character.name}'s partner | evolution` })
-      .setDescription(`${character.partner.nickname ?? pokehelper.displayName(character.partner.species)} looks close to evolving... Give them a boost with **/character partner evolve**!`)
-      .setColor(houseData[character.house]!.hexcode)
-    channel.send({ content: `<@${id}>`, embeds: [embed] })
+      .setDescription(
+        `${character.partner.nickname ?? pokehelper.displayName(character.partner.species)} looks close to evolving... Give them a boost with **/character partner evolve**!`,
+      )
+      .setColor(houseData[character.house]!.hexcode);
+    channel.send({ content: `<@${id}>`, embeds: [embed] });
   }
 
-  return charaDex[id]!.characters[name]!.badges.some((b) => b.type === badge)
+  return charaDex[id]!.characters[name]!.badges.some((b) => b.type === badge);
 }
 
 export function hasBadge(id: string, name: string, badge: string): boolean {
@@ -968,7 +994,6 @@ export function getBadges(id: string, name: string): string {
 
   return stringBuilder.join("\n");
 }
-
 
 export async function canEvolve(
   id: string,
@@ -1035,7 +1060,7 @@ export async function evolvePartner(
   id: string,
   name: string,
   embed: EmbedBuilder,
-  client: Client
+  client: Client,
 ) {
   const character = charaDex[id]!.characters[name]!;
   const evoChain = await pokehelper.getEvolutionPath(character.destination);
@@ -1060,24 +1085,41 @@ export async function evolvePartner(
 
   const pokemon = await pokehelper.findPokemon(evoChain[evoIndex + 1]!);
   const learnedMoves = pokehelper.learnedMoves(pokemon!, -1, 0);
-  const channel = await client.channels.fetch(`${process.env.IRP_NOTIFICATIONS}`) as TextChannel
-  await channel.send({ content: `<@${id}>`, embeds: [embed] })
+  const channel = (await client.channels.fetch(
+    `${process.env.IRP_NOTIFICATIONS}`,
+  )) as TextChannel;
+  await channel.send({ content: `<@${id}>`, embeds: [embed] });
   for (const move of learnedMoves) {
-    character.partner.learnedMoves[move.move.name] = await pokehelper.moveDisplayName(move.move.name);
+    character.partner.learnedMoves[move.move.name] =
+      await pokehelper.moveDisplayName(move.move.name);
 
-    const embed = new EmbedBuilder()
-    embed.setTitle("Congratulations!")
-      .setThumbnail(await pokehelper.getSprite(partner.species, partner.gender, partner.shiny))
+    const embed = new EmbedBuilder();
+    embed
+      .setTitle("Congratulations!")
+      .setThumbnail(
+        await pokehelper.getSprite(
+          partner.species,
+          partner.gender,
+          partner.shiny,
+        ),
+      )
       .setFooter({ text: `${character.name}'s partner | evolution` })
-      .setDescription(`${partner.nickname ?? pokehelper.displayName(partner.species)} learned ${partner.learnedMoves[move.move.name]}!`)
-      .setColor("White")
-    await channel.send({ content: `<@${id}>`, embeds: [embed] })
+      .setDescription(
+        `${partner.nickname ?? pokehelper.displayName(partner.species)} learned ${partner.learnedMoves[move.move.name]}!`,
+      )
+      .setColor("White");
+    await channel.send({ content: `<@${id}>`, embeds: [embed] });
   }
 
   await saveUsers();
 }
 
-export async function addCurrency(client: Client, id: string, name: string, amount: number) {
+export async function addCurrency(
+  client: Client,
+  id: string,
+  name: string,
+  amount: number,
+) {
   const character = charaDex[id]!.characters[name]!;
   const oldExp = character.partner.exp;
   const newExp = character.partner.exp + amount;
@@ -1086,27 +1128,44 @@ export async function addCurrency(client: Client, id: string, name: string, amou
 
   if (increasedLevel(oldExp, newExp)) {
     const pokemon = await pokehelper.findPokemon(character.partner.species);
-    const learnedMoves = pokehelper.learnedMoves(pokemon!, getLevelFromExp(oldExp), getLevelFromExp(newExp));
+    const learnedMoves = pokehelper.learnedMoves(
+      pokemon!,
+      getLevelFromExp(oldExp),
+      getLevelFromExp(newExp),
+    );
     const partner = character.partner;
 
-    const channel = await client.channels.fetch(`${process.env.IRP_NOTIFICATIONS}`) as TextChannel
+    const channel = (await client.channels.fetch(
+      `${process.env.IRP_NOTIFICATIONS}`,
+    )) as TextChannel;
     for (const move of learnedMoves) {
       if ((await knowsMove(id, name, move.move.name)) === false) {
-        character.partner.learnedMoves[move.move.name] = await pokehelper.moveDisplayName(move.move.name);
+        character.partner.learnedMoves[move.move.name] =
+          await pokehelper.moveDisplayName(move.move.name);
 
-        const embed = new EmbedBuilder()
-        embed.setTitle("Congratulations!")
-          .setThumbnail(await pokehelper.getSprite(partner.species, partner.gender, partner.shiny))
-          .setFooter({ text: `${character.name}'s partner | lv. ${getLevelFromExp(newExp)}` })
-          .setDescription(`${partner.nickname ?? pokehelper.displayName(partner.species)} learned ${partner.learnedMoves[move.move.name]}!`)
-          .setColor(houseData[character.house]!.hexcode)
-        channel.send({ content: `<@${id}>`, embeds: [embed] })
+        const embed = new EmbedBuilder();
+        embed
+          .setTitle("Congratulations!")
+          .setThumbnail(
+            await pokehelper.getSprite(
+              partner.species,
+              partner.gender,
+              partner.shiny,
+            ),
+          )
+          .setFooter({
+            text: `${character.name}'s partner | lv. ${getLevelFromExp(newExp)}`,
+          })
+          .setDescription(
+            `${partner.nickname ?? pokehelper.displayName(partner.species)} learned ${partner.learnedMoves[move.move.name]}!`,
+          )
+          .setColor(houseData[character.house]!.hexcode);
+        channel.send({ content: `<@${id}>`, embeds: [embed] });
       }
     }
     await updateCharaForumPost(id, name, client);
   }
   saveUsers();
-
 }
 
 export function changeBalance(id: string, name: string, amount: number) {
@@ -1119,24 +1178,40 @@ export function setBalance(id: string, name: string, amount: number) {
   saveUsers();
 }
 
-export async function teachMove(client: Client, id: string, name: string, moveName: string) {
+export async function teachMove(
+  client: Client,
+  id: string,
+  name: string,
+  moveName: string,
+) {
   const character = charaDex[id]!.characters[name]!;
   const partner = character.partner;
-  const channel = await client.channels.fetch(`${process.env.IRP_NOTIFICATIONS}`) as TextChannel
+  const channel = (await client.channels.fetch(
+    `${process.env.IRP_NOTIFICATIONS}`,
+  )) as TextChannel;
 
-  character.partner.specialMoves[moveName] = await pokehelper.moveDisplayName(moveName);
-  const embed = new EmbedBuilder()
-  embed.setTitle("Congratulations!")
-    .setThumbnail(await pokehelper.getSprite(partner.species, partner.gender, partner.shiny))
+  character.partner.specialMoves[moveName] =
+    await pokehelper.moveDisplayName(moveName);
+  const embed = new EmbedBuilder();
+  embed
+    .setTitle("Congratulations!")
+    .setThumbnail(
+      await pokehelper.getSprite(
+        partner.species,
+        partner.gender,
+        partner.shiny,
+      ),
+    )
     .setFooter({ text: `${character.name}'s partner | tm / move tutor` })
-    .setDescription(`${partner.nickname ?? pokehelper.displayName(partner.species)} learned ${character.partner.specialMoves[moveName]}!`)
-    .setColor(houseData[character.house]!.hexcode)
-  channel.send({ content: `<@${id}>`, embeds: [embed] })
+    .setDescription(
+      `${partner.nickname ?? pokehelper.displayName(partner.species)} learned ${character.partner.specialMoves[moveName]}!`,
+    )
+    .setColor(houseData[character.house]!.hexcode);
+  channel.send({ content: `<@${id}>`, embeds: [embed] });
 
   await updateCharaForumPost(id, name, client);
   saveUsers();
 }
-
 
 export async function knowsMove(id: string, name: string, moveName: string) {
   const character = charaDex[id]!.characters[name]!;
@@ -1153,14 +1228,8 @@ function getLevelFromExp(exp: number): number {
 }
 
 export function increasedLevel(oldExp: number, newExp: number) {
-  const oldLevel = Math.min(
-    100,
-    getLevelFromExp(oldExp),
-  );
-  const newLevel = Math.min(
-    100,
-    getLevelFromExp(newExp),
-  );
+  const oldLevel = Math.min(100, getLevelFromExp(oldExp));
+  const newLevel = Math.min(100, getLevelFromExp(newExp));
 
   return oldLevel != newLevel;
 }

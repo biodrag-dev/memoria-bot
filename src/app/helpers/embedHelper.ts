@@ -60,11 +60,11 @@ export async function updateTicketEmbed(client: Client) {
     .setDescription(
       "Need to discuss something privately with Server Staff? Let us know in a private ticket by clicking the button below! This could be for anything, whether it's private character questions, or OOC concerns that you'd like to discuss. We'll get to it as soon as possible!",
     )
-    .setFooter({ text: `banner by decomposedmaw on tumblr` })
     .setColor("#8FE3A0")
     .setImage(
-      `https://i.pinimg.com/originals/ce/f1/13/cef1136121b5970952d64ae9783a73f9.gif`,
-    );
+      "https://64.media.tumblr.com/373f6160da6e6dc419c99f2203b712c7/184157bf8285c2ff-51/s1280x1920/84e5f3c26ceaf4e391f5da2966be7b182418c549.gif",
+    )
+    .setFooter({ text: "banner by @apo_plus_ on instagram" });
   await msgOne.edit({
     content: ``,
     embeds: [embed],
@@ -920,7 +920,7 @@ That is the origin of Dexlight Academy, the starting place for all trainers.`,
       "https://64.media.tumblr.com/feceffc1039c6e37583700ca47730407/4127768b7eafaf67-9d/s1280x1920/635c02ff3664cee5be9504b26d3c549de3c953e3.gif",
     )
     .setFooter({
-      text: `banner by @apolism on tumblr`,
+      text: `banner by @apo_plus_ on instagram`,
     });
   return embed;
 }
@@ -936,7 +936,7 @@ async function getLoreDexlightAcademyEmbed(): Promise<EmbedBuilder[]> {
       "https://i.pinimg.com/originals/d0/c2/2e/d0c22e043a90d7037af552ef4fe54235.gif",
     )
     .setFooter({
-      text: `banner by @apolism on tumblr`,
+      text: `banner by @apo_plus_ on instagram`,
     });
   const embed2 = new EmbedBuilder()
     .setTitle(`𝐕𝐈𝐂𝐓𝐈𝐍𝐈`)

@@ -101,6 +101,33 @@ export const command: CommandData = {
           ],
         },
         {
+          name: "edit-image",
+          description: "Edit your partner's display image",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "name",
+              description: "Whose partner profile are you editing?",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+              autocomplete: true,
+            },
+            {
+              name: "art",
+              description: "Profile art!",
+              type: ApplicationCommandOptionType.Attachment,
+              required: true,
+              file_types: ["image"],
+            },
+            {
+              name: "artist-credit",
+              description: "Who drew the art you are now using?",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+            },
+          ],
+        },
+        {
           name: "set",
           description:
             "Set something about your partner (These cannot be changed after being set)",
@@ -238,10 +265,11 @@ export const command: CommandData = {
           autocomplete: true,
         },
         {
-          name: "art-link",
-          description: "What is the link to the art?",
-          type: ApplicationCommandOptionType.String,
+          name: "art",
+          description: "Profile art!",
+          type: ApplicationCommandOptionType.Attachment,
           required: true,
+          file_types: ["image"],
         },
         {
           name: "artist-credit",
@@ -295,11 +323,12 @@ export const command: CommandData = {
               description: "The avatar for the proxy!",
               type: ApplicationCommandOptionType.Attachment,
               required: false,
-              file_types: ["image"]
+              file_types: ["image"],
             },
             {
               name: "prefix",
-              description: "Proxy trigger (ie. tx:text would send \"text\" linked to the associated tx: prefix)",
+              description:
+                'Proxy trigger (ie. tx:text would send "text" linked to the associated tx: prefix)',
               type: ApplicationCommandOptionType.String,
               required: false,
               max_length: 20,
@@ -310,8 +339,7 @@ export const command: CommandData = {
               type: ApplicationCommandOptionType.String,
               required: false,
             },
-          ]
-
+          ],
         },
         {
           name: "view",
@@ -325,22 +353,25 @@ export const command: CommandData = {
               required: true,
               autocomplete: true,
             },
-          ]
-
-        }
-
-      ]
-    }
+          ],
+        },
+      ],
+    },
   ],
 };
 
 export const autocomplete = async (ctx: any) => {
   const interaction = ctx.interaction;
   const focused = interaction.options.getFocused(true);
-  const names = await characterHelper.getCharacterNames(interaction.user.id);
+  const names = characterHelper.getCharacterNames(interaction.user.id);
 
-  if (interaction.options.getSubcommandGroup() == "proxy" && focused.name == "name") {
-    return await interaction.respond(await proxyHelper.getAllProxyNames(interaction.user.id));
+  if (
+    interaction.options.getSubcommandGroup() == "proxy" &&
+    focused.name == "name"
+  ) {
+    return await interaction.respond(
+      proxyHelper.getAllProxyNames(interaction.user.id),
+    );
   }
 
   if (interaction.options.getSubcommand() == "set") {
@@ -403,7 +434,6 @@ export const chatInput: ChatInputCommand = async (ctx) => {
 
   const sub = interaction.options.getSubcommand();
 
-
   if (group === "proxy") {
     const [proxyId, partnerType] = interaction.options
       .getString("name", true)
@@ -411,11 +441,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
     if (sub === "edit") {
       const attachment = interaction.options.getAttachment("profile-picture");
       if (attachment) {
-        const allowedTypes = new Set([
-          "image/png",
-          "image/jpeg",
-          "image/webp",
-        ]);
+        const allowedTypes = new Set(["image/png", "image/jpeg", "image/webp"]);
         if (!allowedTypes.has(attachment.contentType ?? "")) {
           return interaction.reply({
             content: "Profile pictures must be PNG, JPG, or WebP.",
@@ -433,17 +459,18 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         attachment,
         interaction.options.getString("prefix"),
         interaction.options.getString("color") as ColorResolvable,
-
       );
     }
-    const embed = await proxyHelper.getProxyPage(interaction.user.id,
+    const embed = await proxyHelper.getProxyPage(
+      interaction.user.id,
       proxyId!,
-      partnerType === "partner");
+      partnerType === "partner",
+    );
 
     return await interaction.reply({
       content: sub === "edit" ? `Proxy Edited!` : ``,
-      embeds: [embed]
-    })
+      embeds: [embed],
+    });
   }
 
   if (group === "partner") {
@@ -469,6 +496,36 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         return interaction.reply({ embeds: [embed] });
       }
 
+      case "edit-image": {
+        await characterHelper.editPartner(
+          interaction.user.id,
+          interaction.options.getString("name", true),
+          "img_link",
+          interaction.options.getAttachment("art", true).url,
+        );
+        await characterHelper.editPartner(
+          interaction.user.id,
+          interaction.options.getString("name", true),
+          "artist_credits",
+          interaction.options.getString("artist-credit", true),
+        );
+
+        const embed = await characterHelper.getPartnerEmbed(
+          interaction.user.id,
+          interaction.options.getString("name", true),
+        );
+
+        characterHelper.updateCharaForumPost(
+          interaction.user.id,
+          interaction.options.getString("name", true),
+          interaction.client,
+        );
+        return interaction.reply({
+          content: `Your character's partner's profile has been edited!`,
+          embeds: [embed],
+          ephemeral: true,
+        });
+      }
       case "edit": {
         const character = interaction.options.getString("name", true);
         const field = interaction.options.getString("field", true);
@@ -523,7 +580,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
                 interaction.user.id,
                 character,
                 embed,
-                interaction.client
+                interaction.client,
               );
               characterHelper.updateCharaForumPost(
                 interaction.user.id,
@@ -550,7 +607,6 @@ export const chatInput: ChatInputCommand = async (ctx) => {
             }
           });
         } else {
-
           return await interaction.reply({
             embeds: [embed],
           });
@@ -655,7 +711,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
       interaction.user.id,
       interaction.options.getString("name", true),
       "img_link",
-      interaction.options.getString("art-link", true),
+      interaction.options.getAttachment("art", true).url,
     );
     await characterHelper.editCharacter(
       interaction.user.id,
@@ -682,8 +738,20 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   } else if (sub === "shop") {
     await interaction.deferReply();
 
-    return interaction.editReply(await tmHelper.getStoreFront(interaction.user.id, interaction.options.getString("name", true)))
+    return interaction.editReply(
+      await tmHelper.getStoreFront(
+        interaction.user.id,
+        interaction.options.getString("name", true),
+      ),
+    );
   } else if (sub === "balance") {
-    return interaction.reply({ embeds: [await proxyHelper.balanceEmbed(interaction.user.id, interaction.options.getString("name", true))] });
+    return interaction.reply({
+      embeds: [
+        await proxyHelper.balanceEmbed(
+          interaction.user.id,
+          interaction.options.getString("name", true),
+        ),
+      ],
+    });
   }
 };
