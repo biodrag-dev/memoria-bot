@@ -9,7 +9,7 @@ const handler: EventHandler<"messageCreate"> = async (message) => {
     message.author.id,
     message.channel.id,
     message
-  );3
+  );
 };
 
 export default handler;

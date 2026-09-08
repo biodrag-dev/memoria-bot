@@ -1,22 +1,20 @@
 import { Client, EmbedBuilder, Message, TextChannel } from "discord.js";
-import fs from "fs/promises";
+import fs from "fs";
 import path from "path";
 
 const jsonsPath = path.resolve(__dirname, "../../../jsons");
 import * as proxyHelper from "./proxyHelper";
 
-var stars: Record<string, string>;
+const stars: Record<string, string> = loadStars()!;
 const starMinimum = 1;
 
-export async function loadStars() {
-  if (!stars) {
-    const data = await fs.readFile(`${jsonsPath}/stars.json`, "utf8");
-    stars = JSON.parse(data) as Record<string, string>;
-  }
+export function loadStars() {
+  const data = fs.readFileSync(`${jsonsPath}/stars.json`, "utf8");
+  return JSON.parse(data) as Record<string, string>;
 }
 
-export async function saveStars() {
-  await fs.writeFile(
+export function saveStars() {
+  fs.writeFileSync(
     `${jsonsPath}/stars.json`,
     JSON.stringify(stars, null, 2),
     "utf8",
@@ -35,8 +33,7 @@ export async function getEmbed(stars: number, message: Message) {
 
   const member = await message.guild?.members.fetch(message.author.id);
   embed.setAuthor({
-    iconURL:
-      member?.displayAvatarURL() ?? message.author.displayAvatarURL(),
+    iconURL: member?.displayAvatarURL() ?? message.author.displayAvatarURL(),
     name: member?.displayName ?? message.author.displayName,
   });
   embed.setTimestamp();

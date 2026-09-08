@@ -578,7 +578,7 @@ export function getAbilityName(pokemonObj: Pokemon, slot: number) {
     return displayName(ability2.ability.name);
   }
 
-  const ability3 = pokemonObj.abilities.find((a) => a.slot == slot - 3);
+  const ability3 = pokemonObj.abilities.find((a) => a.slot == slot - 2);
   if (ability3) {
     return displayName(ability3.ability.name);
   }

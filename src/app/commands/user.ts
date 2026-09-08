@@ -295,6 +295,7 @@ export const command: CommandData = {
               description: "The avatar for the proxy!",
               type: ApplicationCommandOptionType.Attachment,
               required: false,
+              file_types: ["image"]
             },
             {
               name: "prefix",

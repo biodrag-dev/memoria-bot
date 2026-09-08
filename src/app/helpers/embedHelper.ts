@@ -1,4 +1,7 @@
 import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
   Client,
   EmbedBuilder,
   ForumChannel,
@@ -10,6 +13,7 @@ import {
 import * as submitHelper from "./extraHelpers/submitHelper";
 
 export async function updateAllEmbeds(client: Client) {
+  updateTicketEmbed(client);
   // updateReservesEmbed(client);
   // updateServerRulesEmbed(client);
   // updateCharacterRulesEmbed(client);
@@ -26,10 +30,7 @@ export async function updateAllEmbeds(client: Client) {
   // updateAllLoreEmbeds(client)
 }
 
-export async function sendMemberLog(
-  guild: Guild,
-  embed: EmbedBuilder,
-) {
+export async function sendMemberLog(guild: Guild, embed: EmbedBuilder) {
   const channel = guild.channels.cache.get(`${process.env.MEMBER_LOG}`);
 
   if (!channel?.isTextBased()) return;
@@ -45,6 +46,36 @@ export async function updateEmbed(
   const msg = await channel.messages.fetch(`${message_id}`);
   await msg.edit({
     embeds: [embed],
+  });
+}
+
+export async function updateTicketEmbed(client: Client) {
+  const channel = (await client.channels.fetch(
+    `1533686056019300452`,
+  )) as TextChannel;
+  const msgOne = await channel.messages.fetch(`1546766351119425560`);
+
+  const embed = new EmbedBuilder()
+    .setTitle("𝐇𝐄𝐋𝐏 𝐓𝐈𝐂𝐊𝐄𝐓𝐒")
+    .setDescription(
+      "Need to discuss something privately with Server Staff? Let us know in a private ticket by clicking the button below! This could be for anything, whether it's private character questions, or OOC concerns that you'd like to discuss. We'll get to it as soon as possible!",
+    )
+    .setFooter({ text: `banner by decomposedmaw on tumblr` })
+    .setColor("#8FE3A0")
+    .setImage(
+      `https://i.pinimg.com/originals/ce/f1/13/cef1136121b5970952d64ae9783a73f9.gif`,
+    );
+  await msgOne.edit({
+    content: ``,
+    embeds: [embed],
+    components: [
+      new ActionRowBuilder<ButtonBuilder>().addComponents(
+        new ButtonBuilder()
+          .setCustomId(`createTicket`)
+          .setLabel(`Open a Ticket!`)
+          .setStyle(ButtonStyle.Primary),
+      ),
+    ],
   });
 }
 

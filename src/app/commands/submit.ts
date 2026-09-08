@@ -126,7 +126,7 @@ export const command: CommandData = {
           description: "The main question",
           type: ApplicationCommandOptionType.String,
           required: true,
-          max_length: 80
+          max_length: 80,
         },
         {
           name: "description",
@@ -139,6 +139,7 @@ export const command: CommandData = {
           description: "is there an image you'd like to attach with this qotd?",
           type: ApplicationCommandOptionType.Attachment,
           required: false,
+          file_types: ["image"],
         },
       ],
     },
@@ -150,32 +151,19 @@ export const chatInput: ChatInputCommand = async (ctx) => {
 
   const sub = interaction.options.getSubcommand();
   if (sub === "qotd") {
-    const attachment = interaction.options.getAttachment("image");
-    if (attachment) {
-      const allowedTypes = new Set([
-        "image/png",
-        "image/jpeg",
-        "image/webp",
-        "image/gif"
-      ]);
-      if (!allowedTypes.has(attachment.contentType ?? "")) {
-        return interaction.reply({
-          content: "Image must be PNG, JPG, GIF, or WebP.",
-          ephemeral: true,
-        });
-      }
-    }
 
-    qotdHelper.createSuggestion(interaction.client,
+    qotdHelper.createSuggestion(
+      interaction.client,
       interaction.options.getString("question", true),
       interaction.options.getString("description"),
       interaction.user.id,
-      interaction.options.getAttachment("image")?.url);
+      interaction.options.getAttachment("image")?.url,
+    );
 
     interaction.reply({
       content: "QOTD submitted successfully!",
-      ephemeral: true
-    })
+      ephemeral: true,
+    });
   }
 
   if (sub === "character") {

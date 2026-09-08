@@ -6,6 +6,7 @@ import {
   Interaction,
   PermissionFlagsBits,
   TextChannel,
+  ThreadAutoArchiveDuration,
 } from "discord.js";
 import * as submitHelper from "../../helpers/extraHelpers/submitHelper";
 import * as characterHelper from "../../helpers/characterHelper";
@@ -29,12 +30,12 @@ export default async function (interaction: Interaction) {
     const SUBMIT_LOG = (await interaction.client.channels.fetch(
       `${process.env.CHARACTER_LOG}`,
     )) as TextChannel;
-    const submission = await submitHelper.getSubmit(interaction.user.id);
 
     var reviewMsg;
     var embed;
     switch (action) {
       case "submit-confirm":
+        const submission = submitHelper.getSubmit(interaction.user.id);
         if (!submission) {
           embed = new EmbedBuilder()
             .setColor("#ce1b1b")
@@ -48,7 +49,7 @@ export default async function (interaction: Interaction) {
           });
           break;
         }
-        await submitHelper.continueSubmit(interaction.user.id);
+        submitHelper.continueSubmit(interaction.user.id);
 
         embed = await submitHelper.reviewEmbed(
           interaction.user.id,
@@ -75,11 +76,12 @@ export default async function (interaction: Interaction) {
           components: [row],
         });
         SUBMIT_LOG.send({
-          embeds: [embed]
-        })
+          embeds: [embed],
+        });
 
         const thread = await msg.startThread({
           name: `Review Thread | ${submission.name}`,
+          autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
         });
         const shinyRoll = new EmbedBuilder()
 
@@ -161,14 +163,18 @@ export default async function (interaction: Interaction) {
           components: [],
         });
         SUBMIT_LOG.send({
-          embeds: [embed]
-        })
+          embeds: [embed],
+        });
 
-        const pokemon = await pokeHelper.findPokemon(submission.partner);
+        const adminSubmit = submitHelper.getSubmit(userId!);
+
+        const pokemon = await pokeHelper.findPokemon(adminSubmit.partner);
         const basemon = await pokeHelper.findBaseMon(pokemon);
-        await proxyHelper.addCharacter(
+        proxyHelper.addCharacter(
           userId!,
-          (await interaction.guild!.members.fetch(`${userId}`))?.displayName, submission.name, pokeHelper.displayName(basemon.name),
+          (await interaction.guild!.members.fetch(`${userId}`))?.displayName,
+          adminSubmit.name,
+          pokeHelper.displayName(basemon.name),
         );
         await characterHelper.registerCharacter(
           `${userId}`,
@@ -189,7 +195,7 @@ export default async function (interaction: Interaction) {
         }
 
         reviewMsg = await SUBMISSIONS_CHANNEL.messages.fetch(`${msgId}`);
-        embed = await submitHelper.reviewEmbed(`${userId}`, "Denied")
+        embed = await submitHelper.reviewEmbed(`${userId}`, "Denied");
         embed.addFields({
           name: `**Denied By**`,
           value: `<@${interaction.user.id}>`,
@@ -199,7 +205,7 @@ export default async function (interaction: Interaction) {
           embeds: [embed],
           components: [],
         });
-        SUBMIT_LOG.send({ embeds: [embed] })
+        SUBMIT_LOG.send({ embeds: [embed] });
         await submitHelper.deleteSubmit(`${userId}`);
         break;
     }

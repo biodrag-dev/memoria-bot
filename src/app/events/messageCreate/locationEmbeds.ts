@@ -4,31 +4,31 @@ import * as locationEmbedHelper from "../../helpers/locationEmbedHelper";
 const KEYWORD = "m!location";
 
 const handler: EventHandler<"messageCreate"> = async (message) => {
-    if (message.author.bot || message.webhookId) return;
-    if (!message.guild) return;
+  if (message.author.bot || message.webhookId) return;
+  if (!message.guild) return;
 
-    if (message.content.trim().startsWith(KEYWORD)) {
-        var channel = message.channel;
-        const keyword = message.content.replace(KEYWORD, "").trim();
+  if (message.content.trim().startsWith(KEYWORD)) {
+    var channel = message.channel;
+    const keyword = message.content.replace(KEYWORD, "").trim();
 
-        const msg = await locationEmbedHelper.embed(keyword)
+    const msg = locationEmbedHelper.embed(keyword);
 
-        if (msg.ephemeral) {
-            const locEmbed = await message.reply(msg);
-            setTimeout(() => {
-                locEmbed.delete().catch(() => { });
-            }, 3_000);
-            return;
-        } else if (message.reference) {
-            const original = await message.fetchReference();
-            original.edit(msg);
-            await message.delete().catch(() => { });
-        } else {
-            const locEmbed = await channel.send(msg);
-            const pinMsg = await locEmbed.pin();
-            await message.delete().catch(() => { });
-        }
+    if (msg.ephemeral) {
+      const locEmbed = await message.reply(msg);
+      setTimeout(() => {
+        locEmbed.delete().catch(() => {});
+      }, 3_000);
+      return;
+    } else if (message.reference) {
+      const original = await message.fetchReference();
+      original.edit(msg);
+      await message.delete().catch(() => {});
+    } else {
+      const locEmbed = await channel.send(msg);
+      const pinMsg = await locEmbed.pin();
+      await message.delete().catch(() => {});
     }
+  }
 };
 
 export default handler;
