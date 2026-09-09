@@ -73,7 +73,7 @@ export interface Character {
   optional: CharacterData;
   birthday?: Date;
   balance: number;
-  inventory: Record<string, string>;
+  inventory: inventoryItem[];
 }
 
 export interface tmData {
@@ -82,6 +82,12 @@ export interface tmData {
   signature: boolean;
   legendary: boolean;
   learnedMoves: boolean;
+}
+
+export interface inventoryItem {
+  id: number;
+  category: number;
+  quantity: number;
 }
 
 interface UserData {
