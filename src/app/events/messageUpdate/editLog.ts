@@ -13,6 +13,9 @@ const handler: EventHandler<"messageUpdate"> = async (
       return;
     }
   }
+  if (oldMessage.author?.bot ?? undefined) {
+    return;
+  }
 
   if (newMessage.partial) {
     try {

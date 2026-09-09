@@ -1,4 +1,3 @@
-import { StringSelectMenu } from "commandkit";
 import {
   ActionRowBuilder,
   EmbedBuilder,

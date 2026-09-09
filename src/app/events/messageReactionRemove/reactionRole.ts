@@ -25,7 +25,10 @@ const emojiRecord: Record<string, string> = {
   "💜": `1539913483653746748`,
 };
 
-const handler: EventHandler<"messageReactionAdd"> = async (reaction, user) => {
+const handler: EventHandler<"messageReactionRemove"> = async (
+  reaction,
+  user,
+) => {
   if (user.bot) return;
 
   if (reaction.partial) {
@@ -37,17 +40,15 @@ const handler: EventHandler<"messageReactionAdd"> = async (reaction, user) => {
     }
   }
 
+
   //if in reaction roles
   if (reaction.message.channel.id != `${process.env.SELF_ROLES_CHANNEL}`) {
     return;
   }
-
   const member = await reaction.message.guild?.members.fetch(user.id);
-  const roleId = emojiRecord[reaction.emoji.name ?? ``]
-  if(roleId){
-    member?.roles.add(roleId);
-  }else{
-    reaction.remove();
+  const roleId = emojiRecord[reaction.emoji.name ?? ``];
+  if (roleId) {
+    member?.roles.remove(roleId);
   }
 };
 

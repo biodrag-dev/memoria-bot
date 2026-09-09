@@ -49,3 +49,5 @@ const handler: EventHandler<"guildBanAdd"> = async (
 
     await sendMemberLog(ban.guild, embed);
 }
+
+export default handler;

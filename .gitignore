@@ -35,4 +35,3 @@ lerna-debug.log*
 **/*.DS_Store
 .temp-example
 /.VSCodeCounter/*
-/jsons
