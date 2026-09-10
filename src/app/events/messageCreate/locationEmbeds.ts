@@ -9,9 +9,9 @@ const handler: EventHandler<"messageCreate"> = async (message) => {
 
   if (message.content.trim().startsWith(KEYWORD)) {
     var channel = message.channel;
-    const keyword = message.content.replace(KEYWORD, "").trim();
+    const keyword = message.content.replace(KEYWORD, "").trim().split(" ");
 
-    const msg = locationEmbedHelper.embed(keyword);
+    const msg = locationEmbedHelper.embed(keyword[0]!, keyword[1]);
 
     if (msg.ephemeral) {
       const locEmbed = await message.reply(msg);

@@ -1,4 +1,4 @@
-import { EmbedBuilder } from "discord.js";
+import { ColorResolvable, EmbedBuilder } from "discord.js";
 
 import fs from "fs";
 import path from "path";
@@ -11,8 +11,15 @@ function loadEmbeds() {
   return JSON.parse(data) as Record<string, EmbedBuilder>;
 }
 
-export function embed(name: string) {
-  return embeds[name] ? {embeds: [embeds[name]]} : {embeds: [new EmbedBuilder().setDescription("embed could not be found!")], ephemeral: true};
+export function embed(name: string, color?: string | undefined) {
+  return embeds[name]
+    ? { embeds: [embeds[name].setColor(color as ColorResolvable)] }
+    : {
+        embeds: [
+          new EmbedBuilder().setDescription("embed could not be found!"),
+        ],
+        ephemeral: true,
+      };
 }
 
 export function importEmbeds() {
@@ -34,7 +41,6 @@ export function importEmbeds() {
         embed.setImage(stuff[2]?.trim() ?? null);
         embeds[`location${i}`] = embed;
       }
-      console.log(i);
     }
   }
   console.log(embeds);
