@@ -420,7 +420,7 @@ export async function registerCharacter(user: string, client: Client) {
     docLink: submission.docLink,
     optional: charaData,
     balance: 1000,
-    inventory: {},
+    inventory: [],
   };
   const guild = client.guilds.cache.get(`${process.env.GUILD_ID}`);
   const member = await guild!.members.fetch(user);

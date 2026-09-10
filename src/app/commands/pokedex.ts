@@ -10,7 +10,6 @@ export const metadata: CommandMetadata = {
 export const command: CommandData = {
   name: "pokedex",
   description: "Pokédex commands",
-
   options: [
     {
       name: "find",

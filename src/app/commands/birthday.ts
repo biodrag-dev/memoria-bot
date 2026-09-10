@@ -54,7 +54,7 @@ export const command: CommandData = {
                         {
                             name: "date",
                             description: "the day of the month!",
-                            type: ApplicationCommandOptionType.Number,
+                            type: ApplicationCommandOptionType.Integer,
                             required: true,
                         },
                     ],
@@ -133,7 +133,7 @@ export const command: CommandData = {
                         {
                             name: "date",
                             description: "the day of the month!",
-                            type: ApplicationCommandOptionType.Number,
+                            type: ApplicationCommandOptionType.Integer,
                             required: true,
                         },
                     ],
@@ -206,7 +206,7 @@ export const autocomplete = async (ctx: any) => {
 export const chatInput: ChatInputCommand = async (ctx) => {
     const interaction = ctx.interaction;
     const month = interaction.options.getString("month", false);
-    const date = interaction.options.getNumber("date", false);
+    const date = interaction.options.getInteger("date", false);
 
     const group = interaction.options.getSubcommandGroup(false);
     const sub = interaction.options.getSubcommand(true);

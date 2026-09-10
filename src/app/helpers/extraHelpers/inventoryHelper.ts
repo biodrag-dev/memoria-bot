@@ -10,21 +10,33 @@ interface item {
   description: string;
   usable: boolean;
   price: number;
+  emoji?: string;
 }
 
 interface category {
-  name: string,
-  description: string
+  name: string;
+  description: string;
 }
 
 interface catalogue {
-  currentCatCount: number,
-  currentItemCount: number,
-  categories: Record<number, category> // category id
-  items: Record<number, Record<number, item>> // category, then item id
+  currentCatCount: number;
+  currentItemCount: number;
+  categories: Record<number, category>; // category id
+  items: Record<number, Record<number, item>>; // category, then item id
 }
 
 const catalogue: catalogue = loadItems();
+
+const lostCategory: category = {
+  name: `Lost Category`,
+  description: `This category has been lost to time.`,
+};
+const lostItem: item = {
+  name: `Lost Item`,
+  description: `This item has been lost to time.`,
+  usable: false,
+  price: 0,
+};
 
 function loadItems() {
   const data = fs.readFileSync(`${jsonsPath}/items.json`, "utf8");
@@ -43,33 +55,125 @@ function getCategories() {
   return Object.entries(catalogue.categories).map(([key, value]) => ({
     value: `${key}`,
     name: value.name,
-  }))
+  }));
 }
 
-function createCategory(name: string) {
+function createCategory(name: string, description: string) {
+  catalogue.categories[catalogue.currentCatCount] = {
+    name,
+    description,
+  };
+  catalogue.items[catalogue.currentCatCount] = {};
 
+  catalogue.currentCatCount++;
+  saveItems();
 }
 
-function deleteCategory(id: number) { }
-
-function editCategory(id: number, name: string | undefined, desc: string | undefined) {
-
+function deleteCategory(id: number) {
+  delete catalogue.categories[id];
+  delete catalogue.items[id];
+  saveItems();
 }
 
-function getItem(id: number) {
-
+function editCategory(
+  id: number,
+  name: string | undefined,
+  desc: string | undefined,
+) {
+  if (!catalogue.categories[catalogue.currentCatCount]) {
+    return;
+  }
+  if (name) {
+    catalogue.categories[catalogue.currentCatCount]!.name = name;
+  }
+  if (desc) {
+    catalogue.categories[catalogue.currentCatCount]!.description = desc;
+  }
+  saveItems();
 }
 
+function getItem(id: number) {}
 
+function addItemToInventory(
+  id: string,
+  character: string,
+  category: number,
+  itemId: number,
+  amount: number,
+) {
+  const users = characterHelper.getUsers();
+  const person = users[id]?.characters[character];
+
+  if (!person) {
+    return;
+  }
+
+  const itemIndex = person.inventory.findIndex(
+    (item) => item.category == category && item.id == itemId,
+  );
+  if (itemIndex != -1) {
+    person.inventory[itemIndex]!.quantity += amount;
+    if (person.inventory[itemIndex]!.quantity <= 0) {
+      person.inventory.splice(itemIndex, 1);
+    }
+  }
+  characterHelper.saveUsersExternal(users);
+}
+
+function setItemInInventory(
+  id: string,
+  character: string,
+  category: number,
+  itemId: number,
+  amount: number,
+) {
+  const users = characterHelper.getUsers();
+  const person = users[id]?.characters[character];
+
+  if (!person) {
+    return;
+  }
+
+  const itemIndex = person.inventory.findIndex(
+    (item) => item.category == category && item.id == itemId,
+  );
+  if (itemIndex != -1) {
+    if (amount <= 0) {
+      person.inventory.splice(itemIndex, 1);
+    } else {
+      person.inventory[itemIndex]!.quantity = amount;
+    }
+  }
+  characterHelper.saveUsersExternal(users);
+}
 function createItem(
-  category: string,
+  category: number,
   name: string,
   description: string,
-  emoji: string,
-) { }
+  emoji: string | undefined,
+  usable: boolean,
+  price: number,
+) {
+  if (!catalogue.items[category]) {
+    return;
+  }
+  catalogue.items[category][catalogue.currentItemCount] = {
+    name,
+    description,
+    emoji,
+    usable,
+    price,
+  };
 
+  catalogue.currentItemCount++;
+  saveItems();
+}
 
-function getCharacterInventoryItems(id: string, character: string, category: number) {
+function getCharacterInventoryItems(
+  id: string,
+  character: string,
+  category: number,
+) {
   const users = characterHelper.getUsers();
   const person = users[id]?.characters[character];
 
@@ -77,37 +181,36 @@ function getCharacterInventoryItems(id: string, character: string, category: num
     return;
   }
 
-  const items = [];
-  for (const item of person?.inventory) {
-    items.push({
-      value: item.id,
-      name: `catalogue.categories[item.category]?.name`
-    })
+  const items = person.inventory.filter((item) => item.category == category);
+  var string = ``;
+  const categoryInfo = catalogue.items[category];
+  for (const item of items) {
+    const itemInfo: item = categoryInfo
+      ? (categoryInfo[item.id] ?? lostItem)
+      : lostItem;
+    string += `${itemInfo.emoji ? `${itemInfo.emoji} ` : ``}**${itemInfo.name} // x ${item.quantity}**`;
+    string += `> ${itemInfo.description}\n`;
   }
-
+  const cat = catalogue.categories[category];
   const embed = new EmbedBuilder();
-  embed.setTitle(categoryInfo?.name ?? "How did you get this category?")
+  embed.setTitle(cat?.name ?? "How did you get this category?");
+  embed.setDescription(`-# ${cat?.description ?? "No description listed for category."}
+${string == `` ? `Nothing to see here!` : string}`);
+  return embed;
 }
 
-function getQuantityOfItem(inventory: characterHelper.inventoryItem[]){
-
-}
-
-
-function getInventoryPage(id: string, character: string, category: number) {
-  const users = characterHelper.getUsers();
-  const person = users[id]?.characters[character];
-
-  if (!person) {
-    return;
+function getInventoryPage(category: number) {
+  var string = ``;
+  for (const item of Object.values(category)) {
+    const itemInfo: item = item;
+    string += `${itemInfo.emoji ? `${itemInfo.emoji} ` : ``}**${itemInfo.name}${itemInfo.price != 0 ? ` // ₽${itemInfo.price}` : ``}**`;
+    string += `> -# usable | ${itemInfo.usable}`;
+    string += `> ${itemInfo.description}\n`;
   }
-  const categoryInfo = catalogue.categories[category];
-
-  for (const item of person?.inventory) {
-
-  }
-
+  const cat = catalogue.categories[category];
   const embed = new EmbedBuilder();
-  embed.setTitle(categoryInfo?.name ?? "How did you get this category?")
-
+  embed.setTitle(cat?.name ?? "How did you get this category?");
+  embed.setDescription(`-# ${cat?.description ?? "No description listed for category."}
+${string == `` ? `Nothing to see here!` : string}`);
+  return embed;
 }
