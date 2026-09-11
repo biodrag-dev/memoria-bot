@@ -18,11 +18,13 @@ import * as pokeHelper from "../helpers/pokeHelper";
 import * as embedHelper from "../helpers/embedHelper";
 import * as proxyHelper from "../helpers/proxyHelper";
 import * as qotdHelper from "../helpers/qotdHelper";
+import * as inventoryHelper from "../helpers/extraHelpers/inventoryHelper";
 
 import { EmbedBuilder } from "discord.js";
 
 export const metadata: CommandMetadata = {
   guilds: [`${process.env.GUILD_ID}`],
+  
 };
 
 const row = new ActionRowBuilder<ButtonBuilder>().addComponents(

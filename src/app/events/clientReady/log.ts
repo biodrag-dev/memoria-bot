@@ -9,6 +9,7 @@ const handler: EventHandler<"clientReady"> = async (client) => {
   client.user.setActivity({ name: "Watching over the Archives..." });
   client.user.setStatus("idle");
 
+  client.addListener("interactionCreate", (interaction) => (console.log(interaction.customId)))
   Logger.info(`Logged in as ${client.user.username}!`);
 
 };

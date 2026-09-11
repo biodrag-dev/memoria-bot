@@ -1,5 +1,5 @@
 {
-  "location1": {
+  "huoniao": {
     "title": "火鳥山  | Mount Huǒniǎo",
     "description": "Far from dormant but fortunately not rampant on the daily, those who live near Mount Huǒniǎo have many stories to tell of its occasional eruptions. The townspeople have grown accustomed to this lifestyle, knowing when and how to deal with the subsequent lava threatening their borders and thick screens of ash blanketing the sky. Take one look at the terrain surrounding the volcano and it may very well look like the skeletal remains of a Pokémon best left buried – jagged and infamously treacherous. Trainers daring enough to brave its heat will find that plant life is still capable of flourishing in its vicinity, taking on a crimson hue as deep as magma itself. It’s uncertain whether the earth is naturally a colour bordering obsidian, but few are willing to stay for long and find out due to the poor air quality.",
     "footer": {
@@ -9,7 +9,7 @@
       "url": "https://cdnb.artstation.com/p/assets/images/images/086/258/409/4k/josu-solano-452951-mountain-v2.jpg"
     }
   },
-  "location2": {
+  "tianxie": {
     "title": "天蝎城市 | Tiānxiē City",
     "description": "Tiānxiē City is best described as a civilization that is constantly bustling. Thanks to the occasional eruptions from Mount Huǒniǎo damaging its buildings, its colourful lifestyle has anchored itself on a culture that shifts with each time they rebuild. With art and festivities as the focus of its community, they take eruptions as an opportunity to experiment with new art styles and mediums, rarely holding a grudge as it challenges them as creatives and oddly forgiving to even outsiders. Here, there is no such thing as a quiet nightlife, offering crowded night markets with unconventional streetfoods and passionate buskers trying to make a living.",
     "footer": {
@@ -19,7 +19,7 @@
       "url": "https://cdnb.artstation.com/p/assets/images/images/042/825/599/large/carla-cordelia-visual-development-artist-night-market-magical-mddartss.jpg"
     }
   },
-  "location3": {
+  "shizijia": {
     "title": "十字架雨林 | Shízìjià Rainforest",
     "description": "The Shízìjià Rainforest is no place for beginners. Swarming with poisonous Pokémon, trainers will find many signs reminding them to bring as many Antidotes as there are species of plants present. Due to the rainforest’s proximity to Mount Huǒniǎo, it’s recommended to always plan out a way to seek shelter should acid rain pour down. In spite of the environment threatening all those that enter, it flourishes with great biodiversity and dreamy flora that is as dangerous as it is colourful. Streams of water flow gently through its depths, reflections revealing mushrooms that are impossibly tall and pranksters spying on you from afar. Why not try your luck by trying one of the Berries here, while you’re at it?",
     "footer": {
@@ -29,7 +29,7 @@
       "url": "https://cdnb.artstation.com/p/assets/images/images/098/296/927/large/sylvain-sarrailh-highrise-the-verdant-labyrinth.webp"
     }
   },
-  "location4": {
+  "jinyu": {
     "title": "金魚山脉 | Jīnyú Mountains",
     "description": "Nestled within the center of Jīnyú Mountains is a hot spring that is surprisingly gentle on the skin. The ambience is enough to lull someone into a deep sleep from a quick dip, but whether you’ll wake up to find Fairy Pokémon braiding your hair or not is another story. Between cherry blossom petals kissing the water’s surface and the layered cascades that mist the area, weary travelers have claimed to hear the voice of the person they miss the most. There is little evidence to back this, however, and the locals have begun to believe this mysterious spirit of the springs will only reveal itself to those with pure and noble hearts.",
     "footer": {
@@ -39,7 +39,7 @@
       "url": "https://cdnb.artstation.com/p/assets/images/images/031/373/211/large/g-liulian-2.jpg"
     }
   },
-  "location5": {
+  "renma": {
     "title": "人馬集镇 | Rénmǎ Town",
     "description": "Perched above countless waterfalls and as a reward for making the taxing hike to the top, Rénmǎ Town welcomes all with countless luxurious – and pricey – inns for travelers to soothe their souls. Whether you choose to meditate, explore the network of bridges, or fill your lungs with the air that doesn’t get much cleaner than this, wild Pokémon can be found training and skipping from spring to spring. Everywhere you turn, you will undoubtedly find a place of your own to bathe and unwind. Perhaps one will restore youth – is what the locals tell you. They’ll even give you a discount for another night, if you want to spend another day searching for it!",
     "footer": {
@@ -49,7 +49,7 @@
       "url": "https://cdnb.artstation.com/p/assets/images/images/008/155/355/large/g-liulian-.jpg"
     }
   },
-  "location6": {
+  "jibai": {
     "title": "夾白苔原  | Jiābái Tundra",
     "description": "If you wanted to try your hand at finding a Cubchoo in a snowstorm, then Jiābái Tundra is the place to do it. Although the terrain itself is far from challenging, it’s a coin flip between stepping into one inch of snow or sinking into ten feet of it. The harsh winds and cold nights hardly make it suitable to set up camp in. That is, assuming you haven’t lost all your gear from being toppled over during a blizzard. Your footprints disappear quickly here, but maybe that’s exactly how you like it? Regardless, it’s important to strap your resources tightly to your body, lest you inevitably get lost from one checkpoint to another without enough food to spare.",
     "footer": {
@@ -59,7 +59,7 @@
       "url": "https://cdnb.artstation.com/p/assets/images/images/022/130/479/4k/grady-frederick-steppe-final-2-color-v3.jpg"
     }
   },
-  "location7": {
+  "baoping": {
     "title": "寶瓶村子  | Bǎopíng Village",
     "description": "It’s nothing short of a miracle to make it to Bǎopíng Village in one piece. As one of the only safe points before entering the Fùbái Mountains and situated at its base, the residents are accommodating and ready to treat frostbite at a moment’s notice. For how likely it was to freeze to death moments ago, the auroras you can catch a glimpse of here are a rewarding sight indeed. Try their specialty hot pot while you’re here, it’ll warm you right up to the point you’ll miss this feeling once you leave! Don’t be afraid to ask them for assistance or accept their generous hospitality – it’s always a cause for celebration when a familiar face returns from their journey.",
     "footer": {
@@ -69,7 +69,7 @@
       "url": "https://cdna.artstation.com/p/assets/images/images/042/631/438/4k/sin-jong-hun-56-aurora-town.jpg"
     }
   },
-  "location8": {
+  "shuiwei": {
     "title": "水委山谷 | Shuǐwěi Valley",
     "description": "Situated between Fùbái Mountains and Jīnyú Mountains, Shuǐwěi Valley reaps the best of both worlds with pleasantly warm weather all year long. With both soft, rolling hills and steeper climbs available, there’s a little something for all kinds of hikers. A clear stream flows through the area, wrapping around to form a ring where bedtime stories tell the tale of a promise from a deity Pokémon to return. Whether that’s the reason behind such a drastic difference in terrain from one place to another or not, even geomorphologists are baffled yet intrigued by the formations here. Many have taken it upon themselves to find a plausible explanation, but if anything is for certain, then it’s how well-loved the land is here – blessed as the valley where two contrasting forces intertwine.",
     "footer": {
@@ -79,7 +79,7 @@
       "url": "https://cdna.artstation.com/p/assets/images/images/035/157/498/4k/andreas-rocha-landscapefinalwide.jpg"
     }
   },
-  "location9": {
+  "fubai": {
     "title": "附白山脉 | Fùbái Mountains",
     "description": "Rather than seeking out the North Star in the **Fùbái Mountains**, it’s become a tradition to follow the soft auroras lighting up the sky. Many accounts from those who have returned to **Bǎopíng Village** safely claim that they lead travelers in the right direction, acting as guides – or even guardians – that the weary can trust. While the blizzards here are less frequent compared to the **Jiābái Tundra**, they can be more dangerous due to how difficult it is to tell terrain and landmarks apart from each other. At the heart of **Fùbái Mountains**, a cave is frozen in time with walls encased in ice. They preserve ancient carvings that tell the tale of two Pokémon forcibly separated, but it’s impossible to make out who or what they are without damaging the surroundings in the process.",
     "footer": {
@@ -89,7 +89,7 @@
       "url": "https://i.pinimg.com/1200x/cb/8f/9c/cb8f9c3dac3cd595f7abc147ebbf2903.jpg"
     }
   },
-  "location10": {
+  "jinniu": {
     "title": "金牛村子 | Jīnniú Village",
     "description": "Against all odds, the reclusive people of **Jīnniú Village** have settled down in **Fùbái Mountains**. It’s more fitting to say they’ve constructed a kingdom of their own with walls sturdy enough to survive even the most grueling of avalanches. Be careful not to fly in these parts without an invitation, however. Dragon-type Pokémon have claimed the skies as their own, often taking a neutral to hostile stance against foreigners. Dragon-type trainers will feel right at home though, as many of visitors and residents come here with one themselves. As a piece of advice, do not utter a single word insulting Dragon-types. They’re treated as sacred beings here, and any slander is quickly met with a free ticket back to the snowfields.",
     "footer": {
@@ -99,7 +99,7 @@
       "url": "https://cdna.artstation.com/p/assets/images/images/003/204/888/large/g-liulian-2.jpg?1471022179"
     }
   },
-  "location11": {
+  "he": {
     "title": "鶴山脉 | Hè Mountains",
     "description": "The **Hè Mountains** are best known for their sunkissed landscape, putting any beliefs that “the grass is always greener on the other side” to rest. Many Pokémon have made these mountains their home, gentle and welcoming to strangers to the point that they offer Berries and messily-crafted flower crowns to those that they take a particular liking to. It’s not unusual to be ‘adopted’ into their family by some. In fact, you’ll find that the most unlikely of families and pairings are formed here. Perhaps accept their offer to simply watch the clouds roll across the sky some time – it’s not inaccurate to describe your experience here as being warmly embraced by nature itself.",
     "footer": {
@@ -109,7 +109,7 @@
       "url": "https://cdnb.artstation.com/p/assets/images/images/020/706/627/large/lorenzo-lanfranconi-a-jump-in-the-fire-mokup-s.jpg"
     }
   },
-  "location12": {
+  "tiancheng": {
     "title": "天秤集镇 | Tiānchèng Town",
     "description": "Bathed in golden sunlight as brilliant as the architecture itself, **Tiānchèng Town** sits above the clouds at the peak of the **Hè Mountains** as a work of engineering genius. You will find no shortage of strange inventions here, ranging from self-indulgent trinkets to airships torn straight from steampunk movies. Reaching its heights is a miracle in itself, yet the city’s residents thrive at high altitudes and show no fear of the vast sky bridge network. If you’re afraid of heights, however, tourists find the gondola lifts to be more gentle on first-time nerves and even fascinating for the countless gears that turn and keep this place running.",
     "footer": {
@@ -119,7 +119,7 @@
       "url": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/833ad472-ee20-45af-bcfc-44305abaad9b/ddmig75-ad344b70-64b0-4623-826c-8d1f62bce7bd.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi84MzNhZDQ3Mi1lZTIwLTQ1YWYtYmNmYy00NDMwNWFiYWFkOWIvZGRtaWc3NS1hZDM0NGI3MC02NGIwLTQ2MjMtODI2Yy04ZDFmNjJiY2U3YmQuZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.zTe3zrOv76u5jZb9aUPQn4OkrAf5MPnf_SkMAn_yg30"
     }
   },
-  "location13": {
+  "haidan": {
     "title": "海石小岛 | Hǎidàn Isle",
     "description": "It’s fortunate that **Hǎidàn Isle** has a lone lighthouse standing guard, lest any daring enough to travel into its foggy depths remain lost for days on end. Even navigating one’s way around the jagged rocks surrounding this island is a task best left to the experienced. Or those blessed by Lady Luck, for the daring. The fog is not the only haunting thing about this island. With chilly temperatures and dark skies all year round to make your hair stand on end, Ghost-type Pokémon may be more plentiful than the living souls you’ll see around here. On the bright side, the lighthouse’s illumination seems to chase away any pranksters, but you may start missing their company once you’re stuck with the keeper and their run down cabin. Alone.",
     "footer": {
@@ -129,7 +129,7 @@
       "url": "https://www.artstation.com/artwork/LRRK6l"
     }
   },
-  "location14": {
+  "bosi": {
     "title": "波斯沙漠 | Bōsī Desert",
     "description": "The dunes in **Bōsī Desert** are a sight to behold – glistening red sands comparable to ground-up jewels and rock formations that could make even the most brilliant of garnet gemstones envious. It almost appears to be boundless in quality as horizons stretch endlessly into the distance, fooling trainers into believing they’ve been trapped in an illusion by a playful Pokémon. Legends say there are ruins in some far corner of the desert, but any who dare to seek them out are swiftly met with unbearable temperatures that scorch the skin. Consider it a final warning to turn back, leaving the existence of such a place unconfirmed. After all, there are still many secrets to be uncovered beneath the sands.",
     "footer": {
@@ -139,7 +139,7 @@
       "url": "https://cdna.artstation.com/p/assets/images/images/021/963/634/large/logan-feliciano-dune-shot1-lf-001.jpg"
     }
   },
-  "location15": {
+  "shuangzi": {
     "title": "雙子集镇 | Shuāngzǐ Town",
     "description": "It’s hard to miss the enormous gates erected in the **Bōsī Desert**. Situated beyond them is **Shuāngzǐ Town**, embedded into sandstone and carved into its depths. A majority of the citizens live in an expansive underground system with manmade passages similar to catacombs, escaping from the sweltering heat and taking advantage of the rich reds and oranges to make their homes feel more vibrant. Their economy is centered around trade thanks to the harsh conditions making crops difficult to grow here. Much of the pottery, textiles, and stained glass works found around the region are thanks to their skilled artistry – just don’t mention **Tiānxiē City** here, their rivalry dates back countless years.",
     "footer": {
@@ -149,7 +149,7 @@
       "url": "https://cdna.artstation.com/p/assets/images/images/035/163/460/large/rainman-page-271.jpg"
     }
   },
-  "location16": {
+  "shewei": {
     "title": "蛇尾湖 | Shéwěi Lake",
     "description": "**Shéwěi Lake**’s waters have an enchanting – *mesmerizing* – quality to them, but it would be foolish to solely attribute it to the calm, glistening surface and gentle waterfalls in the distance. At the bottom of the lake, stones shimmer like scales, distorting your senses as you wade through its depths. Collectors mourn the fact that they lose their iridescence as soon as they leave the water, but perhaps it’s for the best, as the rich turquoise colour is reliant on their presence. Although you can’t take home a souvenir for yourself, **Shéwěi Lake** is the perfect spot to sunbathe if crowded beaches aren’t your thing.",
     "footer": {
@@ -159,7 +159,7 @@
       "url": "https://cdnb.artstation.com/p/assets/images/images/098/082/201/large/sylvain-sarrailh-highrise-the-coast-of-reflections.webp"
     }
   },
-  "location17": {
+  "yique": {
     "title": "異雀树 | Yìquè Tree",
     "description": "“The **Yìquè Tree** will guide you home.” As a popular saying among the locals, there is in fact some truth to it – the enormous tree can be seen from almost anywhere in the region. No one knows how far its roots reach, but if one thing is for sure, then it’s the mystical, glowing properties to it that emanate through the branches, as if its lifeforce is drawn from the stars themselves. The higher you climb or fly, you’ll find that the top cannot be reached due to a strange force of gravity surrounding it. It’s rumoured that a mysterious Pokémon slumbers here, responsible for the dreamy skies and surrounding flora that look like they’re torn straight out of fairytales.",
     "footer": {
@@ -169,7 +169,7 @@
       "url": "https://cdna.artstation.com/p/assets/images/images/062/074/894/large/j-line-.jpg"
     }
   },
-  "location18": {
+  "mafu": {
     "title": "馬腹山脉 | Mǎfù Mountains",
     "description": "Between towering stones and dense bamboo forests, **Mǎfù Mountains** stands as a testament to time. Each rock formation has traces of training sessions and spars from the past, somehow still standing despite the sheer size of some damages done and the heavy rain seasons. With luscious greenery and narrow streams of water coursing throughout the range, the uneven and slippery trails bear witness to as many breakthroughs as they do downfalls. For any adventurous enough to head higher, they’ll find that the air thins out drastically in tandem with lower visibility due to a layer of fog.",
     "footer": {
@@ -179,7 +179,7 @@
       "url": "https://cdnb.artstation.com/p/assets/images/images/007/258/815/large/dimitar-marinski-dimitar-marinski-unclaimed-territory.jpg"
     }
   },
-  "location19": {
+  "baiyang": {
     "title": "白羊集镇 | Báiyáng Town",
     "description": "Hidden within a sea of clouds in **Mǎfù Mountains** is **Báiyáng Town**. Pavilions and homes constructed from wood and bamboo often have their signature, upturned roofs resting on beams that are weathered by the misty conditions. Warm, golden light radiates from lanterns to guide the way for travelers, ensuring that the stone paths and bridges that wind through the area are safe to cross. Although it’s intimidating to be suspended between the earth and the sky, the ambient noise of water trickling down the mountainside and the distant tolling of bells contribute to a secluded yet tranquil atmosphere. Whether you choose to seek refuge here and remove yourself from the realm below, or you’re merely passing through to learn a bit of the people’s traditions, all are welcome.",
     "footer": {
@@ -189,7 +189,7 @@
       "url": "https://cdnb.artstation.com/p/assets/images/images/008/169/395/large/ling-xiang-h2.jpg"
     }
   },
-  "location20": {
+  "haishan": {
     "title": "海山瀑布 | Hǎishān Falls",
     "description": "A series of terraces make up **Hǎishān Falls** where clear waters that are seemingly endless spill over the edges to form countless waterfalls. From a distance, each pool appears infinite as the boundaries blend seamlessly against the sky. Water-type Pokémon can be seen dashing freely from platform to platform with echoes of their laughter ringing in your ears. We advise against chasing them, though. They have the terrain memorized like the back of their hand and often delight in personally cooling off hotheaded visitors. Due to this becoming a frequent occurrence, Flying-type trainers patrol the area to catch anyone swept off their feet from a careless step or blind pursuit.",
     "footer": {
@@ -199,7 +199,7 @@
       "url": "https://cdnb.artstation.com/p/assets/images/images/008/907/629/large/erik-shoemaker-gobletofgiants-finalv4.jpg"
     }
   },
-  "location21": {
+  "mawei": {
     "title": "馬尾寺  | Mǎwěi Temple",
     "description": "While the hike up to **Mǎwěi Temple** is a treacherous one for the many steps you have to scale, the journey itself is a trial to test your determination and grit. Upon reaching the peak of **Mǎfù Mountains**, it’s said that paying your respects to the statue of the three Mythicals – Victini, Mew, and Jirachi – will bring you good fortune for the upcoming year, and for students, success with their trials. The temple is often host to conferences that push trainers and their respective bonds with their partners to the limits, if not merely an impressive spectacle for the locals. Be wary of those selling fraudulent amulets and elixirs though. Much to the ire of the priests here, these swindlers have managed to escape their surveillance time and time again.",
     "footer": {
@@ -209,7 +209,7 @@
       "url": "https://cdna.artstation.com/p/assets/images/images/041/885/160/large/g-liulian-fff.jpg"
     }
   },
-  "location22": {
+  "shefu": {
     "title": "蛇腹湖 | Shéfù Lake",
     "description": "Historians are troubled by the origin of **Shéfù Lake**, basing their knowledge only on worn pages of journals and stories passed down orally that there used to be a village in its place before it was flooded during the Great War. Despite the damage done to the surrounding areas, enchantingly clear waters erase any depth perception, tricking the mind into believing the lakebed is far closer than it truly is. Locals recommend taking a skiff with a glass floor to get from one shore to another – certainly out of concern for your safety and not to capitalize on their famous, bioluminescent algae blooms at nighttime.",
     "footer": {
@@ -219,7 +219,7 @@
       "url": "https://cdna.artstation.com/p/assets/images/images/052/096/544/large/logan-turner-castle2.jpg"
     }
   },
-  "location23": {
+  "feiyu": {
     "title": "飛魚海岸线  | Fēiyú Coastline",
     "description": "**Fēiyú Coastline** is known for its pristine atmosphere and gentle weather, often attracting those with poor health to recuperate here among the friendly Mantine flying overhead. Situated at the top of high ridges is a bell tower – its mellow and soothing sound resonating throughout the residents’ hearts and attracting nearby Pokémon with each toll. Traversing between the ridgecrest and the beach is a task accomplished in a matter of seconds. A mere brush of the hand against a Mantine will prompt them to offer you a ride to the soft, glittering sands below that emanate a warmth that reminds you of home. Just be direct about your intentions, lest you find yourself being whisked away against your will and stuck with no way down until they’re content.",
     "footer": {
@@ -229,7 +229,7 @@
       "url": "https://cdnb.artstation.com/p/assets/images/images/000/498/065/large/daniel-conway-ff.jpg"
     }
   },
-  "location24": {
+  "mifeng-farm": {
     "title": "蜜蜂牧场 | Mìfēng Farms",
     "description": "**Mìfēng Farms** is your one-stop shop for all things organic. With plentiful apiaries and Wooloo grazing without a care in the world, the lively atmosphere speaks volumes for the quality of the products sold here. Their specialty is their namesake Combee Honey and premium Ribombee Honey, holding a monopoly over the entire region. But don’t worry! If you want a jar to take home for yourself, they’re always looking for volunteers if you’d like to try your hand at rounding up herds of Tauros and Miltank! …They can be a bit stubborn if you don’t bribe them with food first though. Maybe there’s a secret scheme behind the petting zoo-like setup they have by selling homemade treats too?",
     "footer": {
@@ -239,7 +239,7 @@
       "url": "https://cdnb.artstation.com/p/assets/images/images/090/851/745/4k/marvin-hillmann-marvinhillmann-ata-ladybug-overpaint.jpg"
     }
   },
-  "location25": {
+  "mifeng-meadows": {
     "title": "蜜蜂草地 | Mìfēng Meadows",
     "description": "As peaceful as **Mìfēng Meadows** seems from afar, take the warnings to not climb trees here seriously. With plenty of hives littered throughout the plains, it’s a disaster waiting to happen as pitiful onlookers can only shake their head at who the next victim is. Save for the overprotective colonies, however, the sunny weather and tall grass here attracts all kinds of wild Pokémon that are looking to graze or scavenge for berries. Should you take a nap here, you may even wake up to a Deerling licking your face or a freshly-evolved Vivillon exploring its new world, starting with you. Perhaps you’ll even find some rare herbs growing in shaded areas? Ooo, yikes, that one was a poisonous lookalike though.",
     "footer": {
@@ -249,7 +249,7 @@
       "url": "https://cdnb.artstation.com/p/assets/images/images/085/885/489/large/sylvain-sarrailh-folsongofmeadow.jpg"
     }
   },
-  "location26": {
+  "nanchuan": {
     "title": "南船鬼城 | Nánchuán Village",
     "description": "The houses in **Nánchuán Village** are all broken down and filled with plant overgrowth, leaving only cheeky whispers echoing throughout the abandoned area. Noted by many, the ruined brick architecture is a strange contrast to the blooming fields of flowers surrounding its perimeter, akin to a final resting place for the forgotten. Although it’s rare to see a fellow trainer passing through, many Pokémon have made this place their home, going as far as to decorate the interiors – which are truly more like exteriors – of their houses with trinkets they’ve nabbed from travellers. Make sure to bring an offering if you want entry into its walls. If the Pokémon are going to take one regardless, it’s best you choose which one!",
     "footer": {
@@ -259,7 +259,7 @@
       "url": "https://cdnb.artstation.com/p/assets/images/images/006/276/549/large/ling-xiang-7.jpg"
     }
   },
-  "location27": {
+  "juxie": {
     "title": "巨蟹集镇 | Jùxiè Town (bootleg yunnan)",
     "description": "For those interested in getting a taste of the more rural side of Sanyuan, **Jùxiè Town** is a popular tourist attraction for its layered fields that resemble stairs. Many farmers are fond of the conditions here as it gives them an easier time cultivating crops with streams of water flowing smoothly through them. No need to chase away the many deer Pokémon that roam here, though. They rarely damage the crops or cause trouble for the farmers, sometimes even offering rides to those weary of climbing the steps.",
     "footer": {
@@ -269,7 +269,7 @@
       "url": "https://cdnb.artstation.com/p/assets/images/images/067/473/489/large/lei-afc-2023-3.jpg"
     }
   },
-  "location28": {
+  "xiaodou": {
     "title": "小斗树林 | Xiǎodǒu Forest",
     "description": "**Xiǎodǒu Forest** is dyed with countless colours, seemingly ripped out of a children’s picture book with the plentiful flora. Parents rest easy even when their kids set out on mini adventures here as it’s known for being a safe place to roam, even when the sun sets. Children that wear themselves out and fall asleep here are often surrounded by a circle of gentle Pokémon, guarding them like little soldiers waiting for an adult to pick them up. There have been some strange rumours floating around as of late, though. More and more kids have been coming home, claiming that they heard the bright sound of an ocarina’s melody and the playful footsteps of baby Pokémon that are humming along to the tune.",
     "footer": {
@@ -279,7 +279,7 @@
       "url": "https://cdna.artstation.com/p/assets/images/images/035/194/672/large/sylvain-sarrailh-greenheart.jpg"
     }
   },
-  "location29": {
+  "sheshou": {
     "title": "蛇首湖 | Shéshǒu Lake",
     "description": "**Shéshǒu Lake** is flowing with peaceful waters that are said to grant those who drink it the answers to a problem troubling them. It’s a popular destination for skipping stones against clear, blue skies with the many flat rocks littering the shore. A mysterious island marks the center of the lake, but anytime someone attempts to approach it, a dense fog obstructs their vision and causes travelers to lose their way. Even compasses spin out of control within its depths, leaving the most skilled of navigators stumped. Strangely enough, as soon as you leave its range, the fog disperses and the skies calm down as if they never changed.",
     "footer": {
@@ -289,7 +289,7 @@
       "url": "https://cdna.artstation.com/p/assets/images/images/014/022/026/4k/shin-jong-hun-418-1.jpg"
     }
   },
-  "location30": {
+  "shinu": {
     "title": "室女城市 | Shìnǚ City",
     "description": "Warm autumn hues and grand gates invite all to **Shìnǚ City**. There is never a day without bustling foot traffic and vendors advertising how much cheaper their wares are compared to the next stall over. As the city surrounding **Dexlight Academy**, the smell of food entices any hungry students looking to grab a snack before their first class of the day. Luckily, everything you could possibly need is within walking distance despite the winding paths and countless alleyways. Don’t be shy to ask locals for directions – they may point you down a road that will get you to spend more money, but the lights and traditional architecture are a sight to behold.",
     "footer": {
@@ -299,7 +299,7 @@
       "url": "https://i.pinimg.com/1200x/f1/a2/84/f1a28487824cd5050eed7a16239579de.jpg"
     }
   },
-  "location31": {
+  "shizi-park": {
     "title": "狮子园 | Shīzi Park",
     "description": "Ever wondered what it must be like to live in a snowglobe running on hopes and dreams? Don’t be shy, step right up to **Shīzi Park**! This amusement park is known for its dizzying rollercoasters, childhood classics, and ferris wheels where certainly nobody suspicious will confess their true identity to you! Tickets are so jaw-dropping cheap that it almost makes you question how so many rides are operating perfectly fine. But who has time to worry about that, really? Take a shot at winning prizes and get your walking shoes on, you’re either leaving here satisfied or not at all! Really, they even have an overnight resort!",
     "footer": {
@@ -309,7 +309,7 @@
       "url": "https://cdnb.artstation.com/p/assets/images/images/049/007/977/large/frank-sun-x.jpg"
     }
   },
-  "location32": {
+  "shizi-city": {
     "title": "狮子城市 | Shīzi City",
     "description": "With glowing billboards illuminating the streets as far as the eye can see and skyscrapers that are truly works of engineering genius, **Shīzi City** is *the* place to go to stay updated on the newest technology emerging. Whether you’re here for an exciting nightlife or simply taking in the many lightshows scattered throughout the city, make sure you’re always looking both ways before crossing! The streets and underground here can be rather cutthroat, but let’s not pay that any mind. Why not take a look at the latest Rotom Phone model instead? There’s free WiFi here for a reason!",
     "footer": {
@@ -319,7 +319,7 @@
       "url": "https://cdna.artstation.com/p/assets/images/images/024/207/936/large/g-liulian-.jpg"
     }
   },
-  "location33": {
+  "shizi-pier": {
     "title": "狮子码头 | Shīzi Pier",
     "description": "Lanterns illuminate the docks at **Shīzi Pier**, home to a large portion of the trade networks in Sanyuan. As the main importer of fish from **Shuāngyú Village**, the cuisine here is well-known for its seafood dishes and rare delicacies. If that’s not quite your style, consider exploring the tunnel system connecting old hubs or taking a ride on one of the tour boats to learn more about the pier’s rich history. Should you get off at one of the many stops before returning to the docks, you’ll have to wait a while for another boat to come around! There aren’t many options to stay dry when nearly all of the restaurants and tea houses here are built upon wooden pillars standing just above the water.",
     "footer": {
@@ -329,7 +329,7 @@
       "url": "https://cdna.artstation.com/p/assets/images/images/044/270/472/4k/forrest-white-1-paintover-final.jpg"
     }
   },
-  "location34": {
+  "shuangyu": {
     "title": "雙魚村子 | Shuāngyú Village",
     "description": "Due to being partially submerged in water, **Shuāngyú Village** is built on stilts and connected by a series of stone bridges. The luxurious buildings and water gardens here draw the envy of those living in the nearby **Niǎohuì Wastelands**, pristine and elegant in quality. As they’re situated next to the ocean, their main food source is fish and many of the villagers consider it their second home. It’s difficult to find someone who doesn’t know how to handle Water-type Pokémon, considering they’re treated as sacred beings and the subject of countless festivals hosted here. In particular, a legend about a pair of Milotic that shed their scales to create a Fountain of Youth hidden somewhere in the village is a common tale told to children.",
     "footer": {
@@ -339,7 +339,7 @@
       "url": "https://cdnb.artstation.com/p/assets/images/images/031/373/215/large/g-liulian-2jpg-fff.jpg"
     }
   },
-  "location35": {
+  "niaohui": {
     "title": "鳥喙荒地 | Niǎohuì Wastelands",
     "description": "The arid atmosphere of the **Niǎohuì Wastelands** draws the ire of many. If it wasn’t already difficult enough to breathe with all the dust, then it certainly isn’t of any comfort to see the flock of Mandibuzz flying above, waiting to see who or what their next meal will be. Don’t rub your eyes for too long though, you can never be too sure when a tumbleweed will knock you out or if a single misstep could mean you’re on your way to the bottom of a ravine. Not to worry, there is some merit to exploring the area. Precious minerals and ores can be found here, fetching quite a pretty penny as long as you can successfully escape the Orthworms tunneling all throughout.",
     "footer": {
@@ -349,7 +349,7 @@
       "url": "https://store.noahbradley.com/cdn/shop/products/Noah-Bradley_Plateau_1540x.jpg"
     }
   },
-  "location36": {
+  "mojie": {
     "title": "摩羯集镇  | Mójié Town",
     "description": "The people of **Mójié Town** live within caves and tunnels, making mineshafts their home beneath the ground. Although the air is thick with the smell of oil from the meticulous systems they have in place to extract ores, it can be quite fascinating to see all the Pokémon hard at work alongside their trainers. But if you plan on staying for longer than a day, get ready to be dragged into a shift! They’re quick to lose respect for young trainers if they can’t handle a bit of physical labour. They’ll treat you to as much food and drinks as you want after a long day’s work though, so look on the bright side and hold that lantern steady!",
     "footer": {
@@ -359,7 +359,7 @@
       "url": "https://cdnb.artstation.com/p/assets/images/images/060/489/537/large/vizlab-studios-mines-04-10mb.jpg"
     }
   },
-  "location37": {
+  "kongque": {
     "title": "孔雀洞穴 | Kǒngquè Caves",
     "description": "We recommend taking out any metal jewelry before entering **Kǒngquè Caves**. The mystifying crystals lining the walls are made of Chargestone – a cherished power source to keep Sanyuan operating day and night. The magnetic field can be quite troublesome and dizzying, but it’s quick to adjust to as long as you don’t stare at your warping reflection in the crystals for too long. Many couples have come here to etch their initials somewhere – so much so that it’s become a tradition around romantic holidays to pay respects to the countless crystal Carbink statues and leave their mark. Who carved them all? Who knows! Just bear in mind that your initials may get removed someday, the region won’t power itself!",
     "footer": {
@@ -369,7 +369,7 @@
       "url": "https://cdnb.artstation.com/p/assets/images/images/011/881/837/large/ilia-altunin-jjhj.jpg"
     }
   },
-  "location38": {
+  "sanjiaoxing": {
     "title": "三角形发电厂 | Sānjiǎoxíng Power Plant",
     "description": "The **Sānjiǎoxíng Power Plant** is a vital part to keeping the region running, generating electricity through the crystals mined in **Kǒngquè Caves**. Trainers with Electric-type partners continuously patrol the area to ensure that no one reckless damages the plant. This area is not closed off to visitors though. There are many ways to see the inside, whether it’s through one of their many tours offered or through hands-on learning experiences for those curious about Chargestone’s properties. However, if you attempt to scale the walls here on your own, be careful when they start moving upon detecting movement from an intruder. There are many lockdown protocols set in place, and it’s a quick way to get your name on a blacklist if you don’t have good reason to be there.",
     "footer": {

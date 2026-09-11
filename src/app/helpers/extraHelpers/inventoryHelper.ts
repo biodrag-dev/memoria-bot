@@ -51,14 +51,14 @@ function saveItems() {
   );
 }
 
-function getCategories() {
+export function getCategories() {
   return Object.entries(catalogue.categories).map(([key, value]) => ({
     value: `${key}`,
     name: value.name,
   }));
 }
 
-function createCategory(name: string, description: string) {
+export function createCategory(name: string, description: string) {
   catalogue.categories[catalogue.currentCatCount] = {
     name,
     description,
@@ -69,13 +69,13 @@ function createCategory(name: string, description: string) {
   saveItems();
 }
 
-function deleteCategory(id: number) {
+export function deleteCategory(id: number) {
   delete catalogue.categories[id];
   delete catalogue.items[id];
   saveItems();
 }
 
-function editCategory(
+export function editCategory(
   id: number,
   name: string | undefined,
   desc: string | undefined,
@@ -92,9 +92,8 @@ function editCategory(
   saveItems();
 }
 
-function getItem(id: number) {}
 
-function addItemToInventory(
+export function addItemToInventory(
   id: string,
   character: string,
   category: number,
@@ -120,7 +119,7 @@ function addItemToInventory(
   characterHelper.saveUsersExternal(users);
 }
 
-function setItemInInventory(
+export function setItemInInventory(
   id: string,
   character: string,
   category: number,
@@ -146,7 +145,7 @@ function setItemInInventory(
   }
   characterHelper.saveUsersExternal(users);
 }
-function createItem(
+export function createItem(
   category: number,
   name: string,
   description: string,
@@ -169,7 +168,7 @@ function createItem(
   saveItems();
 }
 
-function getCharacterInventoryItems(
+export function getCharacterInventoryItems(
   id: string,
   character: string,
   category: number,
@@ -199,7 +198,7 @@ ${string == `` ? `Nothing to see here!` : string}`);
   return embed;
 }
 
-function getInventoryPage(category: number) {
+export function getInventoryPage(category: number) {
   var string = ``;
   for (const item of Object.values(category)) {
     const itemInfo: item = item;

@@ -16,6 +16,7 @@ import {
 import * as characterHelper from "../helpers/characterHelper";
 import * as tmHelper from "../helpers/tmHelper";
 import * as proxyHelper from "../helpers/proxyHelper";
+import * as inventoryHelper from "../helpers/extraHelpers/inventoryHelper";
 
 const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
   new ButtonBuilder()
@@ -357,6 +358,48 @@ export const command: CommandData = {
         },
       ],
     },
+    {
+      name: "inventory",
+      description: "View your inventory here!",
+      type: ApplicationCommandOptionType.SubcommandGroup,
+      options: [
+        {
+          name: "view",
+          description: "View a character's inventory!",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "name",
+              description: "Which character's inventory are you viewing?",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+              autocomplete: true,
+            },
+          ],
+        },
+        {
+          name: "use",
+          description: "Use an item in a character's inventory!",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "name",
+              description: "Which character's inventory are you viewing?",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+              autocomplete: true,
+            },
+            {
+              name: "item",
+              description: "Which item in the character's inventory are you using?",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+              autocomplete: true,
+            },
+          ],
+        },
+      ],
+    },
   ],
 };
 
@@ -433,7 +476,13 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   const group = interaction.options.getSubcommandGroup();
 
   const sub = interaction.options.getSubcommand();
-
+  if (group === "inventory") {
+    if (sub === "view") {
+      inventoryHelper.getInventoryPage(0);
+    }else if (sub === "use"){
+      
+    }
+  }
   if (group === "proxy") {
     const [proxyId, partnerType] = interaction.options
       .getString("name", true)
