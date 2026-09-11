@@ -12,7 +12,7 @@ function loadEmbeds() {
 }
 
 export function embed(name: string, color?: string | undefined) {
-  return embeds[name]
+  const embed = embeds[name]
     ? { embeds: [embeds[name].setColor(color as ColorResolvable)] }
     : {
         embeds: [
@@ -20,6 +20,14 @@ export function embed(name: string, color?: string | undefined) {
         ],
         ephemeral: true,
       };
+  if (color) {
+    fs.writeFileSync(
+      `${jsonsPath}/embeds.json`,
+      JSON.stringify(embeds, null, 2),
+      "utf8",
+    );
+  }
+  return embed;
 }
 
 export function importEmbeds() {
@@ -43,7 +51,6 @@ export function importEmbeds() {
       }
     }
   }
-  console.log(embeds);
   fs.writeFileSync(
     `${jsonsPath}/embeds.json`,
     JSON.stringify(embeds, null, 2),
