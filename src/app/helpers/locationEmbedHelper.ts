@@ -12,22 +12,24 @@ function loadEmbeds() {
 }
 
 export function embed(name: string, color?: string | undefined) {
-  const embed = embeds[name]
-    ? { embeds: [embeds[name].setColor(color as ColorResolvable)] }
-    : {
-        embeds: [
-          new EmbedBuilder().setDescription("embed could not be found!"),
-        ],
-        ephemeral: true,
-      };
+  const embed: EmbedBuilder =
+    embeds[name] ?
+      EmbedBuilder.from(embeds[name]) :
+      new EmbedBuilder().setDescription("embed could not be found!");
+
   if (color) {
+    embed.setColor(color as ColorResolvable ?? null)
+    
     fs.writeFileSync(
       `${jsonsPath}/embeds.json`,
       JSON.stringify(embeds, null, 2),
       "utf8",
     );
   }
-  return embed;
+  return {
+    embeds: [embed],
+    ephemeral: !embeds[name]
+  };
 }
 
 export function importEmbeds() {

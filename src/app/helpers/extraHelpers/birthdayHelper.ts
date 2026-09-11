@@ -41,7 +41,7 @@ export async function getAllPersonalBdays(
   if (charaDex[id]) {
     if (Object.entries(charaDex[id].characters).length > 0) {
       const bdays = Object.entries(charaDex[id].characters).sort(
-        ([charaA, infoA], [charaB, infoB]) => {
+        ([_, infoA], [__, infoB]) => {
           const dateA = new Date(infoA.birthday ?? 9999);
           const dateB = new Date(infoB.birthday ?? 9999);
 

@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, StringSelectMenuBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonStyle, EmbedBuilder, StringSelectMenuBuilder } from "discord.js";
 import Pokedex, { Move, Pokemon, Type } from "pokedex-promise-v2";
 import * as characterHelper from "./characterHelper";
 import { months } from "./extraHelpers/birthdayHelper"

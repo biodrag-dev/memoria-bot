@@ -74,6 +74,11 @@ export interface Character {
   birthday?: Date;
   balance: number;
   inventory: inventoryItem[];
+  buff?: {
+    expires: Date;
+    expBuff?: number;
+    moneyBuff?: number;
+  }
 }
 
 export interface tmData {
@@ -253,7 +258,7 @@ interface houseData {
   roleid: string;
 }
 
-const houseData: Record<string, houseData> = {
+export const houseData: Record<string, houseData> = {
   Victini: {
     hexcode: "#ce1b1b",
     iconLink: "https://play.pokemonshowdown.com/sprites/bwicons/494.png",
@@ -666,7 +671,7 @@ export async function createNewForumPost(
     const message = await thread.send(`<@${id}>`);
 
     setTimeout(async () => {
-      await message.delete().catch(() => {});
+      await message.delete().catch(() => { });
     }, 5000);
   }
   saveUsers();
@@ -1127,9 +1132,18 @@ export async function addCurrency(
   amount: number,
 ) {
   const character = charaDex[id]!.characters[name]!;
+
+  // removes buff if expired
+  const expiresDate = character.buff ? new Date(character.buff.expires) : new Date();
+  const today = new Date();
+  const timeDiff = today.getTime() - expiresDate.getTime();
+  if(character.buff && timeDiff < 0){
+    delete character.buff;
+  }
+
   const oldExp = character.partner.exp;
-  const newExp = character.partner.exp + amount;
-  character.balance += amount;
+  const newExp = character.partner.exp + (amount * (character.buff?.expBuff ?? 1));
+  character.balance += amount * (character.buff?.moneyBuff ?? 1);
   character.partner.exp = newExp;
 
   if (increasedLevel(oldExp, newExp)) {

@@ -3,7 +3,7 @@ import path from "path";
 
 const jsonsPath = path.resolve(__dirname, "../../../jsons");
 import * as characterHelper from "../characterHelper";
-import { EmbedBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
 
 interface item {
   name: string;
@@ -11,11 +11,13 @@ interface item {
   usable: boolean;
   price: number;
   emoji?: string;
+  key: boolean;
 }
 
 interface category {
   name: string;
   description: string;
+  display: boolean;
 }
 
 interface catalogue {
@@ -30,12 +32,14 @@ const catalogue: catalogue = loadItems();
 const lostCategory: category = {
   name: `Lost Category`,
   description: `This category has been lost to time.`,
+  display: false,
 };
 const lostItem: item = {
   name: `Lost Item`,
   description: `This item has been lost to time.`,
   usable: false,
   price: 0,
+  key: false,
 };
 
 function loadItems() {
@@ -58,10 +62,11 @@ export function getCategories() {
   }));
 }
 
-export function createCategory(name: string, description: string) {
+export function createCategory(name: string, description: string, display: boolean) {
   catalogue.categories[catalogue.currentCatCount] = {
     name,
     description,
+    display,
   };
   catalogue.items[catalogue.currentCatCount] = {};
 
@@ -92,6 +97,18 @@ export function editCategory(
   saveItems();
 }
 
+export function getAllItemIds() {
+  const items = [];
+
+  for (const [categoryId, catalogueItems] of Object.entries(catalogue.items)) {
+    for (const [itemId, item] of Object.entries(catalogueItems)) {
+      items.push({
+        value: `${categoryId}:${itemId}`,
+        name: `${(catalogue.categories[Number(categoryId)]?.name ?? lostCategory.name)} | ${item.name}`
+      })
+    }
+  }
+}
 
 export function addItemToInventory(
   id: string,
@@ -152,6 +169,7 @@ export function createItem(
   emoji: string | undefined,
   usable: boolean,
   price: number,
+  key: boolean
 ) {
   if (!catalogue.items[category]) {
     return;
@@ -162,6 +180,7 @@ export function createItem(
     emoji,
     usable,
     price,
+    key,
   };
 
   catalogue.currentItemCount++;
@@ -187,15 +206,76 @@ export function getCharacterInventoryItems(
     const itemInfo: item = categoryInfo
       ? (categoryInfo[item.id] ?? lostItem)
       : lostItem;
-    string += `${itemInfo.emoji ? `${itemInfo.emoji} ` : ``}**${itemInfo.name} // x ${item.quantity}**`;
+    string += `${itemInfo.emoji ? `${itemInfo.emoji} ` : ``}**${itemInfo.name}${itemInfo.key ? `` : ` // x ${item.quantity}`}**`;
     string += `> ${itemInfo.description}\n`;
   }
   const cat = catalogue.categories[category];
   const embed = new EmbedBuilder();
-  embed.setTitle(cat?.name ?? "How did you get this category?");
-  embed.setDescription(`-# ${cat?.description ?? "No description listed for category."}
+  embed.setColor(characterHelper.houseData[person.house]!.hexcode)
+  embed.setTitle(`${person.name}'s Inventory | ${cat?.name ?? lostCategory.name}`);
+  embed.setDescription(`-# ${cat?.description ?? lostCategory.description}
 ${string == `` ? `Nothing to see here!` : string}`);
-  return embed;
+
+  const row = new ActionRowBuilder<ButtonBuilder>()
+  for (const [key, value] of Object.entries(catalogue.categories)) {
+    if (value.display === true) {
+      row.addComponents(
+        new ButtonBuilder()
+          .setCustomId(`inventory:${id}:${character}:${key}`)
+          .setLabel(`${value.name}`)
+          .setStyle(ButtonStyle.Primary)
+      )
+    }
+  }
+  return {
+    embeds: [embed],
+    components: [row]
+  };
+}
+
+
+export function getCharacterInventoryAdminView(
+  id: string,
+  character: string,
+  category: number,
+) {
+  const users = characterHelper.getUsers();
+  const person = users[id]?.characters[character];
+
+  if (!person) {
+    return;
+  }
+
+  const items = person.inventory.filter((item) => item.category == category);
+  var string = ``;
+  const categoryInfo = catalogue.items[category];
+  for (const item of items) {
+    const itemInfo: item = categoryInfo
+      ? (categoryInfo[item.id] ?? lostItem)
+      : lostItem;
+    string += `${itemInfo.emoji ? `${itemInfo.emoji} ` : ``}**${itemInfo.name}${itemInfo.key ? `` : ` // x ${item.quantity}`}**`;
+    string += `> ${itemInfo.description}\n`;
+  }
+  const cat = catalogue.categories[category];
+  const embed = new EmbedBuilder();
+  embed.setColor(characterHelper.houseData[person.house]!.hexcode)
+  embed.setTitle(`${person.name}'s Inventory | ${cat?.name ?? lostCategory.name}`);
+  embed.setDescription(`-# ${cat?.description ?? lostCategory.description}
+${string == `` ? `Nothing to see here!` : string}`);
+
+  const row = new ActionRowBuilder<ButtonBuilder>()
+  for (const [key, value] of Object.entries(catalogue.categories)) {
+    row.addComponents(
+      new ButtonBuilder()
+        .setCustomId(`adminInventory:${id}:${character}:${key}`)
+        .setLabel(`${value.name}`)
+        .setStyle(ButtonStyle.Primary)
+    )
+  }
+  return {
+    embeds: [embed],
+    components: [row]
+  };
 }
 
 export function getInventoryPage(category: number) {
