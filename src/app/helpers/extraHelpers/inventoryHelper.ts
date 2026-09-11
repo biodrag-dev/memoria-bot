@@ -3,7 +3,12 @@ import path from "path";
 
 const jsonsPath = path.resolve(__dirname, "../../../jsons");
 import * as characterHelper from "../characterHelper";
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder,
+} from "discord.js";
 
 interface item {
   name: string;
@@ -62,7 +67,11 @@ export function getCategories() {
   }));
 }
 
-export function createCategory(name: string, description: string, display: boolean) {
+export function createCategory(
+  name: string,
+  description: string,
+  display: boolean,
+) {
   catalogue.categories[catalogue.currentCatCount] = {
     name,
     description,
@@ -82,8 +91,9 @@ export function deleteCategory(id: number) {
 
 export function editCategory(
   id: number,
-  name: string | undefined,
-  desc: string | undefined,
+  name: string | null,
+  desc: string | null,
+  display: boolean | null,
 ) {
   if (!catalogue.categories[catalogue.currentCatCount]) {
     return;
@@ -93,6 +103,9 @@ export function editCategory(
   }
   if (desc) {
     catalogue.categories[catalogue.currentCatCount]!.description = desc;
+  }
+  if (display != undefined) {
+    catalogue.categories[catalogue.currentCatCount]!.display = display;
   }
   saveItems();
 }
@@ -104,10 +117,11 @@ export function getAllItemIds() {
     for (const [itemId, item] of Object.entries(catalogueItems)) {
       items.push({
         value: `${categoryId}:${itemId}`,
-        name: `${(catalogue.categories[Number(categoryId)]?.name ?? lostCategory.name)} | ${item.name}`
-      })
+        name: `${catalogue.categories[Number(categoryId)]?.name ?? lostCategory.name} | ${item.name}`,
+      });
     }
   }
+  return items;
 }
 
 export function addItemToInventory(
@@ -169,7 +183,7 @@ export function createItem(
   emoji: string | undefined,
   usable: boolean,
   price: number,
-  key: boolean
+  key: boolean,
 ) {
   if (!catalogue.items[category]) {
     return;
@@ -211,28 +225,29 @@ export function getCharacterInventoryItems(
   }
   const cat = catalogue.categories[category];
   const embed = new EmbedBuilder();
-  embed.setColor(characterHelper.houseData[person.house]!.hexcode)
-  embed.setTitle(`${person.name}'s Inventory | ${cat?.name ?? lostCategory.name}`);
+  embed.setColor(characterHelper.houseData[person.house]!.hexcode);
+  embed.setTitle(
+    `${person.name}'s Inventory | ${cat?.name ?? lostCategory.name}`,
+  );
   embed.setDescription(`-# ${cat?.description ?? lostCategory.description}
 ${string == `` ? `Nothing to see here!` : string}`);
 
-  const row = new ActionRowBuilder<ButtonBuilder>()
+  const row = new ActionRowBuilder<ButtonBuilder>();
   for (const [key, value] of Object.entries(catalogue.categories)) {
     if (value.display === true) {
       row.addComponents(
         new ButtonBuilder()
           .setCustomId(`inventory:${id}:${character}:${key}`)
           .setLabel(`${value.name}`)
-          .setStyle(ButtonStyle.Primary)
-      )
+          .setStyle(ButtonStyle.Primary),
+      );
     }
   }
   return {
     embeds: [embed],
-    components: [row]
+    components: [row],
   };
 }
-
 
 export function getCharacterInventoryAdminView(
   id: string,
@@ -258,23 +273,25 @@ export function getCharacterInventoryAdminView(
   }
   const cat = catalogue.categories[category];
   const embed = new EmbedBuilder();
-  embed.setColor(characterHelper.houseData[person.house]!.hexcode)
-  embed.setTitle(`${person.name}'s Inventory | ${cat?.name ?? lostCategory.name}`);
+  embed.setColor(characterHelper.houseData[person.house]!.hexcode);
+  embed.setTitle(
+    `${person.name}'s Inventory | ${cat?.name ?? lostCategory.name}`,
+  );
   embed.setDescription(`-# ${cat?.description ?? lostCategory.description}
 ${string == `` ? `Nothing to see here!` : string}`);
 
-  const row = new ActionRowBuilder<ButtonBuilder>()
+  const row = new ActionRowBuilder<ButtonBuilder>();
   for (const [key, value] of Object.entries(catalogue.categories)) {
     row.addComponents(
       new ButtonBuilder()
         .setCustomId(`adminInventory:${id}:${character}:${key}`)
         .setLabel(`${value.name}`)
-        .setStyle(ButtonStyle.Primary)
-    )
+        .setStyle(ButtonStyle.Primary),
+    );
   }
   return {
     embeds: [embed],
-    components: [row]
+    components: [row],
   };
 }
 
