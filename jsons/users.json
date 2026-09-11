@@ -1,1 +1,39 @@
-{}
+{
+  "1074503972037075054": {
+    "characters": {
+      "Anrui Tian": {
+        "name": "Anrui Tian",
+        "house": "Victini",
+        "badges": [],
+        "registeredOn": "2026-09-11T18:58:49.349Z",
+        "destination": "eevee",
+        "partner": {
+          "exp": 125,
+          "shiny": false,
+          "species": "eevee",
+          "learnedMoves": {
+            "sand-attack": "Sand Attack",
+            "tackle": "Tackle",
+            "tail-whip": "Tail Whip",
+            "growl": "Growl",
+            "helping-hand": "Helping Hand",
+            "covet": "Covet"
+          },
+          "specialMoves": {},
+          "sizeMult": 0.9172885279646685
+        },
+        "docLink": "STAFF NPC",
+        "optional": {},
+        "balance": 1000,
+        "inventory": [
+          {
+            "quantity": 21,
+            "id": 0,
+            "category": 0
+          }
+        ],
+        "thread_id": "1548045162952007827"
+      }
+    }
+  }
+}

@@ -2,16 +2,22 @@ import type { EventHandler } from "commandkit";
 import { Logger } from "commandkit/logger";
 import { startScheduler } from "../../../scheduler.js";
 import * as embedHelper from "../../helpers/embedHelper";
+import * as inventoryHelper from "../../helpers/extraHelpers/inventoryHelper.js";
 
 const handler: EventHandler<"clientReady"> = async (client) => {
   startScheduler(client);
   await embedHelper.updateAllEmbeds(client);
   client.user.setActivity({ name: "Watching over the Archives..." });
   client.user.setStatus("idle");
-
-  client.addListener("interactionCreate", (interaction) => (console.log(interaction.customId)))
   Logger.info(`Logged in as ${client.user.username}!`);
 
+  client.addListener("interactionCreate", (interaction) => {
+    if (interaction.isButton()) {
+      console.log(interaction.customId);
+      inventoryHelper.handleAdminInventoryPage(interaction);
+      inventoryHelper.handleCharacterInventoryPage(interaction);
+    }
+  });
 };
 
 export default handler;

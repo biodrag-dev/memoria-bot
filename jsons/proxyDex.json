@@ -1,1 +1,27 @@
-{}
+{
+  "1074503972037075054": {
+    "narrator": {
+      "prefix": "narr:",
+      "msgCount": 0,
+      "nick": "...'s narrator",
+      "isNarrator": true
+    },
+    "proxies": {
+      "Anrui Tian": {
+        "character": {
+          "prefix": "Anrui Tian:",
+          "msgCount": 0,
+          "nick": "Anrui Tian",
+          "isNarrator": false
+        },
+        "partner": {
+          "prefix": "Anrui Tian!partner:",
+          "msgCount": 0,
+          "nick": "Anrui Tian's Eevee",
+          "isNarrator": false
+        },
+        "expDebt": 0
+      }
+    }
+  }
+}

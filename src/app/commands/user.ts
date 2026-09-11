@@ -3,7 +3,8 @@ import type {
   CommandData,
   CommandMetadata,
 } from "commandkit";
-import { ColorResolvable, EmbedBuilder, TextChannel } from "discord.js";
+import { ColorResolvable, EmbedBuilder, InteractionReplyOptions, TextChannel } from "discord.js";
+const DEFAULT_CATEGORY = 0;
 
 import {
   ApplicationCommandOptionType,
@@ -391,7 +392,8 @@ export const command: CommandData = {
             },
             {
               name: "item",
-              description: "Which item in the character's inventory are you using?",
+              description:
+                "Which item in the character's inventory are you using?",
               type: ApplicationCommandOptionType.String,
               required: true,
               autocomplete: true,
@@ -478,9 +480,8 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   const sub = interaction.options.getSubcommand();
   if (group === "inventory") {
     if (sub === "view") {
-      inventoryHelper.getInventoryPage(0);
-    }else if (sub === "use"){
-      
+      return interaction.reply(inventoryHelper.getCharacterInventoryItems(interaction.user.id, interaction.options.getString("name", true), DEFAULT_CATEGORY) as InteractionReplyOptions);
+    } else if (sub === "use") {
     }
   }
   if (group === "proxy") {

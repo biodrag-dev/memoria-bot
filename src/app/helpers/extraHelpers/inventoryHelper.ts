@@ -7,7 +7,14 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  Client,
   EmbedBuilder,
+  Interaction,
+  InteractionReplyOptions,
+  MessageEditOptions,
+  MessageReplyOptions,
+  PermissionFlagsBits,
+  TextChannel,
 } from "discord.js";
 
 interface item {
@@ -60,6 +67,27 @@ function saveItems() {
   );
 }
 
+export async function itemInventoryGiftNotification(
+  client: Client,
+  id: string,
+  character: string,
+  amount: number,
+  category: number,
+  itemid: number,
+) {
+  const channel = (await client.channels.fetch(
+    `${process.env.IRP_NOTIFICATIONS}`,
+  )) as TextChannel;
+  const item = (catalogue.items[category]![itemid] ?? lostItem);
+  const embed = new EmbedBuilder();
+  embed
+    .setDescription(
+      `**${character}** recieved ${item.emoji ?? ``} **${item.name}** x**${amount}**!`,
+    )
+    .setColor("Greyple");
+  channel.send({ content: `<@${id}>`, embeds: [embed] });
+}
+
 export function getCategories() {
   return Object.entries(catalogue.categories).map(([key, value]) => ({
     value: `${key}`,
@@ -83,6 +111,10 @@ export function createCategory(
   saveItems();
 }
 
+export function deleteItem(category: number, id: number) {
+  delete catalogue.items[category]![id];
+  saveItems();
+}
 export function deleteCategory(id: number) {
   delete catalogue.categories[id];
   delete catalogue.items[id];
@@ -95,17 +127,53 @@ export function editCategory(
   desc: string | null,
   display: boolean | null,
 ) {
-  if (!catalogue.categories[catalogue.currentCatCount]) {
+  if (!catalogue.categories[id]) {
     return;
   }
   if (name) {
-    catalogue.categories[catalogue.currentCatCount]!.name = name;
+    catalogue.categories[id]!.name = name;
   }
   if (desc) {
-    catalogue.categories[catalogue.currentCatCount]!.description = desc;
+    catalogue.categories[id]!.description = desc;
   }
   if (display != undefined) {
-    catalogue.categories[catalogue.currentCatCount]!.display = display;
+    catalogue.categories[id]!.display = display;
+  }
+  saveItems();
+}
+
+export function editItem(
+  category: number,
+  itemId: number,
+  name: string | null,
+  description: string | null,
+  emoji: string | null,
+  usable: boolean | null,
+  price: number | null,
+  key: boolean | null,
+) {
+  const item = catalogue.items[category]![itemId]!;
+  if (name) {
+    item.name = name;
+  }
+  if (description) {
+    item.description = description;
+  }
+  if (emoji) {
+    item.name = emoji;
+  }
+  if (usable == true) {
+    item.usable = true;
+  } else if (usable == false) {
+    item.usable = false;
+  }
+  if (price) {
+    item.price = price;
+  }
+  if (key == true) {
+    item.key = true;
+  } else if (key == false) {
+    item.key = false;
   }
   saveItems();
 }
@@ -146,6 +214,12 @@ export function addItemToInventory(
     if (person.inventory[itemIndex]!.quantity <= 0) {
       person.inventory.splice(itemIndex, 1);
     }
+  } else {
+    person.inventory.push({
+      quantity: amount,
+      id: itemId,
+      category: category,
+    });
   }
   characterHelper.saveUsersExternal(users);
 }
@@ -156,6 +230,7 @@ export function setItemInInventory(
   category: number,
   itemId: number,
   amount: number,
+  isSetting: boolean,
 ) {
   const users = characterHelper.getUsers();
   const person = users[id]?.characters[character];
@@ -171,11 +246,19 @@ export function setItemInInventory(
     if (amount <= 0) {
       person.inventory.splice(itemIndex, 1);
     } else {
-      person.inventory[itemIndex]!.quantity = amount;
+      person.inventory[itemIndex]!.quantity =
+        amount + (isSetting ? 0 : person.inventory[itemIndex]!.quantity);
     }
+  } else {
+    person.inventory.push({
+      quantity: amount,
+      id: itemId,
+      category: category,
+    });
   }
   characterHelper.saveUsersExternal(users);
 }
+
 export function createItem(
   category: number,
   name: string,
@@ -205,12 +288,16 @@ export function getCharacterInventoryItems(
   id: string,
   character: string,
   category: number,
-) {
+): InteractionReplyOptions | MessageEditOptions {
   const users = characterHelper.getUsers();
   const person = users[id]?.characters[character];
 
   if (!person) {
-    return;
+    return {
+      embeds: [
+        new EmbedBuilder().setDescription("Character could not be found!"),
+      ],
+    };
   }
 
   const items = person.inventory.filter((item) => item.category == category);
@@ -220,8 +307,8 @@ export function getCharacterInventoryItems(
     const itemInfo: item = categoryInfo
       ? (categoryInfo[item.id] ?? lostItem)
       : lostItem;
-    string += `${itemInfo.emoji ? `${itemInfo.emoji} ` : ``}**${itemInfo.name}${itemInfo.key ? `` : ` // x ${item.quantity}`}**`;
-    string += `> ${itemInfo.description}\n`;
+    string += `${itemInfo.emoji ? `${itemInfo.emoji} ` : ``}**${itemInfo.name}${itemInfo.key == true ? `` : ` // x${item.quantity}`}**`;
+    string += `\n> ${itemInfo.description}\n`;
   }
   const cat = catalogue.categories[category];
   const embed = new EmbedBuilder();
@@ -239,7 +326,11 @@ ${string == `` ? `Nothing to see here!` : string}`);
         new ButtonBuilder()
           .setCustomId(`inventory:${id}:${character}:${key}`)
           .setLabel(`${value.name}`)
-          .setStyle(ButtonStyle.Primary),
+          .setStyle(
+            Number(key) == category
+              ? ButtonStyle.Primary
+              : ButtonStyle.Secondary,
+          ),
       );
     }
   }
@@ -249,44 +340,30 @@ ${string == `` ? `Nothing to see here!` : string}`);
   };
 }
 
-export function getCharacterInventoryAdminView(
-  id: string,
-  character: string,
+export function getInventoryPage(
   category: number,
-) {
-  const users = characterHelper.getUsers();
-  const person = users[id]?.characters[character];
-
-  if (!person) {
-    return;
-  }
-
-  const items = person.inventory.filter((item) => item.category == category);
+): InteractionReplyOptions | MessageEditOptions {
   var string = ``;
-  const categoryInfo = catalogue.items[category];
-  for (const item of items) {
-    const itemInfo: item = categoryInfo
-      ? (categoryInfo[item.id] ?? lostItem)
-      : lostItem;
-    string += `${itemInfo.emoji ? `${itemInfo.emoji} ` : ``}**${itemInfo.name}${itemInfo.key ? `` : ` // x ${item.quantity}`}**`;
-    string += `> ${itemInfo.description}\n`;
+  for (const item of Object.values(catalogue.items[category] ?? lostCategory)) {
+    const itemInfo: item = item;
+    string += `${itemInfo.emoji ? `${itemInfo.emoji} ` : ``}**${itemInfo.name}${itemInfo.price != 0 ? ` // ₽${itemInfo.price}` : ``}**`;
+    string += `\n> -# **usable?** | ${itemInfo.usable}`;
+    string += `\n> ${itemInfo.description}\n`;
   }
   const cat = catalogue.categories[category];
   const embed = new EmbedBuilder();
-  embed.setColor(characterHelper.houseData[person.house]!.hexcode);
-  embed.setTitle(
-    `${person.name}'s Inventory | ${cat?.name ?? lostCategory.name}`,
-  );
-  embed.setDescription(`-# ${cat?.description ?? lostCategory.description}
+  embed.setTitle(cat?.name ?? "How did you get this category?");
+  embed.setDescription(`-# ${cat?.description ?? "No description listed for category."}\n
 ${string == `` ? `Nothing to see here!` : string}`);
-
   const row = new ActionRowBuilder<ButtonBuilder>();
   for (const [key, value] of Object.entries(catalogue.categories)) {
     row.addComponents(
       new ButtonBuilder()
-        .setCustomId(`adminInventory:${id}:${character}:${key}`)
+        .setCustomId(`adminInventory:${key}`)
         .setLabel(`${value.name}`)
-        .setStyle(ButtonStyle.Primary),
+        .setStyle(
+          Number(key) == category ? ButtonStyle.Primary : ButtonStyle.Secondary,
+        ),
     );
   }
   return {
@@ -295,18 +372,49 @@ ${string == `` ? `Nothing to see here!` : string}`);
   };
 }
 
-export function getInventoryPage(category: number) {
-  var string = ``;
-  for (const item of Object.values(category)) {
-    const itemInfo: item = item;
-    string += `${itemInfo.emoji ? `${itemInfo.emoji} ` : ``}**${itemInfo.name}${itemInfo.price != 0 ? ` // ₽${itemInfo.price}` : ``}**`;
-    string += `> -# usable | ${itemInfo.usable}`;
-    string += `> ${itemInfo.description}\n`;
+export async function handleAdminInventoryPage(interaction: Interaction) {
+  if (!interaction.isButton()) return;
+
+  const [key, page] = interaction.customId.split(":");
+
+  if (key != "adminInventory") {
+    return;
+  } else if (
+    !interaction.memberPermissions?.has(PermissionFlagsBits.Administrator)
+  ) {
+    return interaction.reply({
+      content: `Spoilers~ You're not supposed to be looking at that!`,
+      ephemeral: true,
+    });
   }
-  const cat = catalogue.categories[category];
-  const embed = new EmbedBuilder();
-  embed.setTitle(cat?.name ?? "How did you get this category?");
-  embed.setDescription(`-# ${cat?.description ?? "No description listed for category."}
-${string == `` ? `Nothing to see here!` : string}`);
-  return embed;
+  await interaction.deferUpdate();
+  interaction.message.edit(
+    getInventoryPage(Number(page)) as MessageEditOptions,
+  );
+}
+
+export async function handleCharacterInventoryPage(interaction: Interaction) {
+  if (!interaction.isButton()) return;
+
+  const [key, id, character, page] = interaction.customId.split(":");
+
+  if (key != "inventory") {
+    return;
+  } else if (
+    id != interaction.user.id &&
+    !interaction.memberPermissions?.has(PermissionFlagsBits.Administrator)
+  ) {
+    return interaction.reply({
+      content: `It's rude to rifle through other people's things, you know?`,
+      ephemeral: true,
+    });
+  }
+  await interaction.deferUpdate();
+  interaction.message.edit(
+    getCharacterInventoryItems(
+      id!,
+      character!,
+      Number(page),
+    ) as MessageEditOptions,
+  );
 }

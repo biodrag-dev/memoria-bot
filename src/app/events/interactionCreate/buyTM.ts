@@ -5,11 +5,9 @@ export default async function handleQuizInteraction(interaction: any) {
     if (!interaction.isStringSelectMenu()) return;
 
     const ids = interaction.customId.split(":");
-
     if (ids[0] != "buy" || ids[1] != "tm") {
         return;
     }
-
 
     if (interaction.member.id != ids[2]) {
         await interaction.reply({
@@ -19,7 +17,6 @@ export default async function handleQuizInteraction(interaction: any) {
         });
         return;
     }
-
 
     const [charaName, moveName, moveID, price] = interaction.values[0].split(":");
     const character = await characterHelper.getCharacter(interaction.user.id, charaName)
