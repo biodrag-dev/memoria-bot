@@ -3,7 +3,13 @@ import type {
   CommandData,
   CommandMetadata,
 } from "commandkit";
-import { ColorResolvable, EmbedBuilder, InteractionReplyOptions, TextChannel } from "discord.js";
+import {
+  ColorResolvable,
+  EmbedBuilder,
+  InteractionEditReplyOptions,
+  InteractionReplyOptions,
+  TextChannel,
+} from "discord.js";
 const DEFAULT_CATEGORY = 0;
 
 import {
@@ -410,6 +416,14 @@ export const autocomplete = async (ctx: any) => {
   const focused = interaction.options.getFocused(true);
   const names = characterHelper.getCharacterNames(interaction.user.id);
 
+  if (focused.name == "item") {
+    return await interaction.respond(
+      inventoryHelper.getUsableCharacterItems(
+        interaction.user.id,
+        interaction.options.getString("name", true),
+      ),
+    );
+  }
   if (
     interaction.options.getSubcommandGroup() == "proxy" &&
     focused.name == "name"
@@ -480,7 +494,13 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   const sub = interaction.options.getSubcommand();
   if (group === "inventory") {
     if (sub === "view") {
-      return interaction.reply(inventoryHelper.getCharacterInventoryItems(interaction.user.id, interaction.options.getString("name", true), DEFAULT_CATEGORY) as InteractionReplyOptions);
+      return interaction.reply(
+        inventoryHelper.getCharacterInventoryItems(
+          interaction.user.id,
+          interaction.options.getString("name", true),
+          DEFAULT_CATEGORY,
+        ) as InteractionReplyOptions,
+      );
     } else if (sub === "use") {
     }
   }
@@ -788,12 +808,13 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   } else if (sub === "shop") {
     await interaction.deferReply();
 
-    return interaction.editReply(
-      await tmHelper.getStoreFront(
-        interaction.user.id,
-        interaction.options.getString("name", true),
-      ),
+    const result = await inventoryHelper.getStoreEntry(
+      interaction.user.id,
+      interaction.options.getString("name", true),
+      -1,
     );
+    console.log(result);
+    return interaction.editReply(result as InteractionEditReplyOptions);
   } else if (sub === "balance") {
     return interaction.reply({
       embeds: [

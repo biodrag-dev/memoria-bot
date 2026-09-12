@@ -13,9 +13,10 @@ const handler: EventHandler<"messageCreate"> = async (message) => {
   if (message.channel.id !== process.env.VERIFY_CHANNEL) return;
 
   if (!message.content.trim().toLowerCase().includes(KEYWORD)) {
+    message.react("❌");
     setTimeout(() => {
       message.delete().catch(() => {});
-    }, 30_000);
+    }, 5_000);
   } else {
     const member = await message.guild.members.fetch(message.author.id);
 

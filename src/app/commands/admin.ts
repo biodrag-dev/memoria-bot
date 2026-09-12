@@ -18,13 +18,12 @@ import * as pokeHelper from "../helpers/pokeHelper";
 import * as embedHelper from "../helpers/embedHelper";
 import * as proxyHelper from "../helpers/proxyHelper";
 import * as qotdHelper from "../helpers/qotdHelper";
-import * as inventoryHelper from "../helpers/extraHelpers/inventoryHelper";
+import * as tmHelper from "../helpers/tmHelper";
 
 import { EmbedBuilder } from "discord.js";
 
 export const metadata: CommandMetadata = {
   guilds: [`${process.env.GUILD_ID}`],
-  
 };
 
 const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -47,6 +46,33 @@ export const command: CommandData = {
 
   contexts: [InteractionContextType.Guild],
   options: [
+    {
+      name: "tutor",
+      description: "Teaches a partner a certain move!",
+      type: ApplicationCommandOptionType.Subcommand,
+      options: [
+        {
+          name: "roleplayer",
+          description: "Character owner",
+          type: ApplicationCommandOptionType.User,
+          required: true,
+        },
+        {
+          name: "character",
+          description: "Character name",
+          type: ApplicationCommandOptionType.String,
+          required: true,
+          autocomplete: true,
+        },
+        {
+          name: "move",
+          description: "Which move are you editing?",
+          type: ApplicationCommandOptionType.String,
+          required: true,
+          autocomplete: true,
+        },
+      ],
+    },
     {
       name: "edit",
       description: "Edit a character",
@@ -109,7 +135,7 @@ export const command: CommandData = {
               required: true,
               autocomplete: true,
             },
-          ]
+          ],
         },
         {
           name: "add",
@@ -136,7 +162,7 @@ export const command: CommandData = {
               type: ApplicationCommandOptionType.Integer,
               required: true,
             },
-          ]
+          ],
         },
         {
           name: "set",
@@ -162,7 +188,66 @@ export const command: CommandData = {
               type: ApplicationCommandOptionType.Integer,
               required: true,
             },
-          ]
+          ],
+        },
+      ],
+    },
+    {
+      name: "experience",
+      description: "Character experience",
+      type: ApplicationCommandOptionType.SubcommandGroup,
+      options: [
+        {
+          name: "set",
+          description: "set experience amount",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "roleplayer",
+              description: "Character owner",
+              type: ApplicationCommandOptionType.User,
+              required: true,
+            },
+            {
+              name: "character",
+              description: "Character name",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+              autocomplete: true,
+            },
+            {
+              name: "amount",
+              description: "amount of experience to set",
+              type: ApplicationCommandOptionType.Integer,
+              required: true,
+            },
+          ],
+        },
+        {
+          name: "add",
+          description: "add experience amount",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "roleplayer",
+              description: "Character owner",
+              type: ApplicationCommandOptionType.User,
+              required: true,
+            },
+            {
+              name: "character",
+              description: "Character name",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+              autocomplete: true,
+            },
+            {
+              name: "amount",
+              description: "How much are you changing the value by?",
+              type: ApplicationCommandOptionType.Integer,
+              required: true,
+            },
+          ],
         },
       ],
     },
@@ -276,14 +361,14 @@ export const command: CommandData = {
               required: true,
               autocomplete: true,
             },
-          ]
+          ],
         },
         {
           name: "force",
           description: "forces a qotd",
           type: ApplicationCommandOptionType.Subcommand,
         },
-      ]
+      ],
     },
   ],
 };
@@ -295,6 +380,20 @@ export const autocomplete = async (ctx: any) => {
   const sub = interaction.options.getSubcommand();
   const group = interaction.options.getSubcommandGroup();
 
+  if (sub == "tutor" && focused.name == "move") {
+    const filtered = tmHelper.moves
+      .filter((name: string) =>
+        name.toLowerCase().startsWith(focused.value.toLowerCase()),
+      )
+      .slice(0, 25);
+
+    return await interaction.respond(
+      filtered.map((name: string) => ({
+        name,
+        value: name,
+      })),
+    );
+  }
   if (group == "qotd" && sub == "remove") {
     return await interaction.respond(qotdHelper.getIndexToRemove());
   }
@@ -351,38 +450,66 @@ export const chatInput: ChatInputCommand = async (ctx) => {
       ephemeral: true,
     });
   }
+  const roleplayer = interaction.options.getUser("roleplayer");
+  const charaName = interaction.options.getString("character");
 
   const group = interaction.options.getSubcommandGroup(false);
   const sub = interaction.options.getSubcommand();
+
+  if (sub == "tutor") {
+    characterHelper.teachMove(
+      interaction.client,
+      roleplayer!.id,
+      charaName!,
+      interaction.options.getString("move", true),
+    );
+    return interaction.reply({
+      embeds: [
+        new EmbedBuilder().setColor("Green").setDescription("Move taught!"),
+      ],
+    });
+  }
 
   if (group == "qotd") {
     if (sub == "queue") {
       return interaction.reply({ embeds: [qotdHelper.getQueue()] });
     } else if (sub == "remove") {
-      qotdHelper.removeIndex(Number.parseInt(interaction.options.getString("index", true)));
-      return interaction.reply({ embeds: [new EmbedBuilder().setColor("Red").setDescription("QOTD removed successfully!")] });
+      qotdHelper.removeIndex(
+        Number.parseInt(interaction.options.getString("index", true)),
+      );
+      return interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor("Red")
+            .setDescription("QOTD removed successfully!"),
+        ],
+      });
     } else if (sub == "force") {
       qotdHelper.sendQuestion(interaction.client);
-      return interaction.reply({ embeds: [new EmbedBuilder().setColor("Green").setDescription("QOTD forced!")] });
+      return interaction.reply({
+        embeds: [
+          new EmbedBuilder().setColor("Green").setDescription("QOTD forced!"),
+        ],
+      });
     }
     return;
   }
   if (sub === "edit") {
     await characterHelper.editCharacter(
-      interaction.options.getUser("roleplayer")!.id,
-      interaction.options.getString("character", true),
+      roleplayer!.id,
+      charaName!,
       interaction.options.getString("field", true),
       interaction.options.getString("data", true),
     );
 
     const embed = await characterHelper.getCharacterEmbed(
-      interaction.options.getUser("roleplayer")!.id,
-      interaction.options.getString("character", true),
+      roleplayer!.id,
+      charaName!,
     );
 
     characterHelper.updateCharaForumPost(
-      interaction.options.getUser("roleplayer")!.id,
-      interaction.options.getString("character", true),
+      roleplayer!.id,
+      charaName!,
       interaction.client,
     );
 
@@ -415,8 +542,8 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   if (sub === "toggle-badge") {
     const badge = await characterHelper.toggleBadge(
       interaction.client,
-      interaction.options.getUser("roleplayer", true).id,
-      interaction.options.getString("character", true),
+      roleplayer!.id,
+      charaName!,
       interaction.options.getString("badge", true),
     );
     let embed;
@@ -434,8 +561,8 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         .setColor("Red");
     }
     characterHelper.updateCharaForumPost(
-      interaction.options.getUser("roleplayer")!.id,
-      interaction.options.getString("character", true),
+      roleplayer!.id,
+      charaName!,
       interaction.client,
     );
 
@@ -581,18 +708,44 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   }
   if (group === "balance") {
     if (sub === "add") {
-      characterHelper.changeBalance(interaction.options.getUser("roleplayer", true).id,
+      characterHelper.changeBalance(
+        interaction.options.getUser("roleplayer", true).id,
         interaction.options.getString("character", true),
         interaction.options.getInteger("amount", true),
-      )
+      );
     } else if (sub === "set") {
-      characterHelper.setBalance(interaction.options.getUser("roleplayer", true).id,
+      characterHelper.setBalance(
+        interaction.options.getUser("roleplayer", true).id,
         interaction.options.getString("character", true),
         interaction.options.getInteger("amount", true),
-      )
+      );
     }
     return interaction.reply({
-      embeds: [proxyHelper.balanceEmbed(interaction.options.getUser("roleplayer", true).id, interaction.options.getString("character", true))]
+      embeds: [
+        proxyHelper.balanceEmbed(
+          interaction.options.getUser("roleplayer", true).id,
+          interaction.options.getString("character", true),
+        ),
+      ],
+    });
+  }
+  if (group === "experience") {
+    if (sub === "add" || sub === "set") {
+      characterHelper.changeExperience(
+        interaction.client,
+        interaction.options.getUser("roleplayer", true).id,
+        interaction.options.getString("character", true),
+        interaction.options.getInteger("amount", true),
+        sub == "set",
+      );
+    }
+
+    return interaction.reply({
+      embeds: [
+        new EmbedBuilder().setDescription(
+          `${interaction.options.getInteger("amount", true)} experience ${sub == "set" ? "set" : "added"}!`,
+        ),
+      ],
     });
   }
 };

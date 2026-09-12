@@ -24,15 +24,259 @@
         },
         "docLink": "STAFF NPC",
         "optional": {},
-        "balance": 1000,
+        "balance": 200,
         "inventory": [
           {
-            "quantity": 21,
+            "quantity": 22,
             "id": 0,
             "category": 0
+          },
+          {
+            "quantity": 2,
+            "id": 1,
+            "category": 1
           }
         ],
-        "thread_id": "1548045162952007827"
+        "thread_id": "1548045162952007827",
+        "lastShopped": "2026-09-12T21:38:06.712Z",
+        "shoppingArray": [
+          {
+            "id": 273,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": true
+          },
+          {
+            "id": 213,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": true
+          },
+          {
+            "id": 216,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": true
+          },
+          {
+            "id": 32,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": false,
+            "typeMatch": true
+          },
+          {
+            "id": 141,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": false,
+            "typeMatch": false
+          }
+        ]
+      }
+    },
+    "OocPartner": {
+      "sizeMult": 0.8359173402055677,
+      "registeredOn": "2026-09-11T22:59:04.388Z",
+      "lastInteracted": "2026-09-11T22:59:04.388Z",
+      "gender": "Genderless",
+      "ability": 2,
+      "shiny": true,
+      "species": "victini",
+      "nature": "13",
+      "experience": 1428,
+      "happiness": 65,
+      "prompt": 1,
+      "reset": "2026-09-11T22:59:04.388Z",
+      "canFeed": true,
+      "canPlay": true
+    }
+  },
+  "350614938722500608": {
+    "characters": {
+      "Ruyi Qiu": {
+        "name": "Ruyi Qiu",
+        "house": "Jirachi",
+        "badges": [],
+        "registeredOn": "2026-09-12T01:43:01.552Z",
+        "destination": "aurorus",
+        "partner": {
+          "exp": 532155,
+          "shiny": false,
+          "species": "aurorus",
+          "learnedMoves": {
+            "growl": "Growl",
+            "powder-snow": "Powder Snow",
+            "encore": "Encore",
+            "ancient-power": "Ancient Power",
+            "icy-wind": "Icy Wind",
+            "mist": "Mist",
+            "aurora-beam": "Aurora Beam",
+            "thunder-wave": "Thunder Wave",
+            "round": "Round",
+            "nature-power": "Nature Power",
+            "ice-beam": "Ice Beam",
+            "light-screen": "Light Screen",
+            "freeze-dry": "Freeze-Dry",
+            "blizzard": "Blizzard",
+            "hail": "Hail",
+            "hyper-beam": "Hyper Beam"
+          },
+          "specialMoves": {
+            "earth-power": "Earth Power",
+            "frustration": "Frustration",
+            "rock-polish": "Rock Polish",
+            "smack-down": "Smack Down",
+            "sizzly-slide": "Sizzly Slide",
+            "razor-wind": "Razor Wind",
+            "rock-blast": "Rock Blast",
+            "stealth-rock": "Stealth Rock",
+            "chilling-water": "Chilling Water",
+            "psych-up": "Psych Up",
+            "glaciate": "Glaciate"
+          },
+          "sizeMult": 2
+        },
+        "docLink": "STAFF NPC",
+        "optional": {},
+        "balance": 10070249,
+        "inventory": [],
+        "thread_id": "1548146886085714005",
+        "lastShopped": "2026-09-12T03:37:05.037Z",
+        "shoppingArray": [
+          {
+            "id": 244,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": false
+          },
+          {
+            "id": 886,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": false
+          },
+          {
+            "id": 446,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": true
+          },
+          {
+            "id": 350,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": true
+          },
+          {
+            "id": 13,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": false,
+            "typeMatch": false
+          }
+        ]
+      }
+    }
+  },
+  "723291117302448169": {
+    "characters": {
+      "Liyuan Yin": {
+        "name": "Liyuan Yin",
+        "house": "Mew",
+        "badges": [],
+        "registeredOn": "2026-09-12T02:29:30.907Z",
+        "destination": "raichu-alola",
+        "partner": {
+          "exp": 650125,
+          "shiny": false,
+          "species": "raichu-alola",
+          "learnedMoves": {
+            "tail-whip": "Tail Whip",
+            "growl": "Growl",
+            "thunder-shock": "Thunder Shock",
+            "thunderbolt": "Thunderbolt",
+            "thunder-wave": "Thunder Wave",
+            "thunder": "Thunder",
+            "psychic": "Psychic",
+            "agility": "Agility",
+            "quick-attack": "Quick Attack",
+            "double-team": "Double Team",
+            "light-screen": "Light Screen",
+            "sweet-kiss": "Sweet Kiss",
+            "charm": "Charm",
+            "spark": "Spark",
+            "iron-tail": "Iron Tail",
+            "feint": "Feint",
+            "nasty-plot": "Nasty Plot",
+            "discharge": "Discharge",
+            "electro-ball": "Electro Ball",
+            "play-nice": "Play Nice",
+            "nuzzle": "Nuzzle"
+          },
+          "specialMoves": {
+            "telekinesis": "Telekinesis",
+            "thunder-punch": "Thunder Punch",
+            "eerie-impulse": "Eerie Impulse",
+            "instruct": "Instruct",
+            "dazzling-gleam": "Dazzling Gleam",
+            "laser-focus": "Laser Focus",
+            "magnet-rise": "Magnet Rise",
+            "bolt-beak": "Bolt Beak",
+            "bolt-strike": "Bolt Strike"
+          },
+          "sizeMult": 0.8274542238442766
+        },
+        "docLink": "STAFF NPC",
+        "optional": {},
+        "balance": 10317499,
+        "inventory": [],
+        "thread_id": "1548158587908395092",
+        "lastShopped": "2026-09-12T03:50:05.855Z",
+        "shoppingArray": [
+          {
+            "id": 605,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": false
+          },
+          {
+            "id": 673,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": false
+          },
+          {
+            "id": 598,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": true
+          },
+          {
+            "id": 393,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": true
+          },
+          {
+            "id": 754,
+            "legendary": false,
+            "signature": true,
+            "learnedMoves": false,
+            "typeMatch": true
+          }
+        ]
       }
     }
   }

@@ -8,6 +8,7 @@ interface QuizSession {
   questionIndex: number;
   types: Record<PokemonType, number>;
 }
+import * as partnerHelper from "./partnerHelper";
 
 export const sessions = new Map<string, QuizSession>();
 
@@ -128,6 +129,56 @@ export function getResults(id: string) {
 
   return [sortedResults[0]!.id, sortedResults[1]!.id, sortedResults[2]!.id];
 }
+
+export async function starterQuizHandler(interaction: any) {
+  if (!interaction.isStringSelectMenu()) return;
+
+  const ids = interaction.customId.split(":");
+
+  if (ids[0] != "starter_quiz") {
+    return;
+  }
+
+  const session = getSession(ids[1]);
+
+  if (!session) {
+    return interaction.reply({
+      content: `You don't have an active quiz.`,
+      ephemeral: true,
+    });
+  }
+  // Prevent old dropdowns from being used
+  if (Number(ids[2]) !== session.questionIndex) {
+    return interaction.reply({
+      content: `That question has already been answered.`,
+      ephemeral: true,
+    });
+  }
+
+  interaction.deferReply();
+  const answer = interaction.values[0];
+
+  submitQuestion(interaction.user.id, answer);
+
+  // Finished?
+  if (ids[2] >= 9) {
+    const results = getResults(interaction.user.id);
+    await partnerHelper.generateChoices(
+      interaction.user.id,
+      results[0]!,
+      results[1]!,
+      results[2]!,
+    );
+    return await interaction.update(
+      await partnerHelper.getProspects(interaction.user.id),
+    );
+  }
+
+  await interaction.update(
+    createQuestionMessage(interaction.user.id),
+  );
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //    QUIZ QUESTIONS

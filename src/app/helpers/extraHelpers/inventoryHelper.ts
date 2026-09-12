@@ -3,6 +3,8 @@ import path from "path";
 
 const jsonsPath = path.resolve(__dirname, "../../../jsons");
 import * as characterHelper from "../characterHelper";
+import * as tmHelper from "../tmHelper";
+
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -14,6 +16,7 @@ import {
   MessageEditOptions,
   MessageReplyOptions,
   PermissionFlagsBits,
+  StringSelectMenuBuilder,
   TextChannel,
 } from "discord.js";
 
@@ -78,7 +81,7 @@ export async function itemInventoryGiftNotification(
   const channel = (await client.channels.fetch(
     `${process.env.IRP_NOTIFICATIONS}`,
   )) as TextChannel;
-  const item = (catalogue.items[category]![itemid] ?? lostItem);
+  const item = catalogue.items[category]![itemid] ?? lostItem;
   const embed = new EmbedBuilder();
   embed
     .setDescription(
@@ -176,6 +179,28 @@ export function editItem(
     item.key = false;
   }
   saveItems();
+}
+
+export function getUsableCharacterItems(id: string, character: string) {
+  const items = [];
+  const users = characterHelper.getUsers();
+  const person = users[id]?.characters[character];
+
+  if (!person) {
+    return [];
+  }
+
+  for (const item of person.inventory) {
+    const itemInfo = catalogue.items[item.category]?.[item.id] ?? lostItem;
+    if (itemInfo.usable) {
+      items.push({
+        value: `${item.category}:${item.id}`,
+        name: `${itemInfo.name} | x${item.quantity}`,
+      });
+    }
+  }
+
+  return items;
 }
 
 export function getAllItemIds() {
@@ -416,5 +441,139 @@ export async function handleCharacterInventoryPage(interaction: Interaction) {
       character!,
       Number(page),
     ) as MessageEditOptions,
+  );
+}
+
+/////////////////////////////////////////////////////////////
+//  STORE HELPERS
+/////////////////////////////////////////////////////////////
+
+export function getPrice(category: number, item: number){
+    const I = catalogue.items[category] ? catalogue.items[category]![item] ?? lostItem : lostItem;
+    return I.price;
+}
+
+export async function getStoreEntry(
+  id: string,
+  character: string,
+  category: number,
+) {
+  const users = characterHelper.getUsers();
+  const person = users[id]?.characters[character];
+
+  if (!person) {
+    return {
+      embeds: [
+        new EmbedBuilder().setDescription("Character could not be found!"),
+      ],
+    };
+  }
+
+  //tm shop page
+  if (category == -1) {
+    return await tmStoreEntry(id, character);
+  }
+
+  const purchases = new ActionRowBuilder<StringSelectMenuBuilder>();
+  const menu = new StringSelectMenuBuilder();
+  menu.setCustomId(`buy:item:${id}:${character}:${category}`);
+
+  var string = ``;
+  const categoryInfo = catalogue.items[category];
+  if (categoryInfo) {
+    for (const [itemid, item] of Object.entries(categoryInfo)) {
+      if (item.price > 0) {
+        string += `${item.emoji ?? ``}**${item.name} // ₽${item.price}**`;
+        string += `\n> ${item.description}\n`;
+
+        if (item.price <= person.balance) {
+          menu.addOptions({
+            label: `${item.name} | ₽${item.price}`,
+            value: `${itemid}`,
+            emoji: item.emoji,
+          });
+        }
+      }
+    }
+  }
+
+  const cat = catalogue.categories[category];
+  const embed = new EmbedBuilder();
+  embed.setColor(characterHelper.houseData[person.house]!.hexcode);
+  embed.setTitle(`${person.name}'s Store | ${cat?.name ?? lostCategory.name}`);
+  embed.setImage(
+    "https://www.brycekho.com/uploads/2/5/0/8/25083559/11x17-psyduck-shiny.jpg",
+  );
+  embed.setFooter({
+    text: `${person.name}'s balance: ₽${person.balance} | banner by brycekhodraws on twitter`,
+  });
+  embed.setDescription(`-# ${cat?.description ?? lostCategory.description}
+${string == `` ? `Nothing to see here!` : string}`);
+  if (menu.options.length > 0) {
+    purchases.addComponents(menu);
+  }
+  const row = getStorePageButtons(id, character, category);
+  return {
+    embeds: [embed],
+    components: menu.options.length > 0 ? [purchases, row] : [row],
+  };
+}
+
+export async function tmStoreEntry(id: string, character: string) {
+  const entry = await tmHelper.getStoreFront(id, character);
+
+  entry.components.push(getStorePageButtons(id, character, -1));
+  return entry;
+}
+
+export function getStorePageButtons(
+  id: string,
+  character: string,
+  category: number,
+) {
+  const row = new ActionRowBuilder<ButtonBuilder>();
+  row.addComponents(
+    new ButtonBuilder()
+      .setCustomId(`shop:${id}:${character}:${-1}`)
+      .setLabel(`TMs`)
+      .setStyle(-1 == category ? ButtonStyle.Primary : ButtonStyle.Secondary),
+  );
+  for (const [key, value] of Object.entries(catalogue.categories)) {
+    if (value.display === true) {
+      row.addComponents(
+        new ButtonBuilder()
+          .setCustomId(`shop:${id}:${character}:${key}`)
+          .setLabel(`${value.name}`)
+          .setStyle(
+            Number(key) == category
+              ? ButtonStyle.Primary
+              : ButtonStyle.Secondary,
+          ),
+      );
+    }
+  }
+  return row;
+}
+
+export async function handleShopPage(interaction: Interaction) {
+  if (!interaction.isButton()) return;
+
+  const [key, id, character, page] = interaction.customId.split(":");
+
+  if (key != "shop") {
+    return;
+  } else if (
+    id != interaction.user.id &&
+    !interaction.memberPermissions?.has(PermissionFlagsBits.Administrator)
+  ) {
+    return interaction.reply({
+      content: `This isn't your store. Use **/character shop** to view the daily personalized TMs available to your OCs!`,
+      ephemeral: true,
+    });
+  }
+  await interaction.deferUpdate();
+
+  interaction.message.edit(
+    (await getStoreEntry(id!, character!, Number(page))) as MessageEditOptions,
   );
 }

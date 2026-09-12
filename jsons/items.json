@@ -1,6 +1,6 @@
 {
   "currentCatCount": 3,
-  "currentItemCount": 1,
+  "currentItemCount": 5,
   "categories": {
     "0": {
       "name": "General",
@@ -22,13 +22,43 @@
     "0": {
       "0": {
         "name": "Glimmering Stone",
-        "description": "A stone said to change the coloration of your partner Pokemon. It's valuable, but because of that, there are plenty of duds on the market... Why not try your hand at it while you're here, though? (Rerolls shiny status out of a d20)",
+        "description": "A stone said to change the coloration of your partner Pokemon. Real ones are valuable, but because of that, there are plenty of duds and counterfeits on the market... Why not try your hand at it while you're here, though? (Rerolls shiny status out of a d20)",
         "usable": true,
         "price": 1000,
         "key": false
       }
     },
-    "1": {},
-    "2": {}
+    "1": {
+      "1": {
+        "name": "Exp Pass (1-Day)",
+        "description": "Boosts your EXP gain by 1.5x for 24 hours!",
+        "usable": true,
+        "price": 200,
+        "key": true
+      },
+      "2": {
+        "name": "Exp Pass (3-Day)",
+        "description": "Boosts your EXP gain by 1.5x for 3 days!",
+        "usable": true,
+        "price": 500,
+        "key": true
+      },
+      "3": {
+        "name": "Exp Pass (1 Week)",
+        "description": "Boosts your EXP gain by 1.5x for 1 week!",
+        "usable": false,
+        "price": 1000,
+        "key": false
+      }
+    },
+    "2": {
+      "4": {
+        "name": "Victini Plush",
+        "description": "A Victini plush worn to time. The colors are all faded...",
+        "usable": false,
+        "price": 0,
+        "key": false
+      }
+    }
   }
 }

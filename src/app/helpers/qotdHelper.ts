@@ -2,8 +2,7 @@ import fs from "fs";
 import path from "path";
 const jsonsPath = path.resolve(__dirname, "../../../jsons");
 
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Embed, EmbedBuilder, GuildMember, Message, TextChannel, User } from "discord.js";
-import { Url } from "url";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Embed, EmbedBuilder, GuildMember, Interaction, Message, TextChannel, User } from "discord.js";
 
 
 export type questionStatus =
@@ -129,3 +128,15 @@ function getQuestionEmbed(question: Question) {
 // /qotd suggest
 // /admin qotd force
 // /admin qotd view
+
+export async function updateQOTDStatus(interaction: Interaction) {
+    if (!interaction.isButton()) return;
+
+    const [key, id, status] = interaction.customId.split(":");
+
+    if (key != "QOTDsuggest") {
+        return;
+    }
+    const embed = interaction.message.embeds[0]!;
+    updateSuggestionStatus(interaction.message, id!, embed, status as questionStatus);
+}

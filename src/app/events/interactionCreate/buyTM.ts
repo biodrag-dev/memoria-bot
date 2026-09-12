@@ -1,11 +1,10 @@
-import * as partnerHelper from "../../helpers/extraHelpers/partnerHelper";
 import * as characterHelper from "../../helpers/characterHelper";
 
 export default async function handleQuizInteraction(interaction: any) {
     if (!interaction.isStringSelectMenu()) return;
 
     const ids = interaction.customId.split(":");
-    if (ids[0] != "buy" || ids[1] != "tm") {
+    if (ids[0] != "buy" && ids[1] != "tm") {
         return;
     }
 
@@ -44,6 +43,7 @@ export default async function handleQuizInteraction(interaction: any) {
 
     await characterHelper.teachMove(interaction.client, interaction.user.id, charaName, moveName);
     await characterHelper.changeBalance(interaction.user.id, charaName, -price);
+
     interaction.reply({
         content: `Purchase successful!`,
         ephemeral: true,

@@ -1198,6 +1198,56 @@ export function setBalance(id: string, name: string, amount: number) {
   saveUsers();
 }
 
+export async function changeExperience(client: Client, id: string, name: string, amount: number, set: boolean) {
+  const character = charaDex[id]!.characters[name]!;
+
+  const oldExp = character.partner.exp;
+  const newExp = amount + (character.partner.exp * (set == true ? 0 : 1));
+  character.balance += amount * (character.buff?.moneyBuff ?? 1);
+  character.partner.exp = newExp;
+
+  if (oldExp < newExp && increasedLevel(oldExp, newExp)) {
+    const pokemon = await pokehelper.findPokemon(character.partner.species);
+    const learnedMoves = pokehelper.learnedMoves(
+      pokemon!,
+      getLevelFromExp(oldExp),
+      getLevelFromExp(newExp),
+    );
+    const partner = character.partner;
+
+    const channel = (await client.channels.fetch(
+      `${process.env.IRP_NOTIFICATIONS}`,
+    )) as TextChannel;
+    for (const move of learnedMoves) {
+      if ((await knowsMove(id, name, move.move.name)) === false) {
+        character.partner.learnedMoves[move.move.name] =
+          await pokehelper.moveDisplayName(move.move.name);
+
+        const embed = new EmbedBuilder();
+        embed
+          .setTitle("Congratulations!")
+          .setThumbnail(
+            await pokehelper.getSprite(
+              partner.species,
+              partner.gender,
+              partner.shiny,
+            ),
+          )
+          .setFooter({
+            text: `${character.name}'s partner | lv. ${getLevelFromExp(newExp)}`,
+          })
+          .setDescription(
+            `${partner.nickname ?? pokehelper.displayName(partner.species)} learned ${partner.learnedMoves[move.move.name]}!`,
+          )
+          .setColor(houseData[character.house]!.hexcode);
+        channel.send({ content: `<@${id}>`, embeds: [embed] });
+      }
+    }
+    await updateCharaForumPost(id, name, client);
+  }
+  saveUsers();
+}
+
 export async function teachMove(
   client: Client,
   id: string,
@@ -1253,3 +1303,5 @@ export function increasedLevel(oldExp: number, newExp: number) {
 
   return oldLevel != newLevel;
 }
+
+

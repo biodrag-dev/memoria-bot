@@ -2,7 +2,7 @@
   "1074503972037075054": {
     "narrator": {
       "prefix": "narr:",
-      "msgCount": 0,
+      "msgCount": 1,
       "nick": "...'s narrator",
       "isNarrator": true
     },
@@ -18,6 +18,56 @@
           "prefix": "Anrui Tian!partner:",
           "msgCount": 0,
           "nick": "Anrui Tian's Eevee",
+          "isNarrator": false
+        },
+        "expDebt": 0
+      }
+    }
+  },
+  "350614938722500608": {
+    "narrator": {
+      "prefix": "narr:",
+      "msgCount": 0,
+      "nick": "vioria's narrator",
+      "isNarrator": true
+    },
+    "proxies": {
+      "Ruyi Qiu": {
+        "character": {
+          "prefix": "Ruyi Qiu:",
+          "msgCount": 3,
+          "nick": "Ruyi Qiu",
+          "isNarrator": false
+        },
+        "partner": {
+          "prefix": "Ruyi Qiu!partner:",
+          "msgCount": 0,
+          "nick": "Ruyi Qiu's Amaura",
+          "isNarrator": false
+        },
+        "expDebt": 0
+      }
+    }
+  },
+  "723291117302448169": {
+    "narrator": {
+      "prefix": "narr:",
+      "msgCount": 0,
+      "nick": "☆ ki!'s narrator",
+      "isNarrator": true
+    },
+    "proxies": {
+      "Liyuan Yin": {
+        "character": {
+          "prefix": "Liyuan Yin:",
+          "msgCount": 0,
+          "nick": "Liyuan Yin",
+          "isNarrator": false
+        },
+        "partner": {
+          "prefix": "Liyuan Yin!partner:",
+          "msgCount": 0,
+          "nick": "Liyuan Yin's Pichu",
           "isNarrator": false
         },
         "expDebt": 0

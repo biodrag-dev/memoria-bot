@@ -3,6 +3,9 @@ import { Logger } from "commandkit/logger";
 import { startScheduler } from "../../../scheduler.js";
 import * as embedHelper from "../../helpers/embedHelper";
 import * as inventoryHelper from "../../helpers/extraHelpers/inventoryHelper.js";
+import * as qotdHelper from "../../helpers/qotdHelper";
+import * as starterQuizHelper from "../../helpers/extraHelpers/starterQuizHelper";
+import * as partnerHelper from "../../helpers/extraHelpers/partnerHelper";
 
 const handler: EventHandler<"clientReady"> = async (client) => {
   startScheduler(client);
@@ -16,6 +19,17 @@ const handler: EventHandler<"clientReady"> = async (client) => {
       console.log(interaction.customId);
       inventoryHelper.handleAdminInventoryPage(interaction);
       inventoryHelper.handleCharacterInventoryPage(interaction);
+      qotdHelper.updateQOTDStatus(interaction);
+      inventoryHelper.handleShopPage(interaction);
+    }
+  });
+
+  client.addListener("interactionCreate", (interaction) => {
+    if (interaction.isStringSelectMenu()) {
+      console.log(interaction.customId);
+      starterQuizHelper.starterQuizHandler(interaction);
+      partnerHelper.feedPartner(interaction);
+      partnerHelper.evolvePartner(interaction);
     }
   });
 };
