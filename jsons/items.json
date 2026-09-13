@@ -1,6 +1,6 @@
 {
   "currentCatCount": 3,
-  "currentItemCount": 5,
+  "currentItemCount": 8,
   "categories": {
     "0": {
       "name": "General",
@@ -30,23 +30,44 @@
     },
     "1": {
       "1": {
-        "name": "Exp Pass (1-Day)",
+        "name": "Silver Pass (1 Day)",
         "description": "Boosts your EXP gain by 1.5x for 24 hours!",
         "usable": true,
         "price": 200,
-        "key": true
+        "key": false
       },
       "2": {
-        "name": "Exp Pass (3-Day)",
+        "name": "Silver Pass (3 Days)",
         "description": "Boosts your EXP gain by 1.5x for 3 days!",
         "usable": true,
         "price": 500,
-        "key": true
+        "key": false
       },
       "3": {
-        "name": "Exp Pass (1 Week)",
+        "name": "Silver Pass (1 Week)",
         "description": "Boosts your EXP gain by 1.5x for 1 week!",
         "usable": false,
+        "price": 1000,
+        "key": false
+      },
+      "5": {
+        "name": "Golden Pass (1 Day)",
+        "description": "Boosts your currency gain by 1.5x for 24 hours!",
+        "usable": true,
+        "price": 200,
+        "key": false
+      },
+      "6": {
+        "name": "Golden Pass (3 days)",
+        "description": "Boosts your currency gain by 1.5x for 3 days!",
+        "usable": true,
+        "price": 500,
+        "key": false
+      },
+      "7": {
+        "name": "Golden Pass (1 Week)",
+        "description": "Boosts your currency gain by 1.5x for 1 week!",
+        "usable": true,
         "price": 1000,
         "key": false
       }

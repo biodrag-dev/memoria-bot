@@ -4,6 +4,7 @@ import path from "path";
 const jsonsPath = path.resolve(__dirname, "../../../jsons");
 import * as characterHelper from "../characterHelper";
 import * as tmHelper from "../tmHelper";
+import * as boosterHelper from "./boosterHelper";
 
 import {
   ActionRowBuilder,
@@ -85,7 +86,7 @@ export async function itemInventoryGiftNotification(
   const embed = new EmbedBuilder();
   embed
     .setDescription(
-      `**${character}** recieved ${item.emoji ?? ``} **${item.name}** x**${amount}**!`,
+      `**${character}** received ${item.emoji ?? ``} **${item.name}** x**${amount}**!`,
     )
     .setColor("Greyple");
   channel.send({ content: `<@${id}>`, embeds: [embed] });
@@ -195,7 +196,7 @@ export function getUsableCharacterItems(id: string, character: string) {
     if (itemInfo.usable) {
       items.push({
         value: `${item.category}:${item.id}`,
-        name: `${itemInfo.name} | x${item.quantity}`,
+        name: `${itemInfo.name} (x${item.quantity})`,
       });
     }
   }
@@ -448,9 +449,11 @@ export async function handleCharacterInventoryPage(interaction: Interaction) {
 //  STORE HELPERS
 /////////////////////////////////////////////////////////////
 
-export function getPrice(category: number, item: number){
-    const I = catalogue.items[category] ? catalogue.items[category]![item] ?? lostItem : lostItem;
-    return I.price;
+export function getPrice(category: number, item: number) {
+  const I = catalogue.items[category]
+    ? (catalogue.items[category]![item] ?? lostItem)
+    : lostItem;
+  return I.price;
 }
 
 export async function getStoreEntry(
@@ -576,4 +579,100 @@ export async function handleShopPage(interaction: Interaction) {
   interaction.message.edit(
     (await getStoreEntry(id!, character!, Number(page))) as MessageEditOptions,
   );
+}
+
+/////////////////////////////////////////////////////////////
+//  USEITEM
+/////////////////////////////////////////////////////////////
+
+export async function useItem(
+  client: Client,
+  id: string,
+  character: string,
+  itemid: number,
+): Promise<EmbedBuilder> {
+  const users = characterHelper.getUsers();
+  const person = users[id]!.characters[character]!;
+  const itemIndex = person!.inventory.findIndex((item) => item.id == itemid);
+  if (itemIndex != -1) {
+    person.inventory[itemIndex]!.quantity -= 1;
+    if (person.inventory[itemIndex]!.quantity <= 0) {
+      person.inventory.splice(itemIndex, 1);
+    }
+  }
+  characterHelper.saveUsersExternal(users);
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  await delay(500);
+  switch (itemid) {
+    case 0:
+      return await useGlamStone(client, id, character);
+    case 1:
+      return await usePass(client, id, character, true, 1, 1.5);
+    case 2:
+      return await usePass(client, id, character, true, 3, 1.5);
+    case 3:
+      return await usePass(client, id, character, true, 7, 1.5);
+    case 5:
+      return await usePass(client, id, character, false, 1, 1.5);
+    case 6:
+      return await usePass(client, id, character, false, 3, 1.5);
+    case 7:
+      return await usePass(client, id, character, false, 7, 1.5);
+  }
+
+  return new EmbedBuilder()
+    .setDescription(`This item could not be found!`)
+    .setColor("Red");
+}
+
+export async function useGlamStone(
+  client: Client,
+  id: string,
+  character: string,
+) {
+  return await boosterHelper.rerollIRP(id, character, "shiny", false, client);
+}
+
+export async function usePass(
+  client: Client,
+  id: string,
+  character: string,
+  exp: boolean,
+  days: number,
+  amount: number,
+) {
+  const users = characterHelper.getUsers();
+  const person = users[id]?.characters[character];
+
+  const expirationDate = new Date();
+  expirationDate.setDate(expirationDate.getDate() + days);
+  person!.buff = {
+    expires: expirationDate,
+  };
+
+  if (exp == true) {
+    person!.buff.expBuff = 1.5;
+  } else {
+    person!.buff.moneyBuff = 1.5;
+  }
+
+  const channel = (await client.channels.fetch(
+    `${process.env.IRP_NOTIFICATIONS}`,
+  )) as TextChannel;
+  await channel.send({
+    content: `<@${id}>`,
+    embeds: [
+      new EmbedBuilder()
+        .setDescription(
+          `**${amount}x** ${exp ? `Experience` : `Money`} gain buff activated! It will last until <t:${Math.floor(expirationDate.getTime() / 1000)}:D>! Make sure not to use any more passes until then (including buffs of other types), as it will overwrite the previous buff!`,
+        )
+        .setColor(exp ? "Gold" : "Gold")
+        .setFooter({ text: `buff for ${character}` }),
+    ],
+  });
+  characterHelper.saveUsersExternal(users);
+
+  return new EmbedBuilder()
+    .setDescription(`Your buff has been activated!`)
+    .setColor("Green");
 }

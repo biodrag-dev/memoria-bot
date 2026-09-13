@@ -1,5 +1,5 @@
 import * as characterHelper from "../characterHelper";
-import { Client, ColorResolvable, EmbedBuilder } from "discord.js";
+import { Client, ColorResolvable, EmbedBuilder, TextChannel } from "discord.js";
 import * as pokehelper from "../pokeHelper";
 const monthlyRerolls = 3;
 
@@ -174,9 +174,12 @@ export async function rerollIRP(
   id: string,
   name: string,
   field: string,
+  cost: boolean,
+  client: Client,
 ): Promise<EmbedBuilder> {
   const charaDex = characterHelper.getUsers();
 
+  const source = cost ? `booster rolls` : `glimmering stone`;
   const roll = Math.floor(Math.random() * 20) + 1;
   const embed = new EmbedBuilder();
   if (charaDex[id]!.monthly_rolled == 0) {
@@ -192,9 +195,15 @@ export async function rerollIRP(
     if (roll == 20) {
       embed
         .setColor("#f0ed4c")
-        .setFooter({ text: `Oh? Congratulations! It's a shiny!` });
+        .setFooter({
+          text: `source: ${source} | Oh? Congratulations! It's a shiny!`,
+        });
     } else {
-      embed.setColor("#3c3d3c").setFooter({ text: "Better luck next time..." });
+      embed
+        .setColor("#3c3d3c")
+        .setFooter({
+          text: `source: ${source} | Better luck next time...`,
+        });
     }
     partner.shiny = roll == 20;
   } else if (field === "size") {
@@ -215,16 +224,36 @@ ${pokehelper.getSize(partner.sizeMult)} -> ${pokehelper.getSize(sizeMult)}`,
     partner.sizeMult = sizeMult;
     if (roll == 20) {
       embed.setColor("#f81a1a").setFooter({
-        text: `Oh? Congratulations! It's an alpha!`,
+        text: `source: ${source} | Oh? Congratulations! It's an alpha!`,
       });
     } else {
-      embed.setColor("#3c3d3c").setFooter({ text: `Better luck next time...` });
+      embed
+        .setColor("#3c3d3c")
+        .setFooter({
+          text: `source: ${source} | Better luck next time...`,
+        });
     }
   }
-  charaDex[id]!.monthly_rolled = (await getRerolls(id)) - 1;
-  charaDex[id]!.last_rolled = new Date();
+  if (cost == true) {
+    charaDex[id]!.monthly_rolled = (await getRerolls(id)) - 1;
+    charaDex[id]!.last_rolled = new Date();
+  }
   characterHelper.saveUsersExternal(charaDex);
   embed.setThumbnail(await characterHelper.getPartnerSprite(id, name));
 
+  if (roll == 20) {
+    sendNotif(client, id, embed);
+  }
   return embed;
+}
+
+export async function sendNotif(
+  client: Client,
+  id: string,
+  embed: EmbedBuilder,
+) {
+  const channel = (await client.channels.fetch(
+    `${process.env.IRP_NOTIFICATIONS}`,
+  )) as TextChannel;
+  await channel.send({ content: `<@${id}>`, embeds: [embed] });
 }

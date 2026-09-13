@@ -8,8 +8,8 @@
         "registeredOn": "2026-09-11T18:58:49.349Z",
         "destination": "eevee",
         "partner": {
-          "exp": 125,
-          "shiny": false,
+          "exp": 141,
+          "shiny": true,
           "species": "eevee",
           "learnedMoves": {
             "sand-attack": "Sand Attack",
@@ -24,16 +24,21 @@
         },
         "docLink": "STAFF NPC",
         "optional": {},
-        "balance": 200,
+        "balance": 216,
         "inventory": [
           {
-            "quantity": 22,
+            "quantity": 5,
             "id": 0,
             "category": 0
           },
           {
-            "quantity": 2,
-            "id": 1,
+            "quantity": 1,
+            "id": 3,
+            "category": 1
+          },
+          {
+            "quantity": 1,
+            "id": 2,
             "category": 1
           }
         ],
@@ -75,7 +80,11 @@
             "learnedMoves": false,
             "typeMatch": false
           }
-        ]
+        ],
+        "buff": {
+          "expires": "2026-09-14T03:07:12.216Z",
+          "expBuff": 1.5
+        }
       }
     },
     "OocPartner": {
@@ -87,10 +96,10 @@
       "shiny": true,
       "species": "victini",
       "nature": "13",
-      "experience": 1428,
-      "happiness": 65,
-      "prompt": 1,
-      "reset": "2026-09-11T22:59:04.388Z",
+      "experience": 1498,
+      "happiness": 62,
+      "prompt": 5,
+      "reset": "2026-09-13T01:40:23.991Z",
       "canFeed": true,
       "canPlay": true
     }

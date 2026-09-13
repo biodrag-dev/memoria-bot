@@ -42,12 +42,7 @@ export default async function handleQuizInteraction(interaction: any) {
   );
   characterHelper.changeBalance(interaction.user.id, charaName, -price);
 
-  const result = await inventoryHelper.getStoreEntry(
-    user,
-    charaName,
-    Number(category),
-  );
-
+  const result = await inventoryHelper.getStoreEntry(user, charaName, Number(category));
   interaction.message.edit(result);
   interaction.reply({
     content: `Purchase successful!`,

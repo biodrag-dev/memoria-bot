@@ -226,6 +226,8 @@ ${rerolls === 0 ? `You're all out of rerolls for the month!` : `Would you like t
           interaction.user.id,
           character,
           button.customId,
+          true,
+          interaction.client
         );
         characterHelper.updateCharaForumPost(
           interaction.user.id,

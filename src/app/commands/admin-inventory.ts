@@ -440,7 +440,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         interaction.options.getString("emoji") ?? undefined,
         interaction.options.getBoolean("usable", true),
         interaction.options.getInteger("price", true),
-        interaction.options.getBoolean("usable", true),
+        interaction.options.getBoolean("key", true),
       );
       return interaction.reply({
         embeds: [
@@ -475,7 +475,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         interaction.options.getString("emoji"),
         interaction.options.getBoolean("usable"),
         interaction.options.getNumber("price"),
-        interaction.options.getBoolean("usable"),
+        interaction.options.getBoolean("key"),
       );
       return interaction.reply({
         embeds: [

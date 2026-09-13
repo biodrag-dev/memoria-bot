@@ -526,6 +526,27 @@ const Z_SIGNATURES = new Set([
   "soul-stealing-7-star-strike",
 ]);
 
+const Z_REGULARS = new Set([
+  "breakneck-blitz",
+  "all-out-pummeling",
+  "supersonic-skystrike",
+  "acid-downpour",
+  "tectonic-rage",
+  "continental-crush",
+  "savage-spin-out",
+  "never-ending-nightmare",
+  "corkscrew-crash",
+  "inferno-overdrive",
+  "hydro-vortex",
+  "bloom-doom",
+  "gigavolt-havoc",
+  "shattered-psyche",
+  "subzero-slammer",
+  "devastating-drake",
+  "black-hole-eclipse",
+  "twinkle-tackle",
+]);
+
 export async function getRandLearnableMove(pokemon: Pokemon) {
   let random = Math.floor(Math.random() * pokemon.moves.length);
   return await P.getMoveByName(pokemon.moves[random]!.move.name);
@@ -628,7 +649,7 @@ export async function getStoreFront(buyerid: string, charaName: string) {
       });
     }
   }
-  
+
   if (menu.options.length > 0) {
     row.addComponents(menu);
   }
@@ -807,7 +828,8 @@ export function isZMove(name: string) {
   return (
     name.endsWith("--special") ||
     name.endsWith("--physical") ||
-    Z_SIGNATURES.has(name)
+    Z_SIGNATURES.has(name) ||
+    Z_REGULARS.has(name)
   );
 }
 

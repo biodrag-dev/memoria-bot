@@ -416,7 +416,8 @@ export const autocomplete = async (ctx: any) => {
   const focused = interaction.options.getFocused(true);
   const names = characterHelper.getCharacterNames(interaction.user.id);
 
-  if (focused.name == "item") {
+  const sub = interaction.options.getSubcommand();
+  if (focused.name == "item" && sub == "use") {
     return await interaction.respond(
       inventoryHelper.getUsableCharacterItems(
         interaction.user.id,
@@ -490,7 +491,6 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   const interaction = ctx.interaction;
 
   const group = interaction.options.getSubcommandGroup();
-
   const sub = interaction.options.getSubcommand();
   if (group === "inventory") {
     if (sub === "view") {
@@ -502,6 +502,21 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         ) as InteractionReplyOptions,
       );
     } else if (sub === "use") {
+      const [category, item] = interaction.options
+        .getString("item", true)
+        .split(":");
+
+      return interaction.reply({
+        embeds: [
+          await inventoryHelper.useItem(
+            interaction.client,
+            interaction.user.id,
+            interaction.options.getString("name", true),
+            Number(item),
+          ),
+        ],
+        ephemeral: true,
+      });
     }
   }
   if (group === "proxy") {
