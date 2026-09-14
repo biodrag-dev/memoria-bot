@@ -83,7 +83,7 @@
         ],
         "buff": {
           "expires": "2026-09-14T03:07:12.216Z",
-          "expBuff": 1.5
+          "expBuff": 2
         }
       }
     },
@@ -97,11 +97,11 @@
       "species": "victini",
       "nature": "13",
       "experience": 1582,
-      "happiness": 28,
-      "prompt": 5,
-      "reset": "2026-09-13T01:40:23.991Z",
-      "canFeed": true,
-      "canPlay": true
+      "happiness": 30,
+      "prompt": 4,
+      "reset": "2026-09-14T06:56:17.934Z",
+      "canFeed": false,
+      "canPlay": false
     }
   },
   "350614938722500608": {
