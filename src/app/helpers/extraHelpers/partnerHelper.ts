@@ -8,7 +8,7 @@ import * as characterHelper from "../characterHelper";
 import * as pokeHelper from "../pokeHelper";
 
 import { OocPartner } from "../characterHelper";
-import { ButtonStyle, ColorResolvable, resolveColor } from "discord.js";
+import { ButtonStyle, ColorResolvable, Interaction, resolveColor } from "discord.js";
 
 export const sessions = new Map<string, choices>();
 
@@ -855,12 +855,12 @@ export async function fedPartner(id: string, affection: number) {
 }
 
 export async function playWithPartner(id: string) {
-  const charaDex = await characterHelper.getUsers();
+  const charaDex =  characterHelper.getUsers();
   if (charaDex[id]?.OocPartner) {
     charaDex[id].OocPartner.canPlay = false;
     charaDex[id].OocPartner.happiness += 1;
     charaDex[id].OocPartner.lastInteracted == new Date();
-    await characterHelper.saveUsersExternal(charaDex);
+     characterHelper.saveUsersExternal(charaDex);
   }
 }
 
@@ -880,7 +880,7 @@ export async function evolvePartner(interaction: any) {
 }
 
 
-export async function feedPartner(interaction: any) {
+export async function feedPartner(interaction: Interaction) {
   if (!interaction.isStringSelectMenu()) return;
 
   const ids = interaction.customId.split(":");
@@ -889,7 +889,7 @@ export async function feedPartner(interaction: any) {
     return;
   }
 
-  if (interaction.member.id != ids[1]) {
+  if (interaction.user.id != ids[1]) {
     await interaction.reply({
       content:
         "Hey! Don't feed other trainer's pokemon without their permission, that's rude!",
@@ -899,18 +899,17 @@ export async function feedPartner(interaction: any) {
   }
 
   const partner = interaction.values[0].split(":");
-  const users = characterHelper.getUsers()[interaction.member.id]
+  const users = characterHelper.getUsers()[interaction.user.id]
   // Prevent old dropdowns from being used
   if (users?.OocPartner?.canFeed !== true) {
     return interaction.update({
       content: `You've already fed them today!`,
-      embed: [],
-      ephemeral: true,
+      embeds: [],
     });
   }
 
   const berry = interaction.values[0];
-  const msg = await feedBerry(interaction.user.id, berry);
+  const msg = await feedBerry(interaction.user.id, berry!);
 
   await interaction.update(msg);
 }

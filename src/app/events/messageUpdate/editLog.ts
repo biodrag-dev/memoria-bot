@@ -13,9 +13,6 @@ const handler: EventHandler<"messageUpdate"> = async (
       return;
     }
   }
-  if (oldMessage.author?.bot ?? undefined) {
-    return;
-  }
 
   if (newMessage.partial) {
     try {
@@ -26,9 +23,13 @@ const handler: EventHandler<"messageUpdate"> = async (
     }
   }
 
+  if (newMessage.author?.bot ?? undefined) {
+    return;
+  }
+
   if (oldMessage.author?.bot) return;
   if (oldMessage.content === newMessage.content) return;
-
+  if (!oldMessage.content) return;
   const channel = (await oldMessage.client.channels.fetch(
     `${process.env.MESSAGE_LOG}`,
   )) as TextChannel;
@@ -49,8 +50,8 @@ const handler: EventHandler<"messageUpdate"> = async (
       },
     )
     .setDescription(
-      `**Before:**\n${oldMessage.content || "*`Content not Cached`*"}\n\n` +
-        `**After:**\n${newMessage.content || "*`Content not Cached`*"}`,
+      `**Before:**\n${oldMessage.content ?? "*`Content not Cached`*"}\n\n` +
+      `**After:**\n${newMessage.content ?? "*`Content not Cached`*"}`,
     )
     .setAuthor({
       iconURL:

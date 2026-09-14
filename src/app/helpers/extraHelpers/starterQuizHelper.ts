@@ -1,6 +1,7 @@
 import {
   ActionRowBuilder,
   EmbedBuilder,
+  Interaction,
   StringSelectMenuBuilder,
 } from "discord.js";
 
@@ -106,6 +107,9 @@ export function hasSession(id: string): boolean {
   }
   return false;
 }
+export async function deleteSession(id: string) {
+  sessions.delete(id);
+}
 
 export function submitQuestion(id: string, result: string) {
   const session = sessions.get(id)!;
@@ -130,7 +134,7 @@ export function getResults(id: string) {
   return [sortedResults[0]!.id, sortedResults[1]!.id, sortedResults[2]!.id];
 }
 
-export async function starterQuizHandler(interaction: any) {
+export async function starterQuizHandler(interaction: Interaction) {
   if (!interaction.isStringSelectMenu()) return;
 
   const ids = interaction.customId.split(":");
@@ -139,7 +143,7 @@ export async function starterQuizHandler(interaction: any) {
     return;
   }
 
-  const session = getSession(ids[1]);
+  const session = getSession(ids[1]!);
 
   if (!session) {
     return interaction.reply({
@@ -155,13 +159,13 @@ export async function starterQuizHandler(interaction: any) {
     });
   }
 
-  interaction.deferReply();
   const answer = interaction.values[0];
 
-  submitQuestion(interaction.user.id, answer);
+  submitQuestion(interaction.user.id, answer!);
 
   // Finished?
-  if (ids[2] >= 9) {
+  if (Number(ids[2]) >= 9) {
+    interaction.deferUpdate();
     const results = getResults(interaction.user.id);
     await partnerHelper.generateChoices(
       interaction.user.id,
@@ -169,12 +173,13 @@ export async function starterQuizHandler(interaction: any) {
       results[1]!,
       results[2]!,
     );
-    return await interaction.update(
+
+    return await interaction.editReply(
       await partnerHelper.getProspects(interaction.user.id),
     );
   }
 
-  await interaction.update(
+  return await interaction.update(
     createQuestionMessage(interaction.user.id),
   );
 }

@@ -1,7 +1,8 @@
 import * as starterQuizHelper from "../../helpers/extraHelpers/starterQuizHelper";
 import * as partnerHelper from "../../helpers/extraHelpers/partnerHelper";
+import { Interaction } from "discord.js";
 
-export default async function handleStarterSelection(interaction: any) {
+export default async function handleStarterSelection(interaction: Interaction) {
   if (!interaction.isButton()) return;
 
   const ids = interaction.customId.split(":");
@@ -28,7 +29,7 @@ export default async function handleStarterSelection(interaction: any) {
     );
   }
 
-  const session = starterQuizHelper.getSession(ids[1]);
+  const session = starterQuizHelper.getSession(ids[1]!);
 
   if (!session) {
     return interaction.reply({
@@ -37,6 +38,8 @@ export default async function handleStarterSelection(interaction: any) {
     });
   }
   if (ids[2] == "reroll") {
+        interaction.deferUpdate();
+
     const results = starterQuizHelper.getResults(interaction.user.id);
     await partnerHelper.generateChoices(
       interaction.user.id,
@@ -44,10 +47,11 @@ export default async function handleStarterSelection(interaction: any) {
       results[1]!,
       results[2]!,
     );
-    return await interaction.update(
+    return await interaction.editReply(
       await partnerHelper.getProspects(interaction.user.id),
     );
   } else if (ids[2] == "retake") {
+    await starterQuizHelper.deleteSession(interaction.user.id);
     await partnerHelper.deleteProspects(interaction.user.id);
     return await interaction.update({
       content: `Your results have been deleted. Run **/partner view** to take the quiz again!`,
@@ -56,7 +60,7 @@ export default async function handleStarterSelection(interaction: any) {
     });
   }
 
-  await partnerHelper.claimPartnerProspect(interaction.user.id, ids[2]);
+  await partnerHelper.claimPartnerProspect(interaction.user.id, ids[2]!);
   const embed = await partnerHelper.getPartnerEmbed(
     interaction.user.username,
     interaction.user.id,
