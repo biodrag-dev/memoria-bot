@@ -601,7 +601,7 @@ export async function useItem(
     }
   }
   characterHelper.saveUsersExternal(users);
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const delay = (ms : number) => new Promise((resolve) => setTimeout(resolve, ms));
   await delay(500);
   switch (itemid) {
     case 0:

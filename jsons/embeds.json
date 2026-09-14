@@ -127,7 +127,7 @@
       "text": "banner by @lukaslarsson on artstation"
     },
     "image": {
-      "url": "https://www.artstation.com/artwork/LRRK6l"
+      "url": "https://cdnb.artstation.com/p/assets/images/images/061/181/623/large/lukas-larsson-stormy-lighthouse.jpg"
     }
   },
   "bosi": {
@@ -378,6 +378,76 @@
     },
     "image": {
       "url": "https://cdna.artstation.com/p/assets/images/images/028/245/178/4k/alexander-winkler-final-painting-colonial-power-plants.jpg"
+    }
+  },
+  "north": {
+    "title": "𝐍𝐎𝐑𝐓𝐇𝐄𝐑𝐍 𝐒𝐀𝐍𝐘𝐔𝐀𝐍",
+    "description": "Northern Sanyuan is thought to be the most dangerous area of the region. It is said that people from the lands of Northern Sanyuan have the brightest of spirits, tempered like a blade by the harsh surroundings around them. It takes a lot to survive the harsh winters of the mountains or the blazing sun of the desert, but that only seems to breed more unconventional innovation for the constant challenges of day-to-day life. ",
+    "footer": {
+      "text": "banner by @nostalgictree on instagram"
+    },
+    "image": {
+      "url": "https://i.pinimg.com/736x/ee/68/9d/ee689d3e826875ab8b4c9a980d1b9e16.jpg"
+    }
+  },
+  "east": {
+    "title": "𝐄𝐀𝐒𝐓𝐄𝐑𝐍 𝐒𝐀𝐍𝐘𝐔𝐀𝐍",
+    "description": "Eastern Sanyuan is well known for its land’s tendencies to walk the thin line between danger and reward. Between the bright, vibrant dangers of the rainforest and the actively erupting volcano, there’s never quite a dull moment in these lands. However, the people around these parts have adapted a constantly-changing lifestyle to fit around the dangers of this area!",
+    "footer": {
+      "text": "banner by @bbrunomoraes on deviantart"
+    },
+    "image": {
+      "url": "https://i.pinimg.com/originals/49/f4/16/49f416a4d35244412c69cf7113bc27ba.gif"
+    }
+  },
+  "central": {
+    "title": "𝐂𝐄𝐍𝐓𝐑𝐀𝐋 𝐒𝐀𝐍𝐘𝐔𝐀𝐍",
+    "description": "The main landmark of Central Sanyuan is its high mountains and rock forests. With the most uneven terrain in all of Sanyuan, one must prepare hiking boots if they are to venture through these lands. People from this area tend to have more traditional tendencies, from their dialect to the way they dress—sometimes they even look like they came directly out of a fairy tale! Why not pay a visit to their temples while you're here?",
+    "footer": {
+      "text": "banner by @naucie on tumblr"
+    },
+    "image": {
+      "url": "https://i.pinimg.com/originals/95/04/dd/9504dda5149534e8f10cabf0ba6f6f24.gif"
+    }
+  },
+  "west": {
+    "title": "𝐖𝐄𝐒𝐓𝐄𝐑𝐍 𝐒𝐀𝐍𝐘𝐔𝐀𝐍",
+    "description": "Western Sanyuan is a place caught between the urban and the rural. A majority of the region's population is gathered in the always-bustling Shīzi City, and there's always something to do with so many people! With so many people gathered in one place, the surrounding area might be a bit barren in comparison... those outside of Shīzi City are there for work-related purposes, but that doesn't stop them from living their life.",
+    "footer": {
+      "text": "banner by @setamo-arts on tumblr"
+    },
+    "image": {
+      "url": "https://i.pinimg.com/originals/05/6d/8a/056d8a102432ffe13476a0b783c5116d.gif"
+    }
+  },
+  "south": {
+    "title": "𝐒𝐎𝐔𝐓𝐇𝐄𝐑𝐍 𝐒𝐀𝐍𝐘𝐔𝐀𝐍",
+    "description": "Those looking to settle into an idyllic lifestyle often choose Southern Sanyuan for its peaceful lands, with gentle meadows and safe forests for humans and pokemon alike to frolic through. There is little danger to be found in the rolling green fields, and likewise, the people who dwell here take on a slower-paced lifestyle. That isn't to say they're lazy, though—with a massive farm that's responsible for a majority of the region's grown food, hard-workers are a dime-a-dozen!",
+    "footer": {
+      "text": "banner by @decomposedmaw on tumblr"
+    },
+    "image": {
+      "url": "https://i.pinimg.com/originals/41/65/56/4165563df17705bd040dc972485d77d9.gif"
+    }
+  },
+  "map": {
+    "title": "𝐑𝐄𝐆𝐈𝐎𝐍 𝐌𝐀𝐏",
+    "description": "The regional map of Sanyuan! Civilizations/towns that your character can hail from have been listed below, and in the threads underneath this channel are ALL of the channel/location descriptions. We hope you have fun exploring the world we've created for you!\n\nSpecial thank you to <@350614938722500608> for writing location descriptions, and <@723291117302448169> for drawing the map!\n\n[MAP is still a WIP]",
+    "footer": {
+      "text": "banner by @sunpixels on cara"
+    },
+    "image": {
+      "url": "https://i.pinimg.com/originals/e6/d8/cd/e6d8cda17c38bd12f962c5937b7f0ffb.gif"
+    }
+  },
+  "miracle": {
+    "title": "𝐓𝐄𝐀𝐌 𝐌𝐈𝐑𝐀𝐂𝐋𝐄",
+    "description": "A mysterious organization that— seems relatively harmless, for now, considering you likely know little of it at all. Rumor says that they've been involved in Pokeball smuggling, though authorities haven't been able to get their hands on any proof of it. Regardless, only time will tell if they remain as they seem...",
+    "footer": {
+      "text": "banner by @waneella on tumblr"
+    },
+    "image": {
+      "url": "https://i.pinimg.com/originals/80/9b/d1/809bd13595a8bd05a9754830ded761fb.gif"
     }
   }
 }

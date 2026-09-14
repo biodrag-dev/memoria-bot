@@ -13,7 +13,7 @@ import {
 import * as submitHelper from "./extraHelpers/submitHelper";
 
 export async function updateAllEmbeds(client: Client) {
-  updateTicketEmbed(client);
+  //updateTicketEmbed(client);
   // updateReservesEmbed(client);
   // updateServerRulesEmbed(client);
   // updateCharacterRulesEmbed(client);
@@ -23,11 +23,11 @@ export async function updateAllEmbeds(client: Client) {
   // updateFaqEmbed(client);
   // //thread is archived
   // //updatePartnershipRules(client);
-  // updateTemplateEmbed(client);
+   //updateTemplateEmbed(client);
   //   //thread is archived
   // // updateStaffNpcEmbed(client);
   // updateResourcesEmbed(client);
-  // updateAllLoreEmbeds(client)
+ updateAllLoreEmbeds(client)
 }
 
 export async function sendMemberLog(guild: Guild, embed: EmbedBuilder) {
@@ -983,7 +983,7 @@ async function getLoreDexlightAcademyEmbed(): Promise<EmbedBuilder[]> {
 async function getLoreTrialCircuitEmbed() {
   const embed = new EmbedBuilder()
     .setTitle(`𝐓𝐑𝐈𝐀𝐋𝐒`)
-    .setColor("#b3df8a")
+    .setColor("#b1a361")
     .setDescription(
       `Compared to the traditional approach of a non-trainer school, Dexlight Academy offers a more hands-on experience, looking to combine both the grand stories of the ancient trainer’s adventures with the journey that comes with learning. Instead of 'book' learning with your teachers, students of Dexlight Academy participate in a Trial Circuit in order to receive official certification and graduation from their courses.
 
@@ -998,10 +998,10 @@ Regardless of your class, however, the Trial Circuit does not discourage you fro
 But while you may encounter difficulties on your journey, do not remain discouraged. Dexlight Academy selects its students for a reason: the pure potential the Champions have seen in you.`,
     )
     .setImage(
-      "https://i.pinimg.com/1200x/97/83/e4/9783e455c0b262277955766f9c7923ac.jpg",
+      "https://i.pinimg.com/originals/4f/f0/88/4ff088795aff41e835671f1479fa0366.gif",
     )
     .setFooter({
-      text: `banner by @1041uuu on tumblr`,
+      text: `banner by @rdwk34 on tumblr`,
     });
 
   return embed;
@@ -1107,9 +1107,7 @@ export async function getTemplateEmbed() {
     .setTitle(`𝐓𝐄𝐌𝐏𝐋𝐀𝐓𝐄`)
     .setColor("#83c79d")
     .setDescription(
-      `Submissions require two reviewer's go-ahead to be approved! This is to make sure we're thorough with the reviewer process. Staff is not exempt from this rule for personal characters.
-
-**Google Docs**
+      `**Google Docs**
 > https://docs.google.com/document/d/1YdzP9YNijiAENToGsy2p_EMaYGcozV6Mz0PPuPdWDuY/edit
 To make a copy, go to **File > Make a copy**!
 
