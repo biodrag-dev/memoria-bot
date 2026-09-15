@@ -7,7 +7,7 @@ export default async function handleQuizInteraction(interaction: any) {
   const [interactionId, interactionType, user, charaName, category] =
     interaction.customId.split(":");
 
-  if (interactionId != "buy" && interactionType != "item") {
+  if (interactionId != "buy" || interactionType != "item") {
     return;
   }
 

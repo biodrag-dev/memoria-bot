@@ -898,7 +898,7 @@ export async function feedPartner(interaction: Interaction) {
     return;
   }
 
-  const partner = interaction.values[0].split(":");
+  const partner = interaction.values[0]!.split(":");
   const users = characterHelper.getUsers()[interaction.user.id]
   // Prevent old dropdowns from being used
   if (users?.OocPartner?.canFeed !== true) {

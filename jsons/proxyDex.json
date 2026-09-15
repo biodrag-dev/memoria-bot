@@ -21,6 +21,81 @@
           "isNarrator": false
         },
         "expDebt": 0
+      },
+      "Michi Otsuka": {
+        "character": {
+          "prefix": "Michi Otsuka:",
+          "msgCount": 0,
+          "nick": "Michi Otsuka",
+          "isNarrator": false
+        },
+        "partner": {
+          "prefix": "Michi Otsuka!partner:",
+          "msgCount": 0,
+          "nick": "Michi Otsuka's Zorua",
+          "isNarrator": false
+        },
+        "expDebt": 0
+      },
+      "Yurui Long": {
+        "character": {
+          "prefix": "Yurui Long:",
+          "msgCount": 0,
+          "nick": "Yurui Long",
+          "isNarrator": false
+        },
+        "partner": {
+          "prefix": "Yurui Long!partner:",
+          "msgCount": 0,
+          "nick": "Yurui Long's Ditto",
+          "isNarrator": false
+        },
+        "expDebt": 0
+      },
+      "Kurayami Yoshinaga": {
+        "character": {
+          "prefix": "Kurayami Yoshinaga:",
+          "msgCount": 0,
+          "nick": "Kurayami Yoshinaga",
+          "isNarrator": false
+        },
+        "partner": {
+          "prefix": "Kurayami Yoshinaga!partner:",
+          "msgCount": 0,
+          "nick": "Kurayami Yoshinaga's Dratini",
+          "isNarrator": false
+        },
+        "expDebt": 0
+      },
+      "Cerise Joy": {
+        "character": {
+          "prefix": "Cerise Joy:",
+          "msgCount": 0,
+          "nick": "Cerise Joy",
+          "isNarrator": false
+        },
+        "partner": {
+          "prefix": "Cerise Joy!partner:",
+          "msgCount": 0,
+          "nick": "Cerise Joy's Chikorita",
+          "isNarrator": false
+        },
+        "expDebt": 0
+      },
+      "Kafuka Zhang": {
+        "character": {
+          "prefix": "Kafuka Zhang:",
+          "msgCount": 0,
+          "nick": "Kafuka Zhang",
+          "isNarrator": false
+        },
+        "partner": {
+          "prefix": "Kafuka Zhang!partner:",
+          "msgCount": 0,
+          "nick": "Kafuka Zhang's Spinarak",
+          "isNarrator": false
+        },
+        "expDebt": 0
       }
     }
   },
@@ -46,6 +121,36 @@
           "isNarrator": false
         },
         "expDebt": 0
+      },
+      "Silas Volkov": {
+        "character": {
+          "prefix": "Silas Volkov:",
+          "msgCount": 0,
+          "nick": "Silas Volkov",
+          "isNarrator": false
+        },
+        "partner": {
+          "prefix": "Silas Volkov!partner:",
+          "msgCount": 0,
+          "nick": "Silas Volkov's Wailmer",
+          "isNarrator": false
+        },
+        "expDebt": 0
+      },
+      "Keryx Zoran": {
+        "character": {
+          "prefix": "Keryx Zoran:",
+          "msgCount": 0,
+          "nick": "Keryx Zoran",
+          "isNarrator": false
+        },
+        "partner": {
+          "prefix": "Keryx Zoran!partner:",
+          "msgCount": 0,
+          "nick": "Keryx Zoran's Grubbin",
+          "isNarrator": false
+        },
+        "expDebt": 0
       }
     }
   },
@@ -68,6 +173,36 @@
           "prefix": "Liyuan Yin!partner:",
           "msgCount": 0,
           "nick": "Liyuan Yin's Pichu",
+          "isNarrator": false
+        },
+        "expDebt": 0
+      },
+      "Melite Mejía-Treviño": {
+        "character": {
+          "prefix": "Melite Mejía-Treviño:",
+          "msgCount": 0,
+          "nick": "Melite Mejía-Treviño",
+          "isNarrator": false
+        },
+        "partner": {
+          "prefix": "Melite Mejía-Treviño!partner:",
+          "msgCount": 0,
+          "nick": "Melite Mejía-Treviño's Abra",
+          "isNarrator": false
+        },
+        "expDebt": 0
+      },
+      "Kahekili Aoraki": {
+        "character": {
+          "prefix": "Kahekili Aoraki:",
+          "msgCount": 0,
+          "nick": "Kahekili Aoraki",
+          "isNarrator": false
+        },
+        "partner": {
+          "prefix": "Kahekili Aoraki!partner:",
+          "msgCount": 0,
+          "nick": "Kahekili Aoraki's Joltik",
           "isNarrator": false
         },
         "expDebt": 0

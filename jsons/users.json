@@ -20,10 +20,15 @@
             "covet": "Covet"
           },
           "specialMoves": {},
-          "sizeMult": 0.9172885279646685
+          "sizeMult": 0.9172885279646685,
+          "img_link": "https://cdn.discordapp.com/ephemeral-attachments/1548037090107727997/1549240784874635374/image.png?ex=6aa9fa6a&is=6aa8a8ea&hm=31b18b461b4a4f1e265e36962e4582061b554cef8552d769c3e3b6bd57eecd5e&",
+          "artist_credits": "ARKRIAS"
         },
         "docLink": "STAFF NPC",
-        "optional": {},
+        "optional": {
+          "img_link": "https://cdn.discordapp.com/ephemeral-attachments/1548037090107727997/1549240845385867415/image.png?ex=6aa9fa79&is=6aa8a8f9&hm=99f5eb0cdee82ec4cda9e85b160f4e530ef44c99bf4137062397e9b666d6e748&",
+          "artist_credits": "ARKRIAS"
+        },
         "balance": 216,
         "inventory": [
           {
@@ -83,8 +88,356 @@
         ],
         "buff": {
           "expires": "2026-09-14T03:07:12.216Z",
-          "expBuff": 2
+          "expBuff": 1.5
         }
+      },
+      "Michi Otsuka": {
+        "name": "Michi Otsuka",
+        "house": "Jirachi",
+        "badges": [],
+        "registeredOn": "2026-09-15T02:13:03.915Z",
+        "destination": "zoroark",
+        "partner": {
+          "exp": 140125,
+          "shiny": false,
+          "species": "zoroark",
+          "learnedMoves": {
+            "scratch": "Scratch",
+            "leer": "Leer",
+            "torment": "Torment",
+            "u-turn": "U-turn",
+            "night-slash": "Night Slash",
+            "hone-claws": "Hone Claws",
+            "agility": "Agility",
+            "fury-swipes": "Fury Swipes",
+            "taunt": "Taunt",
+            "knock-off": "Knock Off",
+            "imprison": "Imprison",
+            "fake-tears": "Fake Tears",
+            "night-daze": "Night Daze"
+          },
+          "specialMoves": {
+            "ceaseless-edge": "Ceaseless Edge",
+            "foul-play": "Foul Play",
+            "confuse-ray": "Confuse Ray"
+          },
+          "sizeMult": 0.828913423557468
+        },
+        "docLink": "STAFF NPC",
+        "optional": {},
+        "balance": 15450,
+        "inventory": [],
+        "thread_id": "1549241614038208595",
+        "lastShopped": "2026-09-15T02:46:58.754Z",
+        "shoppingArray": [
+          {
+            "id": 369,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": false
+          },
+          {
+            "id": 109,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": false
+          },
+          {
+            "id": 44,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": false,
+            "typeMatch": true
+          },
+          {
+            "id": 492,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": true
+          },
+          {
+            "id": 845,
+            "legendary": false,
+            "signature": true,
+            "learnedMoves": false,
+            "typeMatch": true
+          }
+        ]
+      },
+      "Yurui Long": {
+        "name": "Yurui Long",
+        "house": "Victini",
+        "badges": [],
+        "registeredOn": "2026-09-15T02:14:51.726Z",
+        "destination": "ditto",
+        "partner": {
+          "exp": 100000000125,
+          "shiny": false,
+          "species": "ditto",
+          "learnedMoves": {
+            "transform": "Transform"
+          },
+          "specialMoves": {},
+          "sizeMult": 1.1073774637408635
+        },
+        "docLink": "STAFF NPC",
+        "optional": {},
+        "balance": 100000001000,
+        "inventory": [],
+        "thread_id": "1549242065974464616"
+      },
+      "Kurayami Yoshinaga": {
+        "name": "Kurayami Yoshinaga",
+        "house": "Victini",
+        "badges": [],
+        "registeredOn": "2026-09-15T02:16:29.455Z",
+        "destination": "dragonair",
+        "partner": {
+          "exp": 260125,
+          "shiny": false,
+          "species": "dragonair",
+          "learnedMoves": {
+            "wrap": "Wrap",
+            "leer": "Leer",
+            "thunder-wave": "Thunder Wave",
+            "twister": "Twister",
+            "slam": "Slam",
+            "agility": "Agility",
+            "safeguard": "Safeguard",
+            "rain-dance": "Rain Dance",
+            "aqua-tail": "Aqua Tail",
+            "dragon-rush": "Dragon Rush",
+            "dragon-tail": "Dragon Tail",
+            "dragon-dance": "Dragon Dance"
+          },
+          "specialMoves": {
+            "silk-trap": "Silk Trap",
+            "hydro-pump": "Hydro Pump",
+            "dual-chop": "Dual Chop"
+          },
+          "sizeMult": 0.7665540641460433
+        },
+        "docLink": "STAFF NPC",
+        "optional": {
+          "img_link": "https://cdn.discordapp.com/ephemeral-attachments/1548037090107727997/1549249135142641775/image.png?ex=6aaa0231&is=6aa8b0b1&hm=f6c9ed26a9eca707e59bf3b272bdeb63747e5614a92f4e4ed1d59aa7b420a1d7&",
+          "artist_credits": "arabellial"
+        },
+        "balance": 214500,
+        "inventory": [],
+        "thread_id": "1549242475950903428",
+        "lastShopped": "2026-09-15T02:48:30.650Z",
+        "shoppingArray": [
+          {
+            "id": 117,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": false
+          },
+          {
+            "id": 56,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": false
+          },
+          {
+            "id": 349,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": true
+          },
+          {
+            "id": 530,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": false,
+            "typeMatch": true
+          },
+          {
+            "id": 852,
+            "legendary": false,
+            "signature": true,
+            "learnedMoves": false,
+            "typeMatch": false
+          }
+        ]
+      },
+      "Cerise Joy": {
+        "name": "Cerise Joy",
+        "house": "Mew",
+        "badges": [],
+        "registeredOn": "2026-09-15T02:19:13.421Z",
+        "destination": "meganium",
+        "partner": {
+          "exp": 145125,
+          "shiny": false,
+          "species": "meganium",
+          "learnedMoves": {
+            "tackle": "Tackle",
+            "growl": "Growl",
+            "razor-leaf": "Razor Leaf",
+            "poison-powder": "Poison Powder",
+            "petal-dance": "Petal Dance",
+            "petal-blizzard": "Petal Blizzard",
+            "body-slam": "Body Slam",
+            "leech-seed": "Leech Seed",
+            "light-screen": "Light Screen",
+            "reflect": "Reflect",
+            "sweet-scent": "Sweet Scent",
+            "synthesis": "Synthesis",
+            "magical-leaf": "Magical Leaf"
+          },
+          "specialMoves": {
+            "grassy-terrain": "Grassy Terrain",
+            "body-press": "Body Press",
+            "thunderclap": "Thunderclap",
+            "magic-coat": "Magic Coat",
+            "natural-gift": "Natural Gift",
+            "forests-curse": "Forest’s Curse",
+            "leaf-blade": "Leaf Blade"
+          },
+          "sizeMult": 2
+        },
+        "docLink": "STAFF NPC",
+        "optional": {
+          "img_link": "https://cdn.discordapp.com/ephemeral-attachments/1548037090107727997/1549244871083298896/image.png?ex=6aa9fe38&is=6aa8acb8&hm=d023ab3822ebdf0d4a382a825c30ae56bcb1ddceb8b73290c38ad08016d42e13&",
+          "artist_credits": "Yigetukeng on Neka"
+        },
+        "balance": 40000,
+        "inventory": [],
+        "thread_id": "1549243163783209006",
+        "lastShopped": "2026-09-15T04:11:40.144Z",
+        "shoppingArray": [
+          {
+            "id": 277,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": false
+          },
+          {
+            "id": 363,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": false
+          },
+          {
+            "id": 348,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": true
+          },
+          {
+            "id": 345,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": true
+          },
+          {
+            "id": 571,
+            "legendary": false,
+            "signature": true,
+            "learnedMoves": false,
+            "typeMatch": true
+          }
+        ]
+      },
+      "Kafuka Zhang": {
+        "name": "Kafuka Zhang",
+        "house": "Mew",
+        "badges": [],
+        "registeredOn": "2026-09-15T02:28:55.366Z",
+        "destination": "ariados",
+        "partner": {
+          "exp": 145125,
+          "shiny": true,
+          "species": "ariados",
+          "learnedMoves": {
+            "swords-dance": "Swords Dance",
+            "poison-sting": "Poison Sting",
+            "absorb": "Absorb",
+            "string-shot": "String Shot",
+            "focus-energy": "Focus Energy",
+            "bug-bite": "Bug Bite",
+            "fell-stinger": "Fell Stinger",
+            "pin-missile": "Pin Missile",
+            "psychic": "Psychic",
+            "agility": "Agility",
+            "night-shade": "Night Shade",
+            "fury-swipes": "Fury Swipes",
+            "scary-face": "Scary Face",
+            "sucker-punch": "Sucker Punch",
+            "poison-jab": "Poison Jab",
+            "shadow-sneak": "Shadow Sneak",
+            "cross-poison": "Cross Poison",
+            "infestation": "Infestation"
+          },
+          "specialMoves": {
+            "lunge": "Lunge",
+            "knock-off": "Knock Off",
+            "electroweb": "Electroweb",
+            "misty-explosion": "Misty Explosion",
+            "silver-wind": "Silver Wind",
+            "pounce": "Pounce",
+            "sticky-web": "Sticky Web",
+            "switcheroo": "Switcheroo"
+          },
+          "sizeMult": 0.7715587348819427
+        },
+        "docLink": "STAFF NPC",
+        "optional": {
+          "img_link": "https://cdn.discordapp.com/ephemeral-attachments/1548037090107727997/1549248027187748974/image.png?ex=6aaa0129&is=6aa8afa9&hm=290f7cb23ecc63f7fb8da6d93d6073461af08d87b2a01941f51805af122d7c61&",
+          "artist_credits": "[毒格](https://www.neka.cc/composer/13963) on neka"
+        },
+        "balance": 67662,
+        "inventory": [],
+        "thread_id": "1549245606940246109",
+        "lastShopped": "2026-09-15T04:18:49.547Z",
+        "shoppingArray": [
+          {
+            "id": 241,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": false
+          },
+          {
+            "id": 216,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": false
+          },
+          {
+            "id": 884,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": true
+          },
+          {
+            "id": 564,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": true
+          },
+          {
+            "id": 415,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": false,
+            "typeMatch": false
+          }
+        ]
       }
     },
     "OocPartner": {
@@ -96,10 +449,10 @@
       "shiny": true,
       "species": "victini",
       "nature": "13",
-      "experience": 1582,
-      "happiness": 30,
-      "prompt": 4,
-      "reset": "2026-09-14T06:56:17.934Z",
+      "experience": 4085,
+      "happiness": 15,
+      "prompt": 7,
+      "reset": "2026-09-14T06:54:31.277Z",
       "canFeed": false,
       "canPlay": false
     }
@@ -151,7 +504,7 @@
         },
         "docLink": "STAFF NPC",
         "optional": {},
-        "balance": 10070249,
+        "balance": 10,
         "inventory": [],
         "thread_id": "1548146886085714005",
         "lastShopped": "2026-09-12T03:37:05.037Z",
@@ -192,7 +545,94 @@
             "typeMatch": false
           }
         ]
+      },
+      "Silas Volkov": {
+        "name": "Silas Volkov",
+        "house": "Jirachi",
+        "badges": [],
+        "registeredOn": "2026-09-15T02:34:14.824Z",
+        "destination": "wailord",
+        "partner": {
+          "exp": 175125,
+          "shiny": false,
+          "species": "wailord",
+          "learnedMoves": {
+            "growl": "Growl",
+            "water-gun": "Water Gun",
+            "splash": "Splash",
+            "astonish": "Astonish",
+            "soak": "Soak",
+            "noble-roar": "Noble Roar",
+            "body-slam": "Body Slam",
+            "mist": "Mist",
+            "hydro-pump": "Hydro Pump",
+            "amnesia": "Amnesia",
+            "rest": "Rest",
+            "whirlpool": "Whirlpool",
+            "dive": "Dive",
+            "water-spout": "Water Spout",
+            "bounce": "Bounce",
+            "water-pulse": "Water Pulse",
+            "brine": "Brine",
+            "heavy-slam": "Heavy Slam"
+          },
+          "specialMoves": {},
+          "sizeMult": 2
+        },
+        "docLink": "STAFF NPC",
+        "optional": {},
+        "balance": 176000,
+        "inventory": [],
+        "thread_id": "1549246944176767049"
+      },
+      "Keryx Zoran": {
+        "name": "Keryx Zoran",
+        "house": "Mew",
+        "badges": [],
+        "registeredOn": "2026-09-15T02:38:54.258Z",
+        "destination": "vikavolt",
+        "partner": {
+          "exp": 156125,
+          "shiny": false,
+          "species": "vikavolt",
+          "learnedMoves": {
+            "string-shot": "String Shot",
+            "thunderbolt": "Thunderbolt",
+            "crunch": "Crunch",
+            "charge": "Charge",
+            "discharge": "Discharge",
+            "guillotine": "Guillotine",
+            "fly": "Fly",
+            "bite": "Bite",
+            "spark": "Spark",
+            "bug-buzz": "Bug Buzz",
+            "sticky-web": "Sticky Web"
+          },
+          "specialMoves": {},
+          "sizeMult": 1.0933758126255009
+        },
+        "docLink": "STAFF NPC",
+        "optional": {},
+        "balance": 157000,
+        "inventory": [],
+        "thread_id": "1549248116514103418"
       }
+    },
+    "OocPartner": {
+      "sizeMult": 1.1270069575014365,
+      "registeredOn": "2026-09-14T19:23:21.683Z",
+      "lastInteracted": "2026-09-14T19:23:21.683Z",
+      "gender": "Genderless",
+      "ability": 3,
+      "shiny": false,
+      "species": "jirachi",
+      "nature": "3",
+      "experience": 548,
+      "happiness": 64,
+      "prompt": 6,
+      "reset": "2026-09-14T19:23:21.684Z",
+      "canFeed": false,
+      "canPlay": false
     }
   },
   "723291117302448169": {
@@ -286,7 +726,287 @@
             "typeMatch": true
           }
         ]
+      },
+      "Suni Wu-Avati": {
+        "name": "Suni Wu-Avati",
+        "house": "Jirachi",
+        "badges": [],
+        "registeredOn": "2026-09-13T03:36:54.099Z",
+        "destination": "infernape",
+        "partner": {
+          "exp": 100125,
+          "shiny": false,
+          "species": "infernape",
+          "learnedMoves": {
+            "scratch": "Scratch",
+            "leer": "Leer",
+            "ember": "Ember",
+            "mach-punch": "Mach Punch",
+            "close-combat": "Close Combat",
+            "fire-spin": "Fire Spin",
+            "fury-swipes": "Fury Swipes",
+            "flame-wheel": "Flame Wheel",
+            "torment": "Torment",
+            "feint": "Feint"
+          },
+          "specialMoves": {},
+          "sizeMult": 2
+        },
+        "docLink": "STAFF NPC",
+        "optional": {},
+        "balance": 101000,
+        "inventory": [],
+        "thread_id": "1548537936637599777"
+      },
+      "Piper Ocypetsen": {
+        "name": "Piper Ocypetsen",
+        "house": "Mew",
+        "badges": [],
+        "registeredOn": "2026-09-13T03:44:42.699Z",
+        "destination": "corviknight",
+        "partner": {
+          "exp": 120125,
+          "shiny": true,
+          "species": "corviknight",
+          "learnedMoves": {
+            "leer": "Leer",
+            "peck": "Peck",
+            "screech": "Screech",
+            "steel-wing": "Steel Wing",
+            "metal-sound": "Metal Sound",
+            "iron-defense": "Iron Defense",
+            "hone-claws": "Hone Claws",
+            "power-trip": "Power Trip",
+            "fury-attack": "Fury Attack",
+            "drill-peck": "Drill Peck",
+            "scary-face": "Scary Face",
+            "swagger": "Swagger",
+            "taunt": "Taunt",
+            "pluck": "Pluck"
+          },
+          "specialMoves": {},
+          "sizeMult": 2
+        },
+        "docLink": "STAFF NPC",
+        "optional": {},
+        "balance": 121000,
+        "inventory": [],
+        "thread_id": "1548539901778202667"
+      },
+      "Jezebel Winterstein": {
+        "name": "Jezebel Winterstein",
+        "house": "Victini",
+        "badges": [],
+        "registeredOn": "2026-09-13T03:47:19.005Z",
+        "destination": "copperajah",
+        "partner": {
+          "exp": 150125,
+          "shiny": false,
+          "species": "copperajah",
+          "learnedMoves": {
+            "tackle": "Tackle",
+            "growl": "Growl",
+            "rollout": "Rollout",
+            "rock-smash": "Rock Smash",
+            "heavy-slam": "Heavy Slam",
+            "stomp": "Stomp",
+            "strength": "Strength",
+            "dig": "Dig",
+            "iron-defense": "Iron Defense",
+            "iron-head": "Iron Head",
+            "bulldoze": "Bulldoze",
+            "play-rough": "Play Rough"
+          },
+          "specialMoves": {},
+          "sizeMult": 1.0711202921440601
+        },
+        "docLink": "STAFF NPC",
+        "optional": {},
+        "balance": 151000,
+        "inventory": [],
+        "thread_id": "1548540557633126483"
+      },
+      "Melite Mejía-Treviño": {
+        "name": "Melite Mejía-Treviño",
+        "house": "Mew",
+        "badges": [],
+        "registeredOn": "2026-09-15T02:50:17.511Z",
+        "destination": "alakazam",
+        "partner": {
+          "exp": 150125,
+          "shiny": false,
+          "species": "alakazam",
+          "learnedMoves": {
+            "teleport": "Teleport",
+            "confusion": "Confusion",
+            "psychic": "Psychic",
+            "hypnosis": "Hypnosis",
+            "recover": "Recover",
+            "calm-mind": "Calm Mind",
+            "psycho-cut": "Psycho Cut",
+            "zen-headbutt": "Zen Headbutt"
+          },
+          "specialMoves": {
+            "ally-switch": "Ally Switch",
+            "flash": "Flash",
+            "speed-swap": "Speed Swap",
+            "psyshock": "Psyshock",
+            "volt-tackle": "Volt Tackle"
+          },
+          "sizeMult": 2
+        },
+        "docLink": "STAFF NPC",
+        "optional": {},
+        "balance": 98500,
+        "inventory": [],
+        "thread_id": "1549250985459982388",
+        "lastShopped": "2026-09-15T03:30:50.880Z",
+        "shoppingArray": [
+          {
+            "id": 502,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": true
+          },
+          {
+            "id": 148,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": false
+          },
+          {
+            "id": 683,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": true
+          },
+          {
+            "id": 473,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": true,
+            "typeMatch": true
+          },
+          {
+            "id": 344,
+            "legendary": false,
+            "signature": false,
+            "learnedMoves": false,
+            "typeMatch": false
+          }
+        ]
+      },
+      "Kahekili Aoraki": {
+        "name": "Kahekili Aoraki",
+        "house": "Victini",
+        "badges": [],
+        "registeredOn": "2026-09-15T02:57:24.708Z",
+        "destination": "galvantula",
+        "partner": {
+          "exp": 150125,
+          "shiny": false,
+          "species": "galvantula",
+          "learnedMoves": {
+            "absorb": "Absorb",
+            "fury-cutter": "Fury Cutter",
+            "bug-bite": "Bug Bite",
+            "electroweb": "Electroweb",
+            "sticky-web": "Sticky Web",
+            "string-shot": "String Shot",
+            "thunder-wave": "Thunder Wave",
+            "agility": "Agility",
+            "screech": "Screech",
+            "slash": "Slash",
+            "gastro-acid": "Gastro Acid",
+            "sucker-punch": "Sucker Punch",
+            "discharge": "Discharge",
+            "electro-ball": "Electro Ball"
+          },
+          "specialMoves": {},
+          "sizeMult": 0.9461932411977769
+        },
+        "docLink": "STAFF NPC",
+        "optional": {},
+        "balance": 151000,
+        "inventory": [],
+        "thread_id": "1549252774137569393"
       }
+    },
+    "OocPartner": {
+      "sizeMult": 0.9513234231832922,
+      "registeredOn": "2026-09-14T19:24:34.599Z",
+      "lastInteracted": "2026-09-14T19:24:34.599Z",
+      "gender": "Genderless",
+      "ability": 2,
+      "shiny": false,
+      "species": "mew",
+      "nature": "15",
+      "experience": 451,
+      "happiness": 62,
+      "prompt": 5,
+      "reset": "2026-09-14T19:24:34.599Z",
+      "canFeed": false,
+      "canPlay": true
+    }
+  },
+  "330910753961934848": {
+    "characters": {},
+    "OocPartner": {
+      "sizeMult": 1.0149589108367736,
+      "registeredOn": "2026-09-14T19:39:10.009Z",
+      "lastInteracted": "2026-09-14T19:39:10.009Z",
+      "gender": "Male",
+      "ability": 1,
+      "shiny": true,
+      "species": "pidgey",
+      "nature": "11",
+      "experience": 154,
+      "happiness": 59,
+      "prompt": 4,
+      "reset": "2026-09-14T19:39:10.009Z",
+      "canFeed": true,
+      "canPlay": true
+    }
+  },
+  "142782853258805248": {
+    "characters": {},
+    "OocPartner": {
+      "sizeMult": 0.7804183028642455,
+      "registeredOn": "2026-09-14T20:50:32.249Z",
+      "lastInteracted": "2026-09-14T20:50:32.249Z",
+      "gender": "Female",
+      "ability": 3,
+      "shiny": true,
+      "species": "froakie",
+      "nature": "16",
+      "experience": 34,
+      "happiness": 57,
+      "prompt": 1,
+      "reset": "2026-09-14T20:50:32.249Z",
+      "canFeed": true,
+      "canPlay": true
+    }
+  },
+  "335552141488029697": {
+    "characters": {},
+    "OocPartner": {
+      "sizeMult": 0.8418225711126566,
+      "registeredOn": "2026-09-15T00:49:23.469Z",
+      "lastInteracted": "2026-09-15T00:49:23.469Z",
+      "gender": "Female",
+      "ability": 1,
+      "shiny": true,
+      "species": "hatenna",
+      "nature": "5",
+      "experience": 40,
+      "happiness": 57,
+      "prompt": 4,
+      "reset": "2026-09-15T00:49:23.469Z",
+      "canFeed": false,
+      "canPlay": false
     }
   }
 }

@@ -596,7 +596,7 @@ export function getPrice(move: Move, moveData: characterHelper.tmData) {
   if (moveData.signature) {
     basePrice *= 2;
   }
-  return basePrice;
+  return Math.floor(basePrice);
 }
 
 export async function getStoreEntry(
