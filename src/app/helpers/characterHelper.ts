@@ -1203,9 +1203,7 @@ export async function changeExperience(client: Client, id: string, name: string,
 
   const oldExp = character.partner.exp;
   const newExp = amount + (character.partner.exp * (set == true ? 0 : 1));
-  character.balance += amount * (character.buff?.moneyBuff ?? 1);
   character.partner.exp = newExp;
-
   if (oldExp < newExp && increasedLevel(oldExp, newExp)) {
     const pokemon = await pokehelper.findPokemon(character.partner.species);
     const learnedMoves = pokehelper.learnedMoves(
