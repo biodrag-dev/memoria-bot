@@ -47,33 +47,6 @@ export const command: CommandData = {
   contexts: [InteractionContextType.Guild],
   options: [
     {
-      name: "tutor",
-      description: "Teaches a partner a certain move!",
-      type: ApplicationCommandOptionType.Subcommand,
-      options: [
-        {
-          name: "roleplayer",
-          description: "Character owner",
-          type: ApplicationCommandOptionType.User,
-          required: true,
-        },
-        {
-          name: "character",
-          description: "Character name",
-          type: ApplicationCommandOptionType.String,
-          required: true,
-          autocomplete: true,
-        },
-        {
-          name: "move",
-          description: "Which move are you editing?",
-          type: ApplicationCommandOptionType.String,
-          required: true,
-          autocomplete: true,
-        },
-      ],
-    },
-    {
       name: "edit",
       description: "Edit a character",
       type: ApplicationCommandOptionType.Subcommand,
@@ -108,87 +81,6 @@ export const command: CommandData = {
           description: "What are you filling in the detail with?",
           type: ApplicationCommandOptionType.String,
           required: true,
-        },
-      ],
-    },
-
-    {
-      name: "balance",
-      description: "Character balance/edit",
-      type: ApplicationCommandOptionType.SubcommandGroup,
-      options: [
-        {
-          name: "view",
-          description: "view balance",
-          type: ApplicationCommandOptionType.Subcommand,
-          options: [
-            {
-              name: "roleplayer",
-              description: "Character owner",
-              type: ApplicationCommandOptionType.User,
-              required: true,
-            },
-            {
-              name: "character",
-              description: "Character name",
-              type: ApplicationCommandOptionType.String,
-              required: true,
-              autocomplete: true,
-            },
-          ],
-        },
-        {
-          name: "add",
-          description: "add balance",
-
-          type: ApplicationCommandOptionType.Subcommand,
-          options: [
-            {
-              name: "roleplayer",
-              description: "Character owner",
-              type: ApplicationCommandOptionType.User,
-              required: true,
-            },
-            {
-              name: "character",
-              description: "Character name",
-              type: ApplicationCommandOptionType.String,
-              required: true,
-              autocomplete: true,
-            },
-            {
-              name: "amount",
-              description: "How much are you changing the value by?",
-              type: ApplicationCommandOptionType.Integer,
-              required: true,
-            },
-          ],
-        },
-        {
-          name: "set",
-          description: "What will their balance be set to?",
-          type: ApplicationCommandOptionType.Subcommand,
-          options: [
-            {
-              name: "roleplayer",
-              description: "Character owner",
-              type: ApplicationCommandOptionType.User,
-              required: true,
-            },
-            {
-              name: "character",
-              description: "Character name",
-              type: ApplicationCommandOptionType.String,
-              required: true,
-              autocomplete: true,
-            },
-            {
-              name: "amount",
-              description: "Character name",
-              type: ApplicationCommandOptionType.Integer,
-              required: true,
-            },
-          ],
         },
       ],
     },
@@ -252,33 +144,6 @@ export const command: CommandData = {
       ],
     },
     {
-      name: "toggle-badge",
-      description: "Toggles a badge",
-      type: ApplicationCommandOptionType.Subcommand,
-      options: [
-        {
-          name: "roleplayer",
-          description: "Character owner",
-          type: ApplicationCommandOptionType.User,
-          required: true,
-        },
-        {
-          name: "character",
-          description: "Character name",
-          type: ApplicationCommandOptionType.String,
-          required: true,
-          autocomplete: true,
-        },
-        {
-          name: "badge",
-          description: "Badge types",
-          type: ApplicationCommandOptionType.String,
-          required: true,
-          autocomplete: true,
-        },
-      ],
-    },
-    {
       name: "delete",
       description: "Delete character data",
       type: ApplicationCommandOptionType.SubcommandGroup,
@@ -304,70 +169,6 @@ export const command: CommandData = {
             },
           ],
         },
-
-        {
-          name: "all",
-          description: "Delete all characters",
-          type: ApplicationCommandOptionType.Subcommand,
-          options: [
-            {
-              name: "roleplayer",
-              description: "Character owner",
-              type: ApplicationCommandOptionType.User,
-              required: true,
-            },
-          ],
-        },
-        {
-          name: "reserve",
-          description: "Deletes a reservation",
-          type: ApplicationCommandOptionType.Subcommand,
-          options: [
-            {
-              name: "reservation",
-              description: "Reservation",
-              type: ApplicationCommandOptionType.String,
-              required: true,
-              autocomplete: true,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      name: "trim-list",
-      description: "gets a list of people who have left the server",
-      type: ApplicationCommandOptionType.Subcommand,
-    },
-    {
-      name: "qotd",
-      description: "qotd-related commands",
-      type: ApplicationCommandOptionType.SubcommandGroup,
-      options: [
-        {
-          name: "queue",
-          description: "gets a list of upcoming qotds",
-          type: ApplicationCommandOptionType.Subcommand,
-        },
-        {
-          name: "remove",
-          description: "removes a question from the queue",
-          type: ApplicationCommandOptionType.Subcommand,
-          options: [
-            {
-              name: "index",
-              description: "Index of the question to be removed",
-              type: ApplicationCommandOptionType.String,
-              required: true,
-              autocomplete: true,
-            },
-          ],
-        },
-        {
-          name: "force",
-          description: "forces a qotd",
-          type: ApplicationCommandOptionType.Subcommand,
-        },
       ],
     },
   ],
@@ -379,45 +180,6 @@ export const autocomplete = async (ctx: any) => {
   const focused = interaction.options.getFocused(true);
   const sub = interaction.options.getSubcommand();
   const group = interaction.options.getSubcommandGroup();
-
-  if (sub == "tutor" && focused.name == "move") {
-    const filtered = tmHelper.moves
-      .filter((name: string) =>
-        name.toLowerCase().startsWith(focused.value.toLowerCase()),
-      )
-      .slice(0, 25);
-
-    return await interaction.respond(
-      filtered.map((name: string) => ({
-        name,
-        value: name,
-      })),
-    );
-  }
-  if (group == "qotd" && sub == "remove") {
-    return await interaction.respond(qotdHelper.getIndexToRemove());
-  }
-
-  if (sub == "toggle-badge") {
-    const characterId = interaction.options.getString("character", false);
-
-    if (focused.name === "badge") {
-      if (!characterId) {
-        return await interaction.respond([]);
-      } else {
-        const badges = await characterHelper.getPossibleBadges(
-          interaction.user.id,
-          characterId,
-        );
-        return await interaction.respond(badges);
-      }
-    }
-  }
-  if (group == "delete" && sub == "reserve") {
-    return await interaction.respond(
-      await submitHelper.getAllReserves(interaction.client),
-    );
-  }
 
   const user = interaction.options._hoistedOptions[0].value;
 
